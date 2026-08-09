@@ -1510,7 +1510,7 @@ function rateCard(delta) {
     playSound('wrong');
     showXpToast('0 XP');
   } else if (delta === 1) {
-    playSound('click');
+    playSound('correct');
     addPoints(10, '+10 XP');
   } else if (delta === 2) {
     playSound('correct');
@@ -1693,7 +1693,7 @@ function rateCustomCard(delta) {
     playSound('wrong');
     showXpToast('0 XP');
   } else if (delta === 1) {
-    playSound('click');
+    playSound('correct');
     addPoints(10, '+10 XP');
   } else if (delta === 2) {
     playSound('correct');
@@ -2112,6 +2112,7 @@ function attachHandlers() {
   document.querySelectorAll('[data-action="speak"]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
+      playSound('click');
       const text = btn.dataset.text;
       if (text) speakWord(text);
     });
