@@ -291,6 +291,44 @@ html, body { height: 100%; }
 
 .rate-key { font-family: 'JetBrains Mono', monospace; font-size: 10px; opacity: 0.6; }
 
+.audio-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 17px;
+  transition: all 0.2s ease;
+  vertical-align: middle;
+  margin-left: 8px;
+  touch-action: manipulation;
+}
+
+.audio-btn:hover {
+  background: rgba(255, 255, 255, 0.38);
+  transform: scale(1.1);
+}
+
+.audio-btn:active {
+  transform: scale(0.92);
+}
+
+.audio-btn.dark {
+  background: var(--bg-soft);
+  border: 1px solid var(--linea);
+  color: var(--azul);
+}
+
+.audio-btn.dark:hover {
+  background: #E6F1F3;
+  color: var(--azul-light);
+}
+
 .flip-prompt {
   text-align: center;
   color: var(--gris);
@@ -1090,6 +1128,28 @@ function daysBetween(a, b) {
   return Math.round((new Date(b) - new Date(a)) / 86400000);
 }
 
+function calculateEarnedPoints(progress, customWords, quizScore, customQuizScore) {
+  let pts = 0;
+  if (progress) {
+    Object.values(progress).forEach(p => {
+      const box = (p && typeof p === 'object') ? p.box : (typeof p === 'number' ? p : 0);
+      if (box === 1) pts += 10;
+      else if (box === 2) pts += 20;
+      else if (box === 3) pts += 45; // 20 + 25 bonus
+    });
+  }
+  if (Array.isArray(customWords)) {
+    pts += customWords.length * 5;
+  }
+  if (quizScore && quizScore.correct) {
+    pts += quizScore.correct * 15;
+  }
+  if (customQuizScore && customQuizScore.correct) {
+    pts += customQuizScore.correct * 15;
+  }
+  return pts;
+}
+
 function addPoints(amount, message) {
   state.points = (state.points || 0) + amount;
   if (message) showXpToast(message);
@@ -1111,11 +1171,18 @@ async function loadProgress() {
       const data = JSON.parse(raw);
       state.progress = data.progress || {};
       state.streak = data.streak || 0;
-      state.points = data.points || 0;
       state.lastActiveDate = data.lastActiveDate || null;
       state.quizScore = data.quizScore || {correct:0, total:0};
       state.customWords = data.customWords || [];
       state.customQuizScore = data.customQuizScore || {correct:0, total:0};
+
+      // Points persistence with fallback calculation from progress
+      const computedMinPoints = calculateEarnedPoints(state.progress, state.customWords, state.quizScore, state.customQuizScore);
+      if (typeof data.points === 'number') {
+        state.points = Math.max(data.points, computedMinPoints);
+      } else {
+        state.points = computedMinPoints;
+      }
     }
   } catch (e) {
     console.log('No existing progress found, starting fresh.');
@@ -1132,9 +1199,9 @@ async function loadProgress() {
       state.streak = state.streak || 1;
     }
     state.lastActiveDate = today;
-    await saveProgress();
   }
 
+  await saveProgress();
   state.loaded = true;
   render();
 }
@@ -1153,6 +1220,16 @@ async function saveProgress() {
   } catch (e) {
     console.error('Failed to save progress', e);
   }
+}
+
+function speakWord(text) {
+  if (!text || !('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const cleanText = text.replace(/__([^_]+)__/g, '$1');
+  const utterance = new SpeechSynthesisUtterance(cleanText);
+  utterance.lang = 'es-ES';
+  utterance.rate = 0.88;
+  window.speechSynthesis.speak(utterance);
 }
 
 function getBox(word) {
@@ -1505,13 +1582,19 @@ function renderCards() {
       <div class="flashcard ${state.flipped ? 'flipped' : ''}" id="flashcard">
         <div class="card-face card-front">
           <div class="card-category">${escapeHtml(c.cat)}</div>
-          <div class="card-word-es">${escapeHtml(c.es)}</div>
+          <div class="card-word-es">
+            ${escapeHtml(c.es)}
+            <button class="audio-btn" data-action="speak" data-text="${escapeHtml(c.es)}" title="Escuchar pronunciación">🔊</button>
+          </div>
           <div class="card-hint">toca para voltear · desliza para puntuar</div>
         </div>
         <div class="card-face card-back">
           <div class="card-category">Traducción</div>
           <div class="card-word-en">${escapeHtml(c.en)}</div>
-          <div class="card-example">${formatExample(c.ex)}</div>
+          <div class="card-example">
+            ${formatExample(c.ex)}
+            <button class="audio-btn dark" style="width:30px; height:30px; font-size:13px; margin-left:6px;" data-action="speak" data-text="${escapeHtml(c.ex.replace(/__/g,''))}" title="Escuchar frase">🔊</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1553,7 +1636,10 @@ function renderQuiz() {
     </div>
     <div class="quiz-prompt-card">
       <div class="quiz-direction">${directionLabel}</div>
-      <div class="quiz-word">${escapeHtml(prompt)}</div>
+      <div class="quiz-word">
+        ${escapeHtml(prompt)}
+        ${state.quizDirection === 'es-en' ? `<button class="audio-btn" data-action="speak" data-text="${escapeHtml(prompt)}" title="Escuchar pronunciación">🔊</button>` : ''}
+      </div>
     </div>
     <div class="choices">${choicesHtml}</div>
     ${state.quizSelected !== null ? `<button class="next-btn" data-action="next-quiz">Siguiente palabra →</button>` : ''}
@@ -1567,6 +1653,7 @@ function renderCustomManage() {
         <div class="word-item">
           <div class="word-item-text">
             <span class="word-item-es">${escapeHtml(w.es)}</span>
+            <button class="audio-btn dark" style="width:28px; height:28px; font-size:12px; margin-left:6px;" data-action="speak" data-text="${escapeHtml(w.es)}" title="Escuchar">🔊</button>
             <span class="word-item-en">${escapeHtml(w.en)}</span>
           </div>
           <button class="word-item-delete" data-action="delete-word" data-index="${i}">Eliminar</button>
@@ -1615,13 +1702,19 @@ function renderCustomCards() {
       <div class="flashcard ${state.customFlipped ? 'flipped' : ''}" id="custom-flashcard">
         <div class="card-face card-front">
           <div class="card-category">${escapeHtml(c.cat)}</div>
-          <div class="card-word-es">${escapeHtml(c.es)}</div>
+          <div class="card-word-es">
+            ${escapeHtml(c.es)}
+            <button class="audio-btn" data-action="speak" data-text="${escapeHtml(c.es)}" title="Escuchar pronunciación">🔊</button>
+          </div>
           <div class="card-hint">toca para voltear</div>
         </div>
         <div class="card-face card-back">
           <div class="card-category">Traducción</div>
           <div class="card-word-en">${escapeHtml(c.en)}</div>
-          <div class="card-example">${formatExample(c.ex)}</div>
+          <div class="card-example">
+            ${formatExample(c.ex)}
+            <button class="audio-btn dark" style="width:30px; height:30px; font-size:13px; margin-left:6px;" data-action="speak" data-text="${escapeHtml(c.ex.replace(/__/g,''))}" title="Escuchar frase">🔊</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1782,6 +1875,14 @@ function addSwipe(el, onLeft, onRight) {
 }
 
 function attachHandlers() {
+  document.querySelectorAll('[data-action="speak"]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const text = btn.dataset.text;
+      if (text) speakWord(text);
+    });
+  });
+
   const flashcard = document.getElementById('flashcard');
   if (flashcard) {
     flashcard.addEventListener('click', () => {
