@@ -1142,6 +1142,290 @@ html, body { height: 100%; }
   .app-root { grid-template-columns: 240px 1fr; }
   .content { max-width: 720px; }
 }
+/* ═══════════════════════════════ */
+/*   LECCIONES MODULE              */
+/* ═══════════════════════════════ */
+
+.lecciones-header {
+  margin-bottom: 20px;
+}
+
+.lecciones-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--tinta);
+  margin-bottom: 4px;
+}
+
+.lecciones-subtitle {
+  font-size: 13px;
+  color: var(--gris);
+  margin-bottom: 18px;
+}
+
+.leccion-card {
+  border-radius: 18px;
+  margin-bottom: 14px;
+  border: 2px solid transparent;
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.15s;
+}
+
+.leccion-card:hover {
+  transform: translateY(-1px);
+}
+
+.leccion-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.leccion-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.leccion-title-text {
+  flex: 1;
+}
+
+.leccion-title-text strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Sora', sans-serif;
+}
+
+.leccion-title-text span {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.leccion-chevron {
+  font-size: 18px;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  opacity: 0.65;
+  flex-shrink: 0;
+}
+
+.leccion-card.open .leccion-chevron {
+  transform: rotate(180deg);
+}
+
+.leccion-xp-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  flex-shrink: 0;
+}
+
+.leccion-body {
+  display: none;
+  padding: 0 20px 20px;
+}
+
+.leccion-card.open .leccion-body {
+  display: block;
+}
+
+.leccion-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+  margin: 16px 0 8px;
+}
+
+.rule-box {
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border-left: 4px solid;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.rule-box strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+.formula-tag {
+  display: inline-block;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 4px 4px 4px 0;
+  line-height: 1.4;
+}
+
+.example-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.example-row .es {
+  font-weight: 700;
+  flex: 1;
+}
+
+.example-row .en {
+  opacity: 0.65;
+  font-size: 12px;
+  flex: 1;
+  text-align: right;
+}
+
+.conj-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.conj-table th {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.conj-table td {
+  padding: 7px 12px;
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.conj-table td:first-child {
+  font-weight: 600;
+  opacity: 0.7;
+  width: 100px;
+}
+
+.conj-table td strong {
+  font-weight: 700;
+  color: inherit;
+}
+
+/* Lesson mini-quiz */
+.leccion-quiz-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  padding-top: 4px;
+}
+
+.leccion-question {
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  border: 2px solid;
+  line-height: 1.4;
+}
+
+.leccion-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 14px;
+}
+
+.leccion-choice-btn {
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s;
+  font-family: 'Inter', sans-serif;
+  color: #0F172A;
+}
+
+.leccion-choice-btn:hover:not(.disabled) {
+  background: #EEF2FF;
+  border-color: #818CF8;
+  color: #3730A3;
+}
+
+.leccion-choice-btn.correct {
+  background: #D1FAE5;
+  border-color: #34D399;
+  color: #065F46;
+}
+
+.leccion-choice-btn.incorrect {
+  background: #FEE2E2;
+  border-color: #FCA5A5;
+  color: #DC2626;
+}
+
+.leccion-choice-btn.disabled {
+  cursor: default;
+  pointer-events: none;
+}
+
+.leccion-quiz-result {
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 6px;
+  display: none;
+}
+
+.leccion-quiz-result.show {
+  display: block;
+}
+
+.leccion-completed-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 12px;
+  position: absolute;
+  top: 18px;
+  right: 54px;
+}
+
 </style>
 </head>
 <body>
@@ -1162,6 +1446,7 @@ html, body { height: 100%; }
     <div class="tabs">
       <button class="tab-btn active" data-tab="cards">Tarjetas</button>
       <button class="tab-btn" data-tab="quiz">Quiz</button>
+      <button class="tab-btn" data-tab="lecciones">Lecciones</button>
       <button class="tab-btn" data-tab="custom">Mis palabras</button>
       <button class="tab-btn" data-tab="progress">Progreso</button>
     </div>
@@ -1221,6 +1506,9 @@ let state = {
   customQuizScore: {correct: 0, total: 0},
   customSessionCount: 0,
   formError: '',
+  leccionesOpen: {},       // lessonId -> boolean
+  leccionesCompleted: {},  // lessonId -> boolean
+  leccionesQuiz: {},       // lessonId -> { selected: val, correct: bool }
 };
 
 function todayStr() {
@@ -1278,6 +1566,8 @@ async function loadProgress() {
       state.quizScore = data.quizScore || {correct:0, total:0};
       state.customWords = data.customWords || [];
       state.customQuizScore = data.customQuizScore || {correct:0, total:0};
+      state.leccionesCompleted = data.leccionesCompleted || {};
+      state.leccionesQuiz = data.leccionesQuiz || {};
 
       // Points persistence with fallback calculation from progress
       const computedMinPoints = calculateEarnedPoints(state.progress, state.customWords, state.quizScore, state.customQuizScore);
@@ -1319,6 +1609,8 @@ async function saveProgress() {
       quizScore: state.quizScore,
       customWords: state.customWords,
       customQuizScore: state.customQuizScore,
+      leccionesCompleted: state.leccionesCompleted,
+      leccionesQuiz: state.leccionesQuiz,
     }));
   } catch (e) {
     console.error('Failed to save progress', e);
@@ -1765,6 +2057,323 @@ function nextCustomQuiz() {
   render();
 }
 
+/* ─────────────────── LESSONS DATA ─────────────────── */
+
+const LESSONS = [
+  {
+    id: 'l1',
+    num: '01',
+    title: 'Artículos y Género',
+    subtitle: 'El, La, Un, Una — Noun genders & articles',
+    theme: { bg: '#EEF2FF', text: '#3730A3', pill: '#C7D2FE', border: '#818CF8', headBg: '#6366F1', headText: '#fff' },
+    sections: [
+      {
+        type: 'rules',
+        title: 'Regla básica',
+        items: [
+          { title: 'Artículo Definido (The)', body: '<span class="formula-tag" style="background:#C7D2FE;color:#3730A3;">el</span> (masc.) + <span class="formula-tag" style="background:#C7D2FE;color:#3730A3;">la</span> (fem.) + <span class="formula-tag" style="background:#C7D2FE;color:#3730A3;">los / las</span> (plural)', bg: '#EEF2FF', border: '#818CF8', text: '#3730A3' },
+          { title: 'Artículo Indefinido (A/An)', body: '<span class="formula-tag" style="background:#E0E7FF;color:#4338CA;">un</span> (masc.) + <span class="formula-tag" style="background:#E0E7FF;color:#4338CA;">una</span> (fem.) + <span class="formula-tag" style="background:#E0E7FF;color:#4338CA;">unos / unas</span> (plural)', bg: '#EEF2FF', border: '#818CF8', text: '#3730A3' },
+          { title: 'Regla de Género', body: 'Nouns ending in <strong>-o</strong> → usually masculine (el libro, el gato)<br>Nouns ending in <strong>-a</strong> → usually feminine (la casa, la mesa)<br>¡Excepciones! el agua, el día, la mano', bg: '#F0F4FF', border: '#A5B4FC', text: '#3730A3' },
+        ]
+      },
+      {
+        type: 'examples',
+        title: 'Ejemplos',
+        items: [
+          { es: 'el libro', en: 'the book', audio: 'el libro' },
+          { es: 'la casa', en: 'the house', audio: 'la casa' },
+          { es: 'un hombre', en: 'a man', audio: 'un hombre' },
+          { es: 'una mujer', en: 'a woman', audio: 'una mujer' },
+          { es: 'los libros', en: 'the books', audio: 'los libros' },
+          { es: 'las casas', en: 'the houses', audio: 'las casas' },
+        ]
+      }
+    ],
+    quiz: { q: '¿Cuál es el artículo correcto para "libro" (book)?', choices: ['el libro', 'la libro', 'lo libro', 'les libro'], correct: 'el libro', explanation: '"Libro" termina en -o → es masculino → "el libro".' }
+  },
+  {
+    id: 'l2',
+    num: '02',
+    title: 'Ser vs. Estar',
+    subtitle: 'The two "to be" verbs — Permanent vs. Temporary',
+    theme: { bg: '#ECFDF5', text: '#065F46', pill: '#A7F3D0', border: '#34D399', headBg: '#10B981', headText: '#fff' },
+    sections: [
+      {
+        type: 'rules',
+        title: 'Cuándo usar SER',
+        items: [
+          { title: 'SER (Permanent / Identity)', body: '<strong>D</strong>escription (María <em>es</em> alta)<br><strong>O</strong>ccupation (Soy estudiante)<br><strong>C</strong>haracteristics (El coche <em>es</em> rojo)<br><strong>T</strong>ime / Date (Son las tres)<br><strong>O</strong>rigin (Soy de Filipinas)<br><strong>R</strong>elationship (Es mi madre)', bg: '#ECFDF5', border: '#34D399', text: '#065F46' },
+          { title: 'ESTAR (Temporary / State)', body: '<strong>P</strong>osition (El libro <em>está</em> aquí)<br><strong>L</strong>ocation (Estoy en casa)<br><strong>A</strong>ction (Estoy comiendo)<br><strong>C</strong>ondition (Estoy cansado)<br><strong>E</strong>motion (Está feliz)', bg: '#F0FDF9', border: '#6EE7B7', text: '#065F46' },
+        ]
+      },
+      {
+        type: 'table',
+        title: 'Conjugación: SER y ESTAR (Presente)',
+        headers: ['Pronombre', 'SER', 'ESTAR'],
+        rows: [
+          ['yo', 'soy', 'estoy'],
+          ['tú', 'eres', 'estás'],
+          ['él / ella', 'es', 'está'],
+          ['nosotros', 'somos', 'estamos'],
+          ['vosotros', 'sois', 'estáis'],
+          ['ellos / ellas', 'son', 'están'],
+        ],
+        bg: '#ECFDF5', thBg: '#A7F3D0', thText: '#065F46'
+      },
+      {
+        type: 'examples',
+        title: 'Ejemplos',
+        items: [
+          { es: 'Soy de Filipinas', en: 'I am from the Philippines', audio: 'Soy de Filipinas' },
+          { es: 'Estoy cansado', en: 'I am tired', audio: 'Estoy cansado' },
+          { es: 'Ella es médica', en: 'She is a doctor', audio: 'Ella es médica' },
+          { es: 'El café está caliente', en: 'The coffee is hot', audio: 'El café está caliente' },
+        ]
+      }
+    ],
+    quiz: { q: '¿Cuál es correcto? "I am tired" en español:', choices: ['Soy cansado', 'Estoy cansado', 'Ser cansado', 'Es cansado'], correct: 'Estoy cansado', explanation: '"Cansado" es un estado temporal → usamos ESTAR → "Estoy cansado".' }
+  },
+  {
+    id: 'l3',
+    num: '03',
+    title: 'Presente de Indicativo',
+    subtitle: 'Conjugating regular -AR, -ER, -IR verbs + top irregulars',
+    theme: { bg: '#F0F9FF', text: '#075985', pill: '#BAE6FD', border: '#38BDF8', headBg: '#0EA5E9', headText: '#fff' },
+    sections: [
+      {
+        type: 'rules',
+        title: 'Terminaciones regulares',
+        items: [
+          { title: 'Verbos -AR (hablar, trabajar, llamar…)', body: '<span class="formula-tag" style="background:#BAE6FD;color:#075985;">yo → -o</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">tú → -as</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">él → -a</span><br><span class="formula-tag" style="background:#E0F2FE;color:#075985;">nosotros → -amos</span> <span class="formula-tag" style="background:#E0F2FE;color:#075985;">ellos → -an</span>', bg: '#F0F9FF', border: '#38BDF8', text: '#075985' },
+          { title: 'Verbos -ER (comer, beber, hacer…)', body: '<span class="formula-tag" style="background:#BAE6FD;color:#075985;">yo → -o</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">tú → -es</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">él → -e</span><br><span class="formula-tag" style="background:#E0F2FE;color:#075985;">nosotros → -emos</span> <span class="formula-tag" style="background:#E0F2FE;color:#075985;">ellos → -en</span>', bg: '#F0F9FF', border: '#38BDF8', text: '#075985' },
+          { title: 'Verbos -IR (vivir, escribir, abrir…)', body: '<span class="formula-tag" style="background:#BAE6FD;color:#075985;">yo → -o</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">tú → -es</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">él → -e</span><br><span class="formula-tag" style="background:#E0F2FE;color:#075985;">nosotros → -imos</span> <span class="formula-tag" style="background:#E0F2FE;color:#075985;">ellos → -en</span>', bg: '#F0F9FF', border: '#38BDF8', text: '#075985' },
+        ]
+      },
+      {
+        type: 'table',
+        title: 'Irregulares más usados',
+        headers: ['Pronombre', 'TENER', 'IR', 'HACER'],
+        rows: [
+          ['yo', 'tengo', 'voy', 'hago'],
+          ['tú', 'tienes', 'vas', 'haces'],
+          ['él / ella', 'tiene', 'va', 'hace'],
+          ['nosotros', 'tenemos', 'vamos', 'hacemos'],
+          ['ellos', 'tienen', 'van', 'hacen'],
+        ],
+        bg: '#F0F9FF', thBg: '#BAE6FD', thText: '#075985'
+      },
+      {
+        type: 'examples',
+        title: 'Ejemplos',
+        items: [
+          { es: 'Yo hablo español', en: 'I speak Spanish', audio: 'Yo hablo español' },
+          { es: 'Ella come una manzana', en: 'She eats an apple', audio: 'Ella come una manzana' },
+          { es: 'Tengo hambre', en: 'I am hungry', audio: 'Tengo hambre' },
+          { es: '¿Adónde vas?', en: 'Where are you going?', audio: '¿Adónde vas?' },
+        ]
+      }
+    ],
+    quiz: { q: '¿Cómo se conjuga "hablar" para "yo"?', choices: ['yo hablas', 'yo hablo', 'yo hablar', 'yo habe'], correct: 'yo hablo', explanation: 'Verbos -AR: la terminación para "yo" es siempre -o → "yo hablo".' }
+  },
+  {
+    id: 'l4',
+    num: '04',
+    title: 'Los Tiempos del Pasado',
+    subtitle: 'Pretérito Indefinido vs. Pretérito Imperfecto',
+    theme: { bg: '#FFFBEB', text: '#92400E', pill: '#FDE68A', border: '#FBBF24', headBg: '#F59E0B', headText: '#fff' },
+    sections: [
+      {
+        type: 'rules',
+        title: 'Cuándo usar cada uno',
+        items: [
+          { title: 'Pretérito Indefinido — Completed Past', body: 'Acciones terminadas en el pasado:<br>"Ayer <strong>comí</strong> pizza." (Yesterday I ate pizza.)<br>"<strong>Fui</strong> a España en 2022." (I went to Spain in 2022.)<br><em>Trigger words: ayer, el otro día, una vez, en + año</em>', bg: '#FFFBEB', border: '#FBBF24', text: '#92400E' },
+          { title: 'Pretérito Imperfecto — Habitual / Ongoing Past', body: 'Hábitos pasados o acción en progreso:<br>"De niño <strong>jugaba</strong> fútbol." (As a child I used to play soccer.)<br>"<strong>Llovía</strong> cuando llegué." (It was raining when I arrived.)<br><em>Trigger words: siempre, todos los días, de niño, cuando era…</em>', bg: '#FEF9E7', border: '#FCD34D', text: '#92400E' },
+        ]
+      },
+      {
+        type: 'table',
+        title: 'Pretérito Indefinido: -AR (hablar)',
+        headers: ['Pronombre', 'Terminación', 'Ejemplo'],
+        rows: [
+          ['yo', '-é', 'hablé'],
+          ['tú', '-aste', 'hablaste'],
+          ['él / ella', '-ó', 'habló'],
+          ['nosotros', '-amos', 'hablamos'],
+          ['ellos', '-aron', 'hablaron'],
+        ],
+        bg: '#FFFBEB', thBg: '#FDE68A', thText: '#92400E'
+      },
+      {
+        type: 'examples',
+        title: 'Ejemplos',
+        items: [
+          { es: 'Ayer fui al mercado', en: 'Yesterday I went to the market', audio: 'Ayer fui al mercado' },
+          { es: 'Cuando era niño, vivía en Manila', en: 'When I was a child, I lived in Manila', audio: 'Cuando era niño, vivía en Manila' },
+          { es: 'Comí mucho anoche', en: 'I ate a lot last night', audio: 'Comí mucho anoche' },
+          { es: 'Siempre estudiaba por la noche', en: 'I always used to study at night', audio: 'Siempre estudiaba por la noche' },
+        ]
+      }
+    ],
+    quiz: { q: '"Ayer _____ al trabajo." ¿Cuál es correcto? (Yesterday I went to work.)', choices: ['iba', 'fui', 'voy', 'fue'], correct: 'fui', explanation: '"Ayer" indica una acción terminada en el pasado → Pretérito Indefinido → "fui".' }
+  },
+  {
+    id: 'l5',
+    num: '05',
+    title: 'Expresar el Futuro',
+    subtitle: 'Ir a + Infinitivo & Futuro Simple endings',
+    theme: { bg: '#FFF1F2', text: '#9F1239', pill: '#FECDD3', border: '#FB7185', headBg: '#F43F5E', headText: '#fff' },
+    sections: [
+      {
+        type: 'rules',
+        title: 'Dos formas de expresar el futuro',
+        items: [
+          { title: 'Futuro Próximo: IR A + Infinitivo', body: '<span class="formula-tag" style="background:#FECDD3;color:#9F1239;">Sujeto + ir (conjugado) + a + verbo infinitivo</span><br>"Voy a estudiar esta noche." (I\'m going to study tonight.)<br>"Ella va a comer." (She\'s going to eat.)<br><em>Usado para planes e intenciones próximas.</em>', bg: '#FFF1F2', border: '#FB7185', text: '#9F1239' },
+          { title: 'Futuro Simple (will + verb)', body: 'Añadir terminaciones al infinitivo:<br><span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">yo → -é</span> <span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">tú → -ás</span> <span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">él → -á</span><br><span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">nosotros → -emos</span> <span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">ellos → -án</span><br>"Mañana <strong>hablaré</strong> con ella." (Tomorrow I will talk to her.)', bg: '#FFF0F3', border: '#FDA4AF', text: '#9F1239' },
+        ]
+      },
+      {
+        type: 'examples',
+        title: 'Ejemplos',
+        items: [
+          { es: 'Voy a aprender español', en: 'I\'m going to learn Spanish', audio: 'Voy a aprender español' },
+          { es: 'Mañana comeré contigo', en: 'Tomorrow I will eat with you', audio: 'Mañana comeré contigo' },
+          { es: '¿Qué vas a hacer hoy?', en: 'What are you going to do today?', audio: '¿Qué vas a hacer hoy?' },
+          { es: 'Hablaremos más tarde', en: 'We will talk later', audio: 'Hablaremos más tarde' },
+        ]
+      }
+    ],
+    quiz: { q: '¿Cómo se dice "I\'m going to eat" en español?', choices: ['Voy a comer', 'Comeré', 'Como', 'Comí'], correct: 'Voy a comer', explanation: 'Futuro próximo = IR A + infinitivo → "voy a comer".' }
+  },
+  {
+    id: 'l6',
+    num: '06',
+    title: 'Pronombres y Estructura',
+    subtitle: 'Direct/Indirect pronouns — me, te, le, lo, la + word order',
+    theme: { bg: '#FAF5FF', text: '#6B21A8', pill: '#E9D5FF', border: '#C084FC', headBg: '#A855F7', headText: '#fff' },
+    sections: [
+      {
+        type: 'rules',
+        title: 'Pronombres de Objeto',
+        items: [
+          { title: 'Objeto Indirecto (to whom?)', body: '<span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">me</span> (to me) <span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">te</span> (to you) <span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">le</span> (to him/her)<br><span class="formula-tag" style="background:#F3E8FF;color:#6B21A8;">nos</span> (to us) <span class="formula-tag" style="background:#F3E8FF;color:#6B21A8;">les</span> (to them)<br>"<strong>Le</strong> di el libro." (I gave <em>him/her</em> the book.)', bg: '#FAF5FF', border: '#C084FC', text: '#6B21A8' },
+          { title: 'Objeto Directo (what/whom?)', body: '<span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">lo / la</span> (it/him/her) <span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">los / las</span> (them)<br>"<strong>Lo</strong> veo." (I see <em>it/him</em>.)<br>"<strong>La</strong> quiero." (I love <em>her</em>.)', bg: '#F5F3FF', border: '#DDD6FE', text: '#6B21A8' },
+          { title: 'Orden de la Oración (Word Order)', body: 'Español: <span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">Sujeto + Verbo + Objeto</span><br>"Yo (S) como (V) una manzana (O)."<br>Pronombre ANTES del verbo: "Yo <strong>la</strong> como."<br>Negación: "Yo <strong>no la</strong> como."', bg: '#FAF5FF', border: '#C084FC', text: '#6B21A8' },
+        ]
+      },
+      {
+        type: 'examples',
+        title: 'Ejemplos',
+        items: [
+          { es: 'Me gusta el café', en: 'I like coffee (lit: coffee pleases me)', audio: 'Me gusta el café' },
+          { es: 'Te quiero mucho', en: 'I love you a lot', audio: 'Te quiero mucho' },
+          { es: 'Le doy el dinero', en: 'I give him/her the money', audio: 'Le doy el dinero' },
+          { es: 'No lo entiendo', en: 'I don\'t understand it', audio: 'No lo entiendo' },
+        ]
+      }
+    ],
+    quiz: { q: '"I like coffee" en español es:', choices: ['Yo gusto el café', 'Me gusta el café', 'Le gusta el café', 'Lo gusta el café'], correct: 'Me gusta el café', explanation: '"Gustar" funciona al revés: el sujeto es "café", "me" = a mí. → "Me gusta el café".' }
+  },
+];
+
+function buildLeccionHtml(lesson) {
+  const t = lesson.theme;
+  const isOpen = !!state.leccionesOpen[lesson.id];
+  const isDone = !!state.leccionesCompleted[lesson.id];
+  const quizState = state.leccionesQuiz[lesson.id];
+
+  let sectionsHtml = '';
+  for (const sec of lesson.sections) {
+    sectionsHtml += `<div class="leccion-section-title" style="color:${t.text};">${sec.title}</div>`;
+    if (sec.type === 'rules') {
+      sec.items.forEach(item => {
+        sectionsHtml += `<div class="rule-box" style="background:${item.bg};border-color:${item.border};color:${item.text};">
+          <strong>${item.title}</strong>${item.body}</div>`;
+      });
+    } else if (sec.type === 'table') {
+      const thStyle = `background:${sec.thBg};color:${sec.thText};`;
+      const tdStyle = `background:${sec.bg};`;
+      sectionsHtml += `<table class="conj-table"><thead><tr>
+        ${sec.headers.map(h => `<th style="${thStyle}">${h}</th>`).join('')}
+      </tr></thead><tbody>
+        ${sec.rows.map(row => `<tr>${row.map((cell, i) =>
+          `<td style="${tdStyle}">${i > 0 ? `<strong>${cell}</strong>` : cell}</td>`).join('')}</tr>`).join('')}
+      </tbody></table>`;
+    } else if (sec.type === 'examples') {
+      sec.items.forEach(ex => {
+        sectionsHtml += `<div class="example-row" style="background:${t.pill}33;">
+          <span class="es" style="color:${t.text};">${escapeHtml(ex.es)}</span>
+          <button class="audio-btn" style="background:rgba(255,255,255,0.7);color:${t.text};border:1px solid ${t.border};width:30px;height:30px;flex-shrink:0;" data-action="speak" data-text="${escapeHtml(ex.audio)}" title="Escuchar">${SPEAKER_ICON}</button>
+          <span class="en">${escapeHtml(ex.en)}</span>
+        </div>`;
+      });
+    }
+  }
+
+  // Mini-quiz
+  const q = lesson.quiz;
+  let quizHtml = '';
+  if (quizState) {
+    const choicesHtml = q.choices.map(c => {
+      let cls = 'leccion-choice-btn disabled';
+      if (c === q.correct) cls += ' correct';
+      else if (c === quizState.selected && c !== q.correct) cls += ' incorrect';
+      return `<button class="${cls}">${escapeHtml(c)}</button>`;
+    }).join('');
+    const resultMsg = quizState.correct
+      ? `✅ ¡Correcto! ${escapeHtml(q.explanation)}`
+      : `❌ La respuesta correcta es: <strong>${escapeHtml(q.correct)}</strong>. ${escapeHtml(q.explanation)}`;
+    const resultStyle = quizState.correct
+      ? `background:#D1FAE5;color:#065F46;border:1.5px solid #34D399;`
+      : `background:#FEE2E2;color:#DC2626;border:1.5px solid #FCA5A5;`;
+    quizHtml = `
+      <div class="leccion-quiz-title" style="color:${t.text};">🎯 Ejercicio Práctico</div>
+      <div class="leccion-question" style="background:${t.bg};border-color:${t.border};color:${t.text};">${escapeHtml(q.q)}</div>
+      <div class="leccion-choices">${choicesHtml}</div>
+      <div class="leccion-quiz-result show" style="${resultStyle}">${resultMsg}</div>`;
+  } else {
+    const choicesHtml = q.choices.map(c =>
+      `<button class="leccion-choice-btn" data-action="leccion-choice" data-lesson="${lesson.id}" data-val="${escapeHtml(c)}">${escapeHtml(c)}</button>`
+    ).join('');
+    quizHtml = `
+      <div class="leccion-quiz-title" style="color:${t.text};">🎯 Ejercicio Práctico</div>
+      <div class="leccion-question" style="background:${t.bg};border-color:${t.border};color:${t.text};">${escapeHtml(q.q)}</div>
+      <div class="leccion-choices">${choicesHtml}</div>
+      <div class="leccion-quiz-result" id="lq-result-${lesson.id}"></div>`;
+  }
+
+  return `
+  <div class="leccion-card ${isOpen ? 'open' : ''}" style="background:${t.bg};border-color:${t.border};" id="lcard-${lesson.id}">
+    <div class="leccion-header" data-action="leccion-toggle" data-lesson="${lesson.id}" style="background:${t.headBg};">
+      <div class="leccion-num" style="background:rgba(255,255,255,0.25);color:${t.headText};">${lesson.num}</div>
+      <div class="leccion-title-text">
+        <strong style="color:${t.headText};">${lesson.title}</strong>
+        <span style="color:${t.headText};opacity:0.85;">${lesson.subtitle}</span>
+      </div>
+      ${isDone ? `<span class="leccion-completed-badge" style="background:rgba(255,255,255,0.25);color:${t.headText};">✓ +15 XP</span>` : ''}
+      <div class="leccion-xp-badge" style="background:rgba(255,255,255,0.2);color:${t.headText};">+15 XP</div>
+      <span class="leccion-chevron" style="color:${t.headText};">⌄</span>
+    </div>
+    <div class="leccion-body">
+      ${sectionsHtml}
+      <div style="margin-top:18px;border-top:1.5px solid ${t.border}44;padding-top:16px;">
+        ${quizHtml}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderLecciones() {
+  const totalDone = Object.values(state.leccionesCompleted).filter(Boolean).length;
+  const cardsHtml = LESSONS.map(l => buildLeccionHtml(l)).join('');
+  return `
+    <div class="lecciones-header">
+      <div class="lecciones-title">📚 Lecciones de Gramática</div>
+      <div class="lecciones-subtitle">Aprende las reglas esenciales del español — ${totalDone}/${LESSONS.length} lecciones completadas</div>
+    </div>
+    ${cardsHtml}
+  `;
+}
+
 function escapeHtml(str) {
   return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
@@ -2079,6 +2688,7 @@ function render() {
 
   if (state.currentTab === 'cards') contentEl.innerHTML = renderCards();
   else if (state.currentTab === 'quiz') contentEl.innerHTML = renderQuiz();
+  else if (state.currentTab === 'lecciones') contentEl.innerHTML = renderLecciones();
   else if (state.currentTab === 'custom') contentEl.innerHTML = renderCustom();
   else contentEl.innerHTML = renderProgress();
 
@@ -2187,6 +2797,41 @@ function attachHandlers() {
   }
   document.querySelectorAll('[data-action="delete-word"]').forEach(btn => {
     btn.addEventListener('click', () => deleteCustomWord(parseInt(btn.dataset.index, 10)));
+  });
+
+  // ── Lecciones: accordion toggle ──
+  document.querySelectorAll('[data-action="leccion-toggle"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.lesson;
+      state.leccionesOpen[id] = !state.leccionesOpen[id];
+      playSound('click');
+      render();
+    });
+  });
+
+  // ── Lecciones: mini-quiz answer ──
+  document.querySelectorAll('[data-action="leccion-choice"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.lesson;
+      const val = btn.dataset.val;
+      if (state.leccionesQuiz[id]) return; // already answered
+      const lesson = LESSONS.find(l => l.id === id);
+      if (!lesson) return;
+      const isCorrect = val === lesson.quiz.correct;
+      state.leccionesQuiz[id] = { selected: val, correct: isCorrect };
+      if (isCorrect) {
+        playSound('correct');
+        if (!state.leccionesCompleted[id]) {
+          state.leccionesCompleted[id] = true;
+          addPoints(15, '¡Lección completada! +15 XP');
+          spawnConfetti(20);
+        }
+      } else {
+        playSound('wrong');
+      }
+      saveProgress();
+      render();
+    });
   });
 }
 
