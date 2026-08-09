@@ -1328,8 +1328,7 @@ function addCustomWord(es, en, ex) {
     render();
     return;
   }
-  const exists = state.customWords.some(w => w.es.toLowerCase() === es.toLowerCase())
-    || VOCAB.some(w => w.es.toLowerCase() === es.toLowerCase());
+  const exists = state.customWords.some(w => w.es.toLowerCase() === es.toLowerCase());
   if (exists) {
     state.formError = 'Esa palabra ya está en tu lista.';
     render();
@@ -1338,6 +1337,7 @@ function addCustomWord(es, en, ex) {
   state.customWords.push({es, en, ex: ex || `${es} — ${en}`, cat: 'Mis palabras'});
   state.formError = '';
   saveProgress();
+  showXpToast('¡Palabra añadida!');
   render();
 }
 
@@ -1511,7 +1511,7 @@ function renderCustomManage() {
       `).join('');
 
   return `
-    <div class="word-form">
+    <form class="word-form" id="custom-word-form" onsubmit="return false;">
       <div class="form-title">Añadir palabra o frase</div>
       <div class="form-group">
         <label class="form-label">Español</label>
@@ -1525,9 +1525,9 @@ function renderCustomManage() {
         <label class="form-label">Ejemplo (opcional)</label>
         <input class="form-input" id="input-ex" type="text" placeholder="ej. me gusta madrugar los domingos" />
       </div>
-      <button class="form-submit" data-action="add-word">Añadir a mi lista</button>
+      <button type="submit" class="form-submit" data-action="add-word">Añadir a mi lista</button>
       ${state.formError ? `<div class="form-error">${escapeHtml(state.formError)}</div>` : ''}
-    </div>
+    </form>
     <div class="word-list-title">Tu lista (${state.customWords.length})</div>
     ${listHtml}
   `;
@@ -1698,6 +1698,7 @@ function render() {
 
 function addSwipe(el, onFlip, onLeft, onRight) {
   let sx, sy, startT;
+  el._touchHandled = false;
   el.addEventListener('touchstart', e => {
     sx = e.touches[0].clientX;
     sy = e.touches[0].clientY;
@@ -1708,8 +1709,13 @@ function addSwipe(el, onFlip, onLeft, onRight) {
     const dy = e.changedTouches[0].clientY - sy;
     const dt = Date.now() - startT;
     if (dt > 500) return; // too slow, ignore
-    if (Math.abs(dx) < 20 && Math.abs(dy) < 20) { onFlip(); return; } // tap
+    if (Math.abs(dx) < 20 && Math.abs(dy) < 20) {
+      el._touchHandled = true;
+      onFlip();
+      return;
+    }
     if (Math.abs(dx) > Math.abs(dy)) {
+      el._touchHandled = true;
       if (dx < -40 && onLeft) onLeft();   // swipe left = skip / Again
       else if (dx > 40 && onRight) onRight(); // swipe right = Easy
     }
@@ -1720,6 +1726,7 @@ function attachHandlers() {
   const flashcard = document.getElementById('flashcard');
   if (flashcard) {
     flashcard.addEventListener('click', () => {
+      if (flashcard._touchHandled) { flashcard._touchHandled = false; return; }
       state.flipped = !state.flipped;
       render();
     });
@@ -1748,6 +1755,7 @@ function attachHandlers() {
   const customFlashcard = document.getElementById('custom-flashcard');
   if (customFlashcard) {
     customFlashcard.addEventListener('click', () => {
+      if (customFlashcard._touchHandled) { customFlashcard._touchHandled = false; return; }
       state.customFlipped = !state.customFlipped;
       render();
     });
@@ -1772,9 +1780,10 @@ function attachHandlers() {
   document.querySelectorAll('[data-action="custom-subtab"]').forEach(btn => {
     btn.addEventListener('click', () => switchCustomSubTab(btn.dataset.sub));
   });
-  const addWordBtn = document.querySelector('[data-action="add-word"]');
-  if (addWordBtn) {
-    addWordBtn.addEventListener('click', () => {
+  const customForm = document.getElementById('custom-word-form');
+  if (customForm) {
+    customForm.addEventListener('submit', (e) => {
+      e.preventDefault();
       const es = document.getElementById('input-es').value;
       const en = document.getElementById('input-en').value;
       const ex = document.getElementById('input-ex').value;
