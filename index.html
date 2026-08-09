@@ -847,11 +847,6 @@ html, body { height: 100%; }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-@keyframes shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-
 @keyframes pulse {
   0%, 100% { transform: scale(1); }
   50%      { transform: scale(1.15); }
@@ -903,25 +898,6 @@ html, body { height: 100%; }
 
 /* Flashcard entrance */
 .flashcard-wrap { animation: scaleIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
-
-/* Card shimmer on front face */
-.card-front::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 18px;
-  background: linear-gradient(
-    105deg,
-    transparent 40%,
-    rgba(255,255,255,0.12) 45%,
-    rgba(255,255,255,0.18) 50%,
-    rgba(255,255,255,0.12) 55%,
-    transparent 60%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 3s ease-in-out infinite;
-  pointer-events: none;
-}
 
 /* Rate buttons stagger entrance */
 .rate-buttons { animation: slideUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both; }
