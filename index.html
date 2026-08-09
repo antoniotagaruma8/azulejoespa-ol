@@ -1840,12 +1840,10 @@ function renderQuiz() {
     <div class="quiz-header">
       <span class="quiz-score">Puntuación: ${state.quizScore.correct}/${state.quizScore.total}</span>
     </div>
-    <div class="quiz-prompt-card" style="background: ${theme.bg}; color: ${theme.text}; border: 2px solid ${theme.border}; box-shadow: 0 14px 30px -6px ${theme.border}55;">
+    <div class="quiz-prompt-card" style="background: ${theme.bg}; color: ${theme.text}; border: 2px solid ${theme.border}; box-shadow: 0 14px 30px -6px ${theme.border}55; position: relative;">
       <div class="quiz-direction" style="color: ${theme.text}; opacity: 0.85;">${directionLabel} • <span style="background: ${theme.pill}; color: ${theme.text}; padding: 3px 10px; border-radius: 12px; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.05em;">${escapeHtml(item.cat || '')}</span></div>
-      <div class="quiz-word" style="color: ${theme.text};">
-        ${escapeHtml(prompt)}
-        ${state.quizDirection === 'es-en' ? `<button class="audio-btn" style="background: rgba(255,255,255,0.7); color: ${theme.text}; border: 1px solid ${theme.border};" data-action="speak" data-text="${escapeHtml(prompt)}" title="Escuchar pronunciación">${SPEAKER_ICON}</button>` : ''}
-      </div>
+      <div class="quiz-word" style="color: ${theme.text};">${escapeHtml(prompt)}</div>
+      ${state.quizDirection === 'es-en' ? `<button class="audio-btn card-audio-btn" style="background: rgba(255,255,255,0.85); color: ${theme.text}; border: 1.5px solid ${theme.border};" data-action="speak" data-text="${escapeHtml(prompt)}" title="Escuchar pronunciación">${SPEAKER_ICON}</button>` : ''}
     </div>
     <div class="choices">${choicesHtml}</div>
     ${state.quizSelected !== null ? `<button class="next-btn" data-action="next-quiz">Siguiente palabra →</button>` : ''}
@@ -1961,9 +1959,10 @@ function renderCustomQuiz() {
     <div class="quiz-header">
       <span class="quiz-score">Puntuación: ${state.customQuizScore.correct}/${state.customQuizScore.total}</span>
     </div>
-    <div class="quiz-prompt-card" style="background: ${theme.bg}; color: ${theme.text}; border: 2px solid ${theme.border}; box-shadow: 0 14px 30px -6px ${theme.border}55;">
+    <div class="quiz-prompt-card" style="background: ${theme.bg}; color: ${theme.text}; border: 2px solid ${theme.border}; box-shadow: 0 14px 30px -6px ${theme.border}55; position: relative;">
       <div class="quiz-direction" style="color: ${theme.text}; opacity: 0.85;">${directionLabel} • <span style="background: ${theme.pill}; color: ${theme.text}; padding: 3px 10px; border-radius: 12px; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.05em;">${escapeHtml(item.cat || '')}</span></div>
       <div class="quiz-word" style="color: ${theme.text};">${escapeHtml(prompt)}</div>
+      ${state.customQuizDirection === 'es-en' ? `<button class="audio-btn card-audio-btn" style="background: rgba(255,255,255,0.85); color: ${theme.text}; border: 1.5px solid ${theme.border};" data-action="speak" data-text="${escapeHtml(prompt)}" title="Escuchar pronunciación">${SPEAKER_ICON}</button>` : ''}
     </div>
     <div class="choices">${choicesHtml}</div>
     ${state.customQuizSelected !== null ? `<button class="next-btn" data-action="next-quiz-custom">Siguiente palabra →</button>` : ''}
