@@ -1696,9 +1696,10 @@ function render() {
   attachHandlers();
 }
 
-function addSwipe(el, onFlip, onLeft, onRight) {
+let isSwiping = false;
+
+function addSwipe(el, onLeft, onRight) {
   let sx, sy, startT;
-  el._touchHandled = false;
   el.addEventListener('touchstart', e => {
     sx = e.touches[0].clientX;
     sy = e.touches[0].clientY;
@@ -1709,15 +1710,11 @@ function addSwipe(el, onFlip, onLeft, onRight) {
     const dy = e.changedTouches[0].clientY - sy;
     const dt = Date.now() - startT;
     if (dt > 500) return; // too slow, ignore
-    if (Math.abs(dx) < 20 && Math.abs(dy) < 20) {
-      el._touchHandled = true;
-      onFlip();
-      return;
-    }
-    if (Math.abs(dx) > Math.abs(dy)) {
-      el._touchHandled = true;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+      isSwiping = true;
       if (dx < -40 && onLeft) onLeft();   // swipe left = skip / Again
       else if (dx > 40 && onRight) onRight(); // swipe right = Easy
+      setTimeout(() => { isSwiping = false; }, 300);
     }
   }, {passive: true});
 }
@@ -1726,13 +1723,12 @@ function attachHandlers() {
   const flashcard = document.getElementById('flashcard');
   if (flashcard) {
     flashcard.addEventListener('click', () => {
-      if (flashcard._touchHandled) { flashcard._touchHandled = false; return; }
+      if (isSwiping) { isSwiping = false; return; }
       state.flipped = !state.flipped;
       render();
     });
     addSwipe(
       flashcard,
-      () => { state.flipped = !state.flipped; render(); },
       () => { if (state.flipped) rateCard(-1); },  // swipe left = Again
       () => { if (state.flipped) rateCard(2); }    // swipe right = Easy
     );
@@ -1755,13 +1751,12 @@ function attachHandlers() {
   const customFlashcard = document.getElementById('custom-flashcard');
   if (customFlashcard) {
     customFlashcard.addEventListener('click', () => {
-      if (customFlashcard._touchHandled) { customFlashcard._touchHandled = false; return; }
+      if (isSwiping) { isSwiping = false; return; }
       state.customFlipped = !state.customFlipped;
       render();
     });
     addSwipe(
       customFlashcard,
-      () => { state.customFlipped = !state.customFlipped; render(); },
       () => { if (state.customFlipped) rateCustomCard(-1); },
       () => { if (state.customFlipped) rateCustomCard(2); }
     );
