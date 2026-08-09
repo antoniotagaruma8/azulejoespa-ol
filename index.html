@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0E7C86">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Azulejo">
+<title>Azulejo español — 1000 palabras</title>
+<meta name="description" content="Aprende las 1000 palabras más frecuentes del español de España con tarjetas y quiz interactivo.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  --azul: #0E7C86;        /* primary teal */
+  --azul-light: #13929E;  /* lighter teal, hovers */
+  --oro: #2F6F8F;         /* secondary blue, replaces gold accents */
+  --oro-light: #63B3C7;   /* soft teal-blue accent */
+  --crema: #FFFFFF;       /* clean white background */
+  --coral: #E0663D;       /* single warm accent, used sparingly */
+  --tinta: #1B2B31;       /* near-black ink for text */
+  --verde: #0E7C86;       /* mastered = primary teal */
+  --gris: #7C8B92;        /* muted secondary text */
+  --linea: #E7EDEF;       /* hairline borders */
+  --bg-soft: #F4F8F9;     /* subtle page background */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+* { -webkit-tap-highlight-color: transparent; }
+
+.app-root {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-soft);
+  color: var(--tinta);
+  min-height: 100%;
+  width: 100%;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.header {
+  padding: 30px 24px 0;
+  background: var(--crema);
+  color: var(--tinta);
+  position: relative;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  z-index: 1;
+}
+
+.brand {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+}
+
+.brand span {
+  color: var(--azul);
+  font-weight: 500;
+}
+
+.streak-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-soft);
+  color: var(--tinta);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid var(--linea);
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--gris);
+  margin-top: 3px;
+}
+
+.tabs {
+  display: flex;
+  gap: 0;
+  margin-top: 24px;
+  position: relative;
+  z-index: 1;
+  border-bottom: 1px solid var(--linea);
+}
+
+.tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--gris);
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 10px 4px 14px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+  letter-spacing: 0.01em;
+}
+
+.tab-btn.active {
+  color: var(--azul);
+  border-bottom: 2px solid var(--azul);
+}
+
+.tab-btn:focus-visible, button:focus-visible, .choice-btn:focus-visible {
+  outline: 2px solid var(--coral);
+  outline-offset: 2px;
+}
+
+.content {
+  padding: 24px 20px 40px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* FLASHCARD MODE */
+.card-progress-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  font-size: 12px;
+  color: var(--gris);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.box-pills {
+  display: flex;
+  gap: 6px;
+}
+
+.box-pill {
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.pill-0 { background: #FBEAE3; color: var(--coral); }
+.pill-1 { background: #E6F1F3; color: var(--oro); }
+.pill-2 { background: #E1F0F1; color: var(--verde); }
+
+.flashcard-wrap {
+  perspective: 1200px;
+  margin-bottom: 20px;
+}
+
+.flashcard {
+  position: relative;
+  min-height: 260px;
+  border-radius: 18px;
+  cursor: pointer;
+  transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.flashcard.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.card-front {
+  background: var(--azul);
+  color: var(--crema);
+  box-shadow: 0 1px 2px rgba(14,124,134,0.08), 0 8px 24px rgba(14,124,134,0.18);
+}
+
+.card-back {
+  background: var(--crema);
+  border: 1px solid var(--linea);
+  transform: rotateY(180deg);
+  color: var(--tinta);
+  box-shadow: 0 1px 2px rgba(20,40,45,0.04), 0 8px 24px rgba(20,40,45,0.06);
+}
+
+.card-category {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-weight: 600;
+  opacity: 0.6;
+  margin-bottom: 14px;
+}
+
+.card-word-es {
+  font-family: 'Sora', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.card-hint {
+  font-size: 12px;
+  margin-top: 18px;
+  opacity: 0.5;
+}
+
+.card-word-en {
+  font-family: 'Sora', sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--azul);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.card-example {
+  font-size: 14px;
+  color: var(--gris);
+  line-height: 1.5;
+  max-width: 320px;
+}
+
+.card-example .es-word {
+  color: var(--coral);
+  font-weight: 600;
+  font-style: normal;
+}
+
+.rate-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.rate-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 16px 8px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.15s, filter 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-height: 56px;
+  touch-action: manipulation;
+}
+
+.rate-btn:hover { transform: translateY(-2px); filter: brightness(1.03); }
+.rate-btn:active { transform: scale(0.97); }
+
+.rate-again { background: #FBEAE3; color: #B0431F; }
+.rate-good { background: #E6F1F3; color: #235E77; }
+.rate-easy { background: #E1F0F1; color: #0B5F67; }
+
+.rate-key { font-family: 'JetBrains Mono', monospace; font-size: 10px; opacity: 0.6; }
+
+.flip-prompt {
+  text-align: center;
+  color: var(--gris);
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+/* QUIZ MODE */
+.quiz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.quiz-score {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--azul);
+  font-weight: 600;
+}
+
+.quiz-prompt-card {
+  background: var(--azul);
+  color: var(--crema);
+  border-radius: 16px;
+  padding: 30px 24px;
+  text-align: center;
+  margin-bottom: 22px;
+  position: relative;
+  box-shadow: 0 8px 24px rgba(14,124,134,0.18);
+}
+
+.quiz-direction {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.6;
+  margin-bottom: 10px;
+}
+
+.quiz-word {
+  font-family: 'Sora', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.choice-btn {
+  background: white;
+  border: 1px solid var(--linea);
+  border-radius: 12px;
+  padding: 15px 18px;
+  text-align: left;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--tinta);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.choice-btn:hover { border-color: var(--azul-light); }
+
+.choice-btn.correct {
+  background: #E1F0F1;
+  border-color: var(--verde);
+  color: #0B5F67;
+}
+
+.choice-btn.incorrect {
+  background: #FBEAE3;
+  border-color: var(--coral);
+  color: #B0431F;
+}
+
+.choice-btn.disabled { pointer-events: none; }
+
+.next-btn {
+  margin-top: 18px;
+  width: 100%;
+  background: var(--azul);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+
+/* PROGRESS MODE */
+.stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 26px;
+}
+
+.stat-box {
+  background: white;
+  border-radius: 12px;
+  padding: 14px 10px;
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(20,40,45,0.03), 0 4px 12px rgba(20,40,45,0.04);
+}
+
+.stat-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--azul);
+}
+
+.stat-label {
+  font-size: 10px;
+  color: var(--gris);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+.mosaic-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--azul);
+}
+
+.mosaic-sub {
+  font-size: 12px;
+  color: var(--gris);
+  margin-bottom: 14px;
+}
+
+.mosaic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18px, 1fr));
+  gap: 3px;
+  margin-bottom: 26px;
+}
+
+.mosaic-tile {
+  aspect-ratio: 1;
+  border-radius: 3px;
+  transition: transform 0.15s;
+}
+
+.mosaic-tile:hover { transform: scale(1.3); }
+
+.mosaic-0 { background: #E3EAEC; }
+.mosaic-1 { background: var(--coral); opacity: 0.5; }
+.mosaic-2 { background: var(--oro-light); }
+.mosaic-3 { background: var(--verde); }
+
+.legend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: var(--gris);
+  margin-bottom: 30px;
+}
+
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-dot { width: 9px; height: 9px; border-radius: 2px; }
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.category-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 2px rgba(20,40,45,0.03), 0 4px 12px rgba(20,40,45,0.04);
+}
+
+.category-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tinta);
+}
+
+.category-bar-wrap {
+  width: 90px;
+  height: 6px;
+  background: var(--bg-soft);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.category-bar-fill {
+  height: 100%;
+  background: var(--verde);
+  border-radius: 3px;
+}
+
+.reset-link {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.reset-link button {
+  background: none;
+  border: none;
+  color: var(--gris);
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+
+/* CUSTOM WORDS TAB */
+.subnav {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  background: white;
+  padding: 4px;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(20,40,45,0.03), 0 4px 12px rgba(20,40,45,0.04);
+}
+
+.subnav-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 9px 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gris);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.subnav-btn.active {
+  background: var(--azul);
+  color: white;
+}
+
+.word-form {
+  background: white;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 22px;
+  box-shadow: 0 1px 2px rgba(20,40,45,0.03), 0 4px 12px rgba(20,40,45,0.04);
+}
+
+.form-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--tinta);
+  margin-bottom: 14px;
+}
+
+.form-group {
+  margin-bottom: 12px;
+}
+
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gris);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 5px;
+}
+
+.form-input {
+  width: 100%;
+  border: 1px solid var(--linea);
+  border-radius: 9px;
+  padding: 11px 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--tinta);
+  background: var(--bg-soft);
+  transition: border-color 0.15s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--azul-light);
+  background: white;
+}
+
+.form-submit {
+  width: 100%;
+  background: var(--azul);
+  color: white;
+  border: none;
+  border-radius: 9px;
+  padding: 12px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  margin-top: 4px;
+}
+
+.form-error {
+  color: var(--coral);
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.word-list-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gris);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+}
+
+.word-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 2px rgba(20,40,45,0.03), 0 4px 12px rgba(20,40,45,0.04);
+}
+
+.word-item-text {
+  font-size: 13px;
+}
+
+.word-item-es {
+  font-weight: 600;
+  color: var(--tinta);
+}
+
+.word-item-en {
+  color: var(--gris);
+  margin-left: 6px;
+}
+
+.word-item-delete {
+  background: none;
+  border: none;
+  color: var(--coral);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-family: 'Inter', sans-serif;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--gris);
+  font-size: 13px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 30px 20px;
+  color: var(--gris);
+  font-size: 13px;
+}
+
+.session-complete {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.session-complete .big {
+  font-family: 'Sora', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--azul);
+  margin-bottom: 8px;
+}
+
+/* ═══════════════════════════════ */
+/*   ANIMATIONS & MICRO-EFFECTS   */
+/* ═══════════════════════════════ */
+
+/* Entrance: slide up + fade */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes popIn {
+  0%   { opacity: 0; transform: scale(0.4); }
+  70%  { transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes bounceIn {
+  0%   { opacity: 0; transform: translateY(20px) scale(0.9); }
+  60%  { transform: translateY(-4px) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.15); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-6px); }
+  40%      { transform: translateX(6px); }
+  60%      { transform: translateX(-4px); }
+  80%      { transform: translateX(4px); }
+}
+
+@keyframes confettiFall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(120vh) rotate(720deg); opacity: 0; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(14,124,134,0); }
+  50%      { box-shadow: 0 0 20px 6px rgba(14,124,134,0.25); }
+}
+
+@keyframes xpFloat {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  70%  { opacity: 1; transform: translateY(-40px) scale(1.1); }
+  100% { opacity: 0; transform: translateY(-60px) scale(0.8); }
+}
+
+@keyframes mosaicWave {
+  from { opacity: 0; transform: scale(0); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes progressFill {
+  from { width: 0; }
+}
+
+@keyframes streakFire {
+  0%   { transform: scale(1); filter: brightness(1); }
+  25%  { transform: scale(1.3); filter: brightness(1.3); }
+  50%  { transform: scale(1.1) rotate(5deg); filter: brightness(1.15); }
+  75%  { transform: scale(1.2) rotate(-3deg); filter: brightness(1.25); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+/* Apply entrance to content sections */
+.content > * { animation: slideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Flashcard entrance */
+.flashcard-wrap { animation: scaleIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Card shimmer on front face */
+.card-front::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255,255,255,0.12) 45%,
+    rgba(255,255,255,0.18) 50%,
+    rgba(255,255,255,0.12) 55%,
+    transparent 60%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Rate buttons stagger entrance */
+.rate-buttons { animation: slideUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both; }
+.rate-btn:nth-child(1) { animation: bounceIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both; }
+.rate-btn:nth-child(2) { animation: bounceIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both; }
+.rate-btn:nth-child(3) { animation: bounceIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.19s both; }
+
+/* Quiz choice stagger */
+.choice-btn:nth-child(1) { animation: slideIn 0.3s ease 0.05s both; }
+.choice-btn:nth-child(2) { animation: slideIn 0.3s ease 0.1s both; }
+.choice-btn:nth-child(3) { animation: slideIn 0.3s ease 0.15s both; }
+.choice-btn:nth-child(4) { animation: slideIn 0.3s ease 0.2s both; }
+
+/* Correct answer glow */
+.choice-btn.correct { animation: glowPulse 0.6s ease 1; }
+
+/* Wrong answer shake */
+.choice-btn.incorrect { animation: shake 0.4s ease; }
+
+/* Stat boxes stagger */
+.stat-box:nth-child(1) { animation: popIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both; }
+.stat-box:nth-child(2) { animation: popIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both; }
+.stat-box:nth-child(3) { animation: popIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.19s both; }
+
+/* Category bar fill animation */
+.category-bar-fill { animation: progressFill 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Streak fire class */
+.streak-badge.fire { animation: streakFire 0.6s ease; }
+
+/* Pill pop on new card */
+.box-pill { animation: popIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Quiz prompt card entrance */
+.quiz-prompt-card { animation: scaleIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Next button slide up */
+.next-btn { animation: bounceIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both; }
+
+/* Tab transition */
+.tab-btn { transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.15s; }
+.tab-btn:active { transform: scale(0.95); }
+
+/* Flashcard hover lift on desktop */
+@media (hover: hover) {
+  .flashcard:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(14,124,134,0.22); }
+  .flashcard.flipped:hover { transform: rotateY(180deg) translateY(-4px); }
+}
+
+/* XP Toast */
+.xp-toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Sora', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--azul);
+  pointer-events: none;
+  z-index: 1000;
+  animation: xpFloat 1s ease-out forwards;
+  text-shadow: 0 2px 8px rgba(14,124,134,0.3);
+}
+
+/* Confetti piece */
+.confetti {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  z-index: 999;
+  pointer-events: none;
+  animation: confettiFall 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Subnav smooth */
+.subnav-btn { transition: all 0.2s ease; }
+.subnav-btn:active { transform: scale(0.95); }
+
+/* Word items stagger */
+.word-item { animation: slideIn 0.3s ease both; }
+
+/* Card slide-out */
+.flashcard.slide-out-left {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform: translateX(-120%) rotate(-8deg) !important;
+  opacity: 0;
+}
+.flashcard.slide-out-right {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform: translateX(120%) rotate(8deg) !important;
+  opacity: 0;
+}
+
+/* Form submit hover */
+.form-submit { transition: transform 0.15s, filter 0.15s, box-shadow 0.15s; }
+.form-submit:hover { transform: translateY(-1px); filter: brightness(1.05); box-shadow: 0 4px 14px rgba(14,124,134,0.25); }
+.form-submit:active { transform: scale(0.97); }
+
+/* Next button hover */
+.next-btn { transition: transform 0.15s, filter 0.15s, box-shadow 0.15s; }
+.next-btn:hover { transform: translateY(-1px); filter: brightness(1.05); box-shadow: 0 4px 14px rgba(14,124,134,0.25); }
+.next-btn:active { transform: scale(0.97); }
+
+/* Mosaic tooltip on mobile */
+.mosaic-tile { transition: transform 0.15s ease, box-shadow 0.15s ease; cursor: default; }
+
+/* Loading spinner */
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-state::before {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin: 0 auto 16px;
+  border: 3px solid var(--linea);
+  border-top-color: var(--azul);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@media (max-width: 480px) {
+  .content { padding: 16px 14px 100px; }
+  .header { padding: 20px 16px 0; }
+  .card-word-es { font-size: clamp(22px, 7vw, 32px); }
+  .rate-btn { font-size: 13px; padding: 14px 6px; }
+  .choice-btn { padding: 14px 14px; font-size: 14px; }
+  .quiz-word { font-size: clamp(20px, 6vw, 28px); }
+  .stat-num { font-size: 20px; }
+  .stats-row { gap: 8px; }
+}
+
+@media (max-width: 380px) {
+  .card-word-es { font-size: 22px; }
+  .rate-btn { font-size: 12px; padding: 12px 4px; }
+  .stat-num { font-size: 17px; }
+  .tab-btn { font-size: 11px; padding: 10px 2px 14px; }
+}
+
+/* TABLET (640px+) */
+@media (min-width: 640px) {
+  .app-root {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: auto 1fr;
+    min-height: 100vh;
+  }
+  .tile-strip { grid-column: 1 / -1; grid-row: 1; }
+  .header {
+    grid-column: 1; grid-row: 2;
+    padding: 28px 20px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    border-right: 1px solid var(--linea);
+    border-bottom: none;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .header-top {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 32px;
+  }
+  .streak-badge { align-self: flex-start; }
+  .tabs {
+    flex-direction: column;
+    margin-top: 0;
+    border-bottom: none;
+    gap: 4px;
+  }
+  .tab-btn {
+    text-align: left;
+    padding: 11px 16px;
+    border-bottom: none;
+    border-left: 3px solid transparent;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: color 0.2s, background 0.2s, border-color 0.2s;
+  }
+  .tab-btn:hover { background: var(--bg-soft); color: var(--tinta); }
+  .tab-btn.active {
+    color: var(--azul);
+    background: #EAF4F5;
+    border-left: 3px solid var(--azul);
+    border-bottom: none;
+  }
+  .content-area { grid-column: 2; grid-row: 2; overflow-y: auto; }
+  .content { max-width: 560px; padding: 32px 32px 60px; }
+  .flashcard { min-height: 300px; }
+  .card-word-es { font-size: 36px; }
+  .quiz-word { font-size: 32px; }
+  .brand { font-size: 20px; }
+  .subtitle { font-size: 12px; }
+  .category-bar-wrap { width: 120px; }
+}
+
+/* DESKTOP (900px+) */
+@media (min-width: 900px) {
+  .app-root { grid-template-columns: 220px 1fr; }
+  .header { padding: 36px 24px 32px; }
+  .content { max-width: 640px; padding: 40px 48px 80px; }
+  .flashcard { min-height: 320px; }
+  .card-word-es { font-size: 40px; }
+  .card-word-en { font-size: 30px; }
+  .quiz-word { font-size: 34px; }
+  .stats-row { gap: 14px; }
+  .stat-box { padding: 18px 14px; }
+  .stat-num { font-size: 26px; }
+  .rate-btn { padding: 18px 12px; font-size: 15px; min-height: 64px; }
+  .choice-btn { padding: 18px 22px; font-size: 16px; }
+  .next-btn { padding: 16px; font-size: 15px; }
+  .category-bar-wrap { width: 160px; }
+  .category-name { font-size: 14px; }
+}
+
+/* WIDE (1200px+) */
+@media (min-width: 1200px) {
+  .app-root { grid-template-columns: 240px 1fr; }
+  .content { max-width: 720px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-root" id="app-root">
+  <div class="tile-strip"></div>
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <div class="brand">Azulejo<span>español</span></div>
+        <div class="subtitle">Las 1000 palabras más usadas</div>
+      </div>
+      <div class="streak-badge" id="streak-badge">🔥 0</div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="cards">Tarjetas</button>
+      <button class="tab-btn" data-tab="quiz">Quiz</button>
+      <button class="tab-btn" data-tab="custom">Mis palabras</button>
+      <button class="tab-btn" data-tab="progress">Progreso</button>
+    </div>
+  </div>
+  <div class="content-area">
+    <div class="content" id="content">
+      <div class="loading-state">Cargando tu progreso…</div>
+    </div>
+  </div>
+</div>
+
+<script src="vocab.js"></script>
+<script>
+(function() {
+
+const STORAGE_KEY = 'progress';
+
+let state = {
+  loaded: false,
+  progress: {}, // word -> {box: 0-3, lastReview: timestamp}
+  streak: 0,
+  lastActiveDate: null,
+  quizScore: {correct: 0, total: 0},
+  currentTab: 'cards',
+  currentCard: null,
+  flipped: false,
+  quizItem: null,
+  quizChoices: [],
+  quizSelected: null,
+  sessionCount: 0,
+  customWords: [],
+  customSubTab: 'manage',
+  customCard: null,
+  customFlipped: false,
+  customQuizItem: null,
+  customQuizChoices: [],
+  customQuizSelected: null,
+  customQuizScore: {correct: 0, total: 0},
+  customSessionCount: 0,
+  formError: '',
+};
+
+function todayStr() {
+  return new Date().toISOString().slice(0,10);
+}
+
+function daysBetween(a, b) {
+  return Math.round((new Date(b) - new Date(a)) / 86400000);
+}
+
+async function loadProgress() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      state.progress = data.progress || {};
+      state.streak = data.streak || 0;
+      state.lastActiveDate = data.lastActiveDate || null;
+      state.quizScore = data.quizScore || {correct:0, total:0};
+      state.customWords = data.customWords || [];
+      state.customQuizScore = data.customQuizScore || {correct:0, total:0};
+    }
+  } catch (e) {
+    console.log('No existing progress found, starting fresh.');
+  }
+
+  // update streak
+  const today = todayStr();
+  if (state.lastActiveDate !== today) {
+    if (state.lastActiveDate && daysBetween(state.lastActiveDate, today) === 1) {
+      state.streak += 1;
+    } else if (!state.lastActiveDate || daysBetween(state.lastActiveDate, today) > 1) {
+      state.streak = 1;
+    } else {
+      state.streak = state.streak || 1;
+    }
+    state.lastActiveDate = today;
+    await saveProgress();
+  }
+
+  state.loaded = true;
+  render();
+}
+
+async function saveProgress() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      progress: state.progress,
+      streak: state.streak,
+      lastActiveDate: state.lastActiveDate,
+      quizScore: state.quizScore,
+      customWords: state.customWords,
+      customQuizScore: state.customQuizScore,
+    }));
+  } catch (e) {
+    console.error('Failed to save progress', e);
+  }
+}
+
+function getBox(word) {
+  return (state.progress[word] && state.progress[word].box) || 0;
+}
+
+function pickCardFrom(list) {
+  // weighted toward lower boxes (due for review)
+  const weights = list.map(v => {
+    const box = getBox(v.es);
+    return box === 0 ? 5 : box === 1 ? 3 : box === 2 ? 1.5 : 0.5;
+  });
+  const total = weights.reduce((a,b) => a+b, 0);
+  let r = Math.random() * total;
+  for (let i = 0; i < list.length; i++) {
+    r -= weights[i];
+    if (r <= 0) return list[i];
+  }
+  return list[0];
+}
+
+function pickCard() {
+  return pickCardFrom(VOCAB);
+}
+
+function showXpToast(text) {
+  const el = document.createElement('div');
+  el.className = 'xp-toast';
+  el.textContent = text;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1100);
+}
+
+function spawnConfetti(count) {
+  const colors = ['#0E7C86','#E0663D','#63B3C7','#2F6F8F','#FFD700','#FF6B6B','#4ECDC4','#45B7D1'];
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti';
+    el.style.left = (Math.random() * 100) + 'vw';
+    el.style.top = '-10px';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.width = (6 + Math.random() * 6) + 'px';
+    el.style.height = (6 + Math.random() * 6) + 'px';
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    el.style.animationDuration = (1.2 + Math.random() * 1.2) + 's';
+    el.style.animationDelay = (Math.random() * 0.4) + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+}
+
+function fireStreak() {
+  const badge = document.getElementById('streak-badge');
+  if (badge) {
+    badge.classList.remove('fire');
+    void badge.offsetWidth; // reflow
+    badge.classList.add('fire');
+    setTimeout(() => badge.classList.remove('fire'), 700);
+  }
+}
+
+function animateCardOut(direction, callback) {
+  const card = document.getElementById('flashcard');
+  if (!card) { callback(); return; }
+  const cls = direction === 'left' ? 'slide-out-left' : 'slide-out-right';
+  card.classList.add(cls);
+  setTimeout(callback, 300);
+}
+
+function rateCard(delta) {
+  const word = state.currentCard.es;
+  const cur = getBox(word);
+  let next = cur + delta;
+  if (next < 0) next = 0;
+  if (next > 3) next = 3;
+  state.progress[word] = {box: next, lastReview: Date.now()};
+  state.sessionCount++;
+  saveProgress();
+
+  // XP toast
+  const xp = delta <= 0 ? '+5 XP' : delta === 1 ? '+10 XP' : '+20 XP';
+  showXpToast(xp);
+
+  // Mastered confetti!
+  if (next === 3 && cur < 3) {
+    spawnConfetti(30);
+    fireStreak();
+  }
+
+  // Slide card out then show next
+  const dir = delta <= 0 ? 'left' : 'right';
+  animateCardOut(dir, () => {
+    state.currentCard = pickCard();
+    state.flipped = false;
+    render();
+  });
+}
+
+function buildQuizItem(list, fallbackPool) {
+  const item = pickCardFrom(list);
+  const direction = Math.random() > 0.5 ? 'es-en' : 'en-es';
+  // wrong-answer pool: prefer the same list, top up from fallback if too small
+  let wrongPool = list.filter(v => v.es !== item.es);
+  if (wrongPool.length < 3 && fallbackPool) {
+    const extra = fallbackPool.filter(v => v.es !== item.es && !wrongPool.some(w => w.es === v.es));
+    wrongPool = wrongPool.concat(extra);
+  }
+  const maxWrongs = Math.min(3, wrongPool.length);
+  const wrongs = [];
+  const usedIdx = new Set();
+  while (wrongs.length < maxWrongs) {
+    const idx = Math.floor(Math.random() * wrongPool.length);
+    if (!usedIdx.has(idx)) {
+      usedIdx.add(idx);
+      wrongs.push(wrongPool[idx]);
+    }
+  }
+  const correctVal = direction === 'es-en' ? item.en : item.es;
+  const choiceVals = [correctVal, ...wrongs.map(w => direction === 'es-en' ? w.en : w.es)];
+  for (let i = choiceVals.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i+1));
+    [choiceVals[i], choiceVals[j]] = [choiceVals[j], choiceVals[i]];
+  }
+  return {item, direction, choiceVals, correctVal};
+}
+
+function pickQuizItem() {
+  const q = buildQuizItem(VOCAB, null);
+  state.quizItem = q.item;
+  state.quizDirection = q.direction;
+  state.quizChoices = q.choiceVals;
+  state.quizCorrectVal = q.correctVal;
+  state.quizSelected = null;
+}
+
+function selectChoice(val) {
+  if (state.quizSelected !== null) return;
+  state.quizSelected = val;
+  const isCorrect = val === state.quizCorrectVal;
+  const word = state.quizItem.es;
+  const cur = getBox(word);
+  const next = isCorrect ? Math.min(cur+1, 3) : Math.max(cur-1, 0);
+  state.progress[word] = {box: next, lastReview: Date.now()};
+  state.quizScore.total++;
+  if (isCorrect) {
+    state.quizScore.correct++;
+    showXpToast('¡Correcto! +15 XP');
+    spawnConfetti(20);
+    if (next === 3 && cur < 3) fireStreak();
+  } else {
+    showXpToast('Casi… +3 XP');
+  }
+  saveProgress();
+  render();
+}
+
+function nextQuiz() {
+  pickQuizItem();
+  render();
+}
+
+function resetProgress() {
+  if (!confirm('¿Borrar todo tu progreso? Esta acción no se puede deshacer.')) return;
+  state.progress = {};
+  state.quizScore = {correct: 0, total: 0};
+  saveProgress();
+  state.currentCard = pickCard();
+  state.flipped = false;
+  render();
+}
+
+function switchTab(tab) {
+  state.currentTab = tab;
+  if (tab === 'cards' && !state.currentCard) {
+    state.currentCard = pickCard();
+    state.flipped = false;
+  }
+  if (tab === 'quiz' && !state.quizItem) {
+    pickQuizItem();
+  }
+  if (tab === 'custom') {
+    if (state.customWords.length === 0) state.customSubTab = 'manage';
+  }
+  render();
+}
+
+function switchCustomSubTab(sub) {
+  state.customSubTab = sub;
+  state.formError = '';
+  if (sub === 'cards' && state.customWords.length > 0) {
+    state.customCard = pickCardFrom(state.customWords);
+    state.customFlipped = false;
+  }
+  if (sub === 'quiz' && state.customWords.length > 0) {
+    pickCustomQuizItem();
+  }
+  render();
+}
+
+function addCustomWord(es, en, ex) {
+  es = (es || '').trim();
+  en = (en || '').trim();
+  ex = (ex || '').trim();
+  if (!es || !en) {
+    state.formError = 'Escribe la palabra en español y su traducción.';
+    render();
+    return;
+  }
+  const exists = state.customWords.some(w => w.es.toLowerCase() === es.toLowerCase())
+    || VOCAB.some(w => w.es.toLowerCase() === es.toLowerCase());
+  if (exists) {
+    state.formError = 'Esa palabra ya está en tu lista.';
+    render();
+    return;
+  }
+  state.customWords.push({es, en, ex: ex || `${es} — ${en}`, cat: 'Mis palabras'});
+  state.formError = '';
+  saveProgress();
+  render();
+}
+
+function deleteCustomWord(index) {
+  const word = state.customWords[index];
+  if (!word) return;
+  state.customWords.splice(index, 1);
+  delete state.progress[word.es];
+  if (state.customCard && state.customCard.es === word.es) state.customCard = null;
+  saveProgress();
+  render();
+}
+
+function rateCustomCard(delta) {
+  const word = state.customCard.es;
+  const cur = getBox(word);
+  let next = cur + delta;
+  if (next < 0) next = 0;
+  if (next > 3) next = 3;
+  state.progress[word] = {box: next, lastReview: Date.now()};
+  state.customSessionCount++;
+  saveProgress();
+
+  const xp = delta <= 0 ? '+5 XP' : delta === 1 ? '+10 XP' : '+20 XP';
+  showXpToast(xp);
+  if (next === 3 && cur < 3) { spawnConfetti(30); fireStreak(); }
+
+  const dir = delta <= 0 ? 'left' : 'right';
+  const card = document.getElementById('custom-flashcard');
+  if (card) {
+    const cls = dir === 'left' ? 'slide-out-left' : 'slide-out-right';
+    card.classList.add(cls);
+    setTimeout(() => {
+      state.customCard = pickCardFrom(state.customWords);
+      state.customFlipped = false;
+      render();
+    }, 300);
+  } else {
+    state.customCard = pickCardFrom(state.customWords);
+    state.customFlipped = false;
+    render();
+  }
+}
+
+function pickCustomQuizItem() {
+  const q = buildQuizItem(state.customWords, VOCAB);
+  state.customQuizItem = q.item;
+  state.customQuizDirection = q.direction;
+  state.customQuizChoices = q.choiceVals;
+  state.customQuizCorrectVal = q.correctVal;
+  state.customQuizSelected = null;
+}
+
+function selectCustomChoice(val) {
+  if (state.customQuizSelected !== null) return;
+  state.customQuizSelected = val;
+  const isCorrect = val === state.customQuizCorrectVal;
+  const word = state.customQuizItem.es;
+  const cur = getBox(word);
+  const next = isCorrect ? Math.min(cur+1, 3) : Math.max(cur-1, 0);
+  state.progress[word] = {box: next, lastReview: Date.now()};
+  state.customQuizScore.total++;
+  if (isCorrect) {
+    state.customQuizScore.correct++;
+    showXpToast('¡Correcto! +15 XP');
+    spawnConfetti(20);
+    if (next === 3 && cur < 3) fireStreak();
+  } else {
+    showXpToast('Casi… +3 XP');
+  }
+  saveProgress();
+  render();
+}
+
+function nextCustomQuiz() {
+  pickCustomQuizItem();
+  render();
+}
+
+function escapeHtml(str) {
+  return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function formatExample(ex) {
+  const escaped = escapeHtml(ex);
+  return escaped.replace(/__(.+?)__/g, '<span class="es-word">$1</span>');
+}
+
+function renderCards() {
+  if (!state.currentCard) state.currentCard = pickCard();
+  const c = state.currentCard;
+  const box = getBox(c.es);
+  const boxLabel = box === 0 ? 'Nueva' : box === 1 ? 'Aprendiendo' : box === 2 ? 'Repasando' : 'Dominada';
+  const pillClass = box <= 1 ? 'pill-0' : box === 2 ? 'pill-1' : 'pill-2';
+
+  return `
+    <div class="card-progress-row">
+      <span>Sesión: ${state.sessionCount} tarjetas</span>
+      <span class="box-pills"><span class="box-pill ${pillClass}">${boxLabel}</span></span>
+    </div>
+    <div class="flashcard-wrap">
+      <div class="flashcard ${state.flipped ? 'flipped' : ''}" id="flashcard">
+        <div class="card-face card-front">
+          <div class="card-category">${escapeHtml(c.cat)}</div>
+          <div class="card-word-es">${escapeHtml(c.es)}</div>
+          <div class="card-hint">toca para voltear · desliza para puntuar</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-category">Traducción</div>
+          <div class="card-word-en">${escapeHtml(c.en)}</div>
+          <div class="card-example">${formatExample(c.ex)}</div>
+        </div>
+      </div>
+    </div>
+    ${state.flipped ? `
+      <div class="rate-buttons">
+        <button class="rate-btn rate-again" data-action="rate" data-delta="-1">
+          <span>Otra vez</span><span class="rate-key">difícil</span>
+        </button>
+        <button class="rate-btn rate-good" data-action="rate" data-delta="1">
+          <span>Bien</span><span class="rate-key">normal</span>
+        </button>
+        <button class="rate-btn rate-easy" data-action="rate" data-delta="2">
+          <span>Fácil</span><span class="rate-key">dominado</span>
+        </button>
+      </div>
+    ` : `<div class="flip-prompt">Piensa en la traducción, luego toca la tarjeta</div>`}
+  `;
+}
+
+function renderQuiz() {
+  if (!state.quizItem) pickQuizItem();
+  const item = state.quizItem;
+  const prompt = state.quizDirection === 'es-en' ? item.es : item.en;
+  const directionLabel = state.quizDirection === 'es-en' ? 'Español → Inglés' : 'Inglés → Español';
+
+  const choicesHtml = state.quizChoices.map(choice => {
+    let cls = 'choice-btn';
+    if (state.quizSelected !== null) {
+      cls += ' disabled';
+      if (choice === state.quizCorrectVal) cls += ' correct';
+      else if (choice === state.quizSelected) cls += ' incorrect';
+    }
+    return `<button class="${cls}" data-action="choice" data-val="${escapeHtml(choice)}">${escapeHtml(choice)}</button>`;
+  }).join('');
+
+  return `
+    <div class="quiz-header">
+      <span class="quiz-score">Puntuación: ${state.quizScore.correct}/${state.quizScore.total}</span>
+    </div>
+    <div class="quiz-prompt-card">
+      <div class="quiz-direction">${directionLabel}</div>
+      <div class="quiz-word">${escapeHtml(prompt)}</div>
+    </div>
+    <div class="choices">${choicesHtml}</div>
+    ${state.quizSelected !== null ? `<button class="next-btn" data-action="next-quiz">Siguiente palabra →</button>` : ''}
+  `;
+}
+
+function renderCustomManage() {
+  const listHtml = state.customWords.length === 0
+    ? `<div class="empty-state">Aún no has añadido palabras. Escribe una arriba para empezar a practicarla en Tarjetas o Quiz.</div>`
+    : state.customWords.map((w, i) => `
+        <div class="word-item">
+          <div class="word-item-text">
+            <span class="word-item-es">${escapeHtml(w.es)}</span>
+            <span class="word-item-en">${escapeHtml(w.en)}</span>
+          </div>
+          <button class="word-item-delete" data-action="delete-word" data-index="${i}">Eliminar</button>
+        </div>
+      `).join('');
+
+  return `
+    <div class="word-form">
+      <div class="form-title">Añadir palabra o frase</div>
+      <div class="form-group">
+        <label class="form-label">Español</label>
+        <input class="form-input" id="input-es" type="text" placeholder="ej. madrugar" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Traducción (inglés)</label>
+        <input class="form-input" id="input-en" type="text" placeholder="ej. to wake up early" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ejemplo (opcional)</label>
+        <input class="form-input" id="input-ex" type="text" placeholder="ej. me gusta madrugar los domingos" />
+      </div>
+      <button class="form-submit" data-action="add-word">Añadir a mi lista</button>
+      ${state.formError ? `<div class="form-error">${escapeHtml(state.formError)}</div>` : ''}
+    </div>
+    <div class="word-list-title">Tu lista (${state.customWords.length})</div>
+    ${listHtml}
+  `;
+}
+
+function renderCustomCards() {
+  if (state.customWords.length === 0) {
+    return `<div class="empty-state">Añade palabras primero en la pestaña "Añadir" para poder practicarlas aquí.</div>`;
+  }
+  if (!state.customCard) state.customCard = pickCardFrom(state.customWords);
+  const c = state.customCard;
+  const box = getBox(c.es);
+  const boxLabel = box === 0 ? 'Nueva' : box === 1 ? 'Aprendiendo' : box === 2 ? 'Repasando' : 'Dominada';
+  const pillClass = box <= 1 ? 'pill-0' : box === 2 ? 'pill-1' : 'pill-2';
+
+  return `
+    <div class="card-progress-row">
+      <span>Sesión: ${state.customSessionCount} tarjetas</span>
+      <span class="box-pills"><span class="box-pill ${pillClass}">${boxLabel}</span></span>
+    </div>
+    <div class="flashcard-wrap">
+      <div class="flashcard ${state.customFlipped ? 'flipped' : ''}" id="custom-flashcard">
+        <div class="card-face card-front">
+          <div class="card-category">${escapeHtml(c.cat)}</div>
+          <div class="card-word-es">${escapeHtml(c.es)}</div>
+          <div class="card-hint">toca para voltear</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-category">Traducción</div>
+          <div class="card-word-en">${escapeHtml(c.en)}</div>
+          <div class="card-example">${formatExample(c.ex)}</div>
+        </div>
+      </div>
+    </div>
+    ${state.customFlipped ? `
+      <div class="rate-buttons">
+        <button class="rate-btn rate-again" data-action="rate-custom" data-delta="-1">
+          <span>Otra vez</span><span class="rate-key">difícil</span>
+        </button>
+        <button class="rate-btn rate-good" data-action="rate-custom" data-delta="1">
+          <span>Bien</span><span class="rate-key">normal</span>
+        </button>
+        <button class="rate-btn rate-easy" data-action="rate-custom" data-delta="2">
+          <span>Fácil</span><span class="rate-key">dominado</span>
+        </button>
+      </div>
+    ` : `<div class="flip-prompt">Piensa en la traducción, luego toca la tarjeta</div>`}
+  `;
+}
+
+function renderCustomQuiz() {
+  if (state.customWords.length === 0) {
+    return `<div class="empty-state">Añade palabras primero en la pestaña "Añadir" para poder hacer un quiz aquí.</div>`;
+  }
+  if (!state.customQuizItem) pickCustomQuizItem();
+  const item = state.customQuizItem;
+  const prompt = state.customQuizDirection === 'es-en' ? item.es : item.en;
+  const directionLabel = state.customQuizDirection === 'es-en' ? 'Español → Inglés' : 'Inglés → Español';
+
+  const choicesHtml = state.customQuizChoices.map(choice => {
+    let cls = 'choice-btn';
+    if (state.customQuizSelected !== null) {
+      cls += ' disabled';
+      if (choice === state.customQuizCorrectVal) cls += ' correct';
+      else if (choice === state.customQuizSelected) cls += ' incorrect';
+    }
+    return `<button class="${cls}" data-action="choice-custom" data-val="${escapeHtml(choice)}">${escapeHtml(choice)}</button>`;
+  }).join('');
+
+  return `
+    <div class="quiz-header">
+      <span class="quiz-score">Puntuación: ${state.customQuizScore.correct}/${state.customQuizScore.total}</span>
+    </div>
+    <div class="quiz-prompt-card">
+      <div class="quiz-direction">${directionLabel}</div>
+      <div class="quiz-word">${escapeHtml(prompt)}</div>
+    </div>
+    <div class="choices">${choicesHtml}</div>
+    ${state.customQuizSelected !== null ? `<button class="next-btn" data-action="next-quiz-custom">Siguiente palabra →</button>` : ''}
+  `;
+}
+
+function renderCustom() {
+  const subnav = `
+    <div class="subnav">
+      <button class="subnav-btn ${state.customSubTab === 'manage' ? 'active' : ''}" data-action="custom-subtab" data-sub="manage">Añadir</button>
+      <button class="subnav-btn ${state.customSubTab === 'cards' ? 'active' : ''}" data-action="custom-subtab" data-sub="cards">Tarjetas</button>
+      <button class="subnav-btn ${state.customSubTab === 'quiz' ? 'active' : ''}" data-action="custom-subtab" data-sub="quiz">Quiz</button>
+    </div>
+  `;
+  let body;
+  if (state.customSubTab === 'cards') body = renderCustomCards();
+  else if (state.customSubTab === 'quiz') body = renderCustomQuiz();
+  else body = renderCustomManage();
+  return subnav + body;
+}
+
+function renderProgress() {
+  const total = VOCAB.length;
+  const mastered = VOCAB.filter(v => getBox(v.es) === 3).length;
+  const learning = VOCAB.filter(v => { const b = getBox(v.es); return b === 1 || b === 2; }).length;
+  const untouched = total - mastered - learning;
+
+  const mosaicHtml = VOCAB.map(v => {
+    const box = getBox(v.es);
+    return `<div class="mosaic-tile mosaic-${box}" title="${escapeHtml(v.es)} — ${escapeHtml(v.en)}"></div>`;
+  }).join('');
+
+  const categories = [...new Set(VOCAB.map(v => v.cat))];
+  const categoryRows = categories.map(cat => {
+    const words = VOCAB.filter(v => v.cat === cat);
+    const masteredCount = words.filter(v => getBox(v.es) === 3).length;
+    const pct = Math.round((masteredCount / words.length) * 100);
+    return `
+      <div class="category-row">
+        <span class="category-name">${escapeHtml(cat)}</span>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="category-bar-wrap"><div class="category-bar-fill" style="width:${pct}%"></div></div>
+          <span style="font-size:11px; color:var(--gris); font-family:'JetBrains Mono',monospace;">${masteredCount}/${words.length}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num">${mastered}</div><div class="stat-label">Dominadas</div></div>
+      <div class="stat-box"><div class="stat-num">${learning}</div><div class="stat-label">Aprendiendo</div></div>
+      <div class="stat-box"><div class="stat-num">${untouched}</div><div class="stat-label">Nuevas</div></div>
+    </div>
+    <div class="mosaic-title">Tu mosaico de progreso</div>
+    <div class="mosaic-sub">Cada azulejo es una palabra. Pasa el cursor para ver cuál.</div>
+    <div class="mosaic-grid">${mosaicHtml}</div>
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot mosaic-0"></span>Nueva</div>
+      <div class="legend-item"><span class="legend-dot mosaic-1"></span>Aprendiendo</div>
+      <div class="legend-item"><span class="legend-dot mosaic-2"></span>Repasando</div>
+      <div class="legend-item"><span class="legend-dot mosaic-3"></span>Dominada</div>
+    </div>
+    <div class="mosaic-title" style="margin-top:6px;">Por categoría</div>
+    <div class="mosaic-sub">Tu dominio en cada grupo de palabras</div>
+    <div class="category-list">${categoryRows}</div>
+    <div class="reset-link"><button data-action="reset">Borrar todo el progreso</button></div>
+  `;
+}
+
+function render() {
+  const contentEl = document.getElementById('content');
+  const streakEl = document.getElementById('streak-badge');
+  if (!state.loaded) {
+    contentEl.innerHTML = '<div class="loading-state">Cargando tu progreso…</div>';
+    return;
+  }
+
+  streakEl.textContent = `🔥 ${state.streak}`;
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === state.currentTab);
+  });
+
+  if (state.currentTab === 'cards') contentEl.innerHTML = renderCards();
+  else if (state.currentTab === 'quiz') contentEl.innerHTML = renderQuiz();
+  else if (state.currentTab === 'custom') contentEl.innerHTML = renderCustom();
+  else contentEl.innerHTML = renderProgress();
+
+  attachHandlers();
+}
+
+function addSwipe(el, onFlip, onLeft, onRight) {
+  let sx, sy, startT;
+  el.addEventListener('touchstart', e => {
+    sx = e.touches[0].clientX;
+    sy = e.touches[0].clientY;
+    startT = Date.now();
+  }, {passive: true});
+  el.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    const dt = Date.now() - startT;
+    if (dt > 500) return; // too slow, ignore
+    if (Math.abs(dx) < 20 && Math.abs(dy) < 20) { onFlip(); return; } // tap
+    if (Math.abs(dx) > Math.abs(dy)) {
+      if (dx < -40 && onLeft) onLeft();   // swipe left = skip / Again
+      else if (dx > 40 && onRight) onRight(); // swipe right = Easy
+    }
+  }, {passive: true});
+}
+
+function attachHandlers() {
+  const flashcard = document.getElementById('flashcard');
+  if (flashcard) {
+    flashcard.addEventListener('click', () => {
+      state.flipped = !state.flipped;
+      render();
+    });
+    addSwipe(
+      flashcard,
+      () => { state.flipped = !state.flipped; render(); },
+      () => { if (state.flipped) rateCard(-1); },  // swipe left = Again
+      () => { if (state.flipped) rateCard(2); }    // swipe right = Easy
+    );
+  }
+  document.querySelectorAll('[data-action="rate"]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      rateCard(parseInt(btn.dataset.delta, 10));
+    });
+  });
+  document.querySelectorAll('[data-action="choice"]').forEach(btn => {
+    btn.addEventListener('click', () => selectChoice(btn.dataset.val));
+  });
+  const nextBtn = document.querySelector('[data-action="next-quiz"]');
+  if (nextBtn) nextBtn.addEventListener('click', nextQuiz);
+  const resetBtn = document.querySelector('[data-action="reset"]');
+  if (resetBtn) resetBtn.addEventListener('click', resetProgress);
+
+  // custom-words tab
+  const customFlashcard = document.getElementById('custom-flashcard');
+  if (customFlashcard) {
+    customFlashcard.addEventListener('click', () => {
+      state.customFlipped = !state.customFlipped;
+      render();
+    });
+    addSwipe(
+      customFlashcard,
+      () => { state.customFlipped = !state.customFlipped; render(); },
+      () => { if (state.customFlipped) rateCustomCard(-1); },
+      () => { if (state.customFlipped) rateCustomCard(2); }
+    );
+  }
+  document.querySelectorAll('[data-action="rate-custom"]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      rateCustomCard(parseInt(btn.dataset.delta, 10));
+    });
+  });
+  document.querySelectorAll('[data-action="choice-custom"]').forEach(btn => {
+    btn.addEventListener('click', () => selectCustomChoice(btn.dataset.val));
+  });
+  const nextCustomBtn = document.querySelector('[data-action="next-quiz-custom"]');
+  if (nextCustomBtn) nextCustomBtn.addEventListener('click', nextCustomQuiz);
+  document.querySelectorAll('[data-action="custom-subtab"]').forEach(btn => {
+    btn.addEventListener('click', () => switchCustomSubTab(btn.dataset.sub));
+  });
+  const addWordBtn = document.querySelector('[data-action="add-word"]');
+  if (addWordBtn) {
+    addWordBtn.addEventListener('click', () => {
+      const es = document.getElementById('input-es').value;
+      const en = document.getElementById('input-en').value;
+      const ex = document.getElementById('input-ex').value;
+      addCustomWord(es, en, ex);
+    });
+  }
+  document.querySelectorAll('[data-action="delete-word"]').forEach(btn => {
+    btn.addEventListener('click', () => deleteCustomWord(parseInt(btn.dataset.index, 10)));
+  });
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+loadProgress();
+
+})();
+</script>
+</body>
+</html>
