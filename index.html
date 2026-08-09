@@ -506,6 +506,44 @@ html, body { height: 100%; }
 .legend-item { display: flex; align-items: center; gap: 5px; }
 .legend-dot { width: 9px; height: 9px; border-radius: 2px; }
 
+.legend-guide {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 600px) {
+  .legend-guide {
+    grid-template-columns: 1fr;
+  }
+}
+
+.guide-card {
+  background: white;
+  border: 1px solid var(--linea);
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.guide-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tinta);
+  margin-bottom: 4px;
+}
+
+.guide-desc {
+  font-size: 12px;
+  color: var(--gris);
+  line-height: 1.4;
+}
+
 .category-list {
   display: flex;
   flex-direction: column;
@@ -1925,10 +1963,28 @@ function renderProgress() {
     <div class="mosaic-sub">Cada azulejo es una palabra. Pasa el cursor para ver cuál.</div>
     <div class="mosaic-grid">${mosaicHtml}</div>
     <div class="legend">
-      <div class="legend-item"><span class="legend-dot mosaic-0"></span>Nueva</div>
-      <div class="legend-item"><span class="legend-dot mosaic-1"></span>Aprendiendo</div>
-      <div class="legend-item"><span class="legend-dot mosaic-2"></span>Repasando</div>
-      <div class="legend-item"><span class="legend-dot mosaic-3"></span>Dominada</div>
+      <div class="legend-item" title="Palabra nueva na hindi mo pa na-re-review"><span class="legend-dot mosaic-0"></span>Nueva</div>
+      <div class="legend-item" title="Bagong pinag-aaralan (Box 1)"><span class="legend-dot mosaic-1"></span>Aprendiendo</div>
+      <div class="legend-item" title="Nirerepaso / Naalala na (Box 2)"><span class="legend-dot mosaic-2"></span>Repasando</div>
+      <div class="legend-item" title="Kabisadong-kabisado / Mastered (Box 3)"><span class="legend-dot mosaic-3"></span>Dominada</div>
+    </div>
+    <div class="legend-guide">
+      <div class="guide-card">
+        <div class="guide-title"><span class="legend-dot mosaic-0"></span> <strong>Nueva</strong> (Bagong Salita)</div>
+        <div class="guide-desc">Salitang hindi mo pa nabubuksan o na-re-review sa Tarjetas/Quiz.</div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-title"><span class="legend-dot mosaic-1"></span> <strong>Aprendiendo</strong> (Naiintindihan pa lang)</div>
+        <div class="guide-desc">Na-review nang 1 beses o pinindot ang <em>Otra vez</em> / <em>Bien</em> (Box 1).</div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-title"><span class="legend-dot mosaic-2"></span> <strong>Repasando</strong> (Nirerepaso)</div>
+        <div class="guide-desc">Naalala at nasagot nang tama nang paulit-ulit (Box 2). Malapit na ma-master!</div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-title"><span class="legend-dot mosaic-3"></span> <strong>Dominada</strong> (Mastered / Kabisado)</div>
+        <div class="guide-desc">Kabisadong-kabisado mo na! Nakakuha ka ng <strong>+25 XP Bonus</strong> sa bawat salitang na-master.</div>
+      </div>
     </div>
     <div class="mosaic-title" style="margin-top:6px;">Por categoría</div>
     <div class="mosaic-sub">Tu dominio en cada grupo de palabras</div>
