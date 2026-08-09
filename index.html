@@ -1992,14 +1992,26 @@ function renderProgress() {
   const categories = [...new Set(VOCAB.map(v => v.cat))];
   const categoryRows = categories.map(cat => {
     const words = VOCAB.filter(v => v.cat === cat);
-    const masteredCount = words.filter(v => getBox(v.es) === 3).length;
-    const pct = Math.round((masteredCount / words.length) * 100);
+    const box1 = words.filter(v => getBox(v.es) === 1).length;
+    const box2 = words.filter(v => getBox(v.es) === 2).length;
+    const box3 = words.filter(v => getBox(v.es) === 3).length;
+    const reviewed = box1 + box2 + box3;
+    const pct1 = (box1 / words.length) * 100;
+    const pct2 = (box2 / words.length) * 100;
+    const pct3 = (box3 / words.length) * 100;
+    const totalPct = Math.round((reviewed / words.length) * 100);
     return `
       <div class="category-row">
         <span class="category-name">${escapeHtml(cat)}</span>
         <div style="display:flex; align-items:center; gap:10px;">
-          <div class="category-bar-wrap"><div class="category-bar-fill" style="width:${pct}%"></div></div>
-          <span style="font-size:11px; color:var(--gris); font-family:'JetBrains Mono',monospace;">${masteredCount}/${words.length}</span>
+          <div class="category-bar-wrap" title="${box1} Aprendiendo · ${box2} Repasando · ${box3} Dominada">
+            <div style="display:flex; height:100%; border-radius:3px; overflow:hidden;">
+              <div style="width:${pct3}%; background:#10B981; transition: width 0.6s ease;"></div>
+              <div style="width:${pct2}%; background:#38BDF8; transition: width 0.6s ease;"></div>
+              <div style="width:${pct1}%; background:#FB923C; transition: width 0.6s ease;"></div>
+            </div>
+          </div>
+          <span style="font-size:11px; color:var(--gris); font-family:'JetBrains Mono',monospace; min-width:40px; text-align:right;">${reviewed}/${words.length}</span>
         </div>
       </div>
     `;
