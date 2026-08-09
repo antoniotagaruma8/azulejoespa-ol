@@ -69,7 +69,13 @@ html, body { height: 100%; }
   font-weight: 500;
 }
 
-.streak-badge {
+.user-stats-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.streak-badge, .points-badge {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -79,8 +85,15 @@ html, body { height: 100%; }
   border-radius: 20px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   border: 1px solid var(--linea);
+  white-space: nowrap;
+}
+
+.points-badge {
+  color: var(--azul);
+  border-color: rgba(14,124,134,0.25);
+  background: rgba(14,124,134,0.06);
 }
 
 .subtitle {
@@ -1018,7 +1031,10 @@ html, body { height: 100%; }
         <div class="brand">Azulejo<span>español</span></div>
         <div class="subtitle">Las 1000 palabras más usadas</div>
       </div>
-      <div class="streak-badge" id="streak-badge">🔥 0</div>
+      <div class="user-stats-badges">
+        <div class="streak-badge" id="streak-badge" title="Racha de días">🔥 0</div>
+        <div class="points-badge" id="points-badge" title="Puntos XP acumulados">⚡ 0 XP</div>
+      </div>
     </div>
     <div class="tabs">
       <button class="tab-btn active" data-tab="cards">Tarjetas</button>
@@ -1044,6 +1060,7 @@ let state = {
   loaded: false,
   progress: {}, // word -> {box: 0-3, lastReview: timestamp}
   streak: 0,
+  points: 0,
   lastActiveDate: null,
   quizScore: {correct: 0, total: 0},
   currentTab: 'cards',
@@ -1073,6 +1090,20 @@ function daysBetween(a, b) {
   return Math.round((new Date(b) - new Date(a)) / 86400000);
 }
 
+function addPoints(amount, message) {
+  state.points = (state.points || 0) + amount;
+  if (message) showXpToast(message);
+  saveProgress();
+  renderHeaderBadges();
+}
+
+function renderHeaderBadges() {
+  const streakEl = document.getElementById('streak-badge');
+  if (streakEl) streakEl.textContent = `🔥 ${state.streak}`;
+  const pointsEl = document.getElementById('points-badge');
+  if (pointsEl) pointsEl.textContent = `⚡ ${state.points || 0} XP`;
+}
+
 async function loadProgress() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -1080,6 +1111,7 @@ async function loadProgress() {
       const data = JSON.parse(raw);
       state.progress = data.progress || {};
       state.streak = data.streak || 0;
+      state.points = data.points || 0;
       state.lastActiveDate = data.lastActiveDate || null;
       state.quizScore = data.quizScore || {correct:0, total:0};
       state.customWords = data.customWords || [];
@@ -1112,6 +1144,7 @@ async function saveProgress() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       progress: state.progress,
       streak: state.streak,
+      points: state.points,
       lastActiveDate: state.lastActiveDate,
       quizScore: state.quizScore,
       customWords: state.customWords,
@@ -1197,16 +1230,26 @@ function rateCard(delta) {
   if (next > 3) next = 3;
   state.progress[word] = {box: next, lastReview: Date.now()};
   state.sessionCount++;
-  saveProgress();
 
-  // XP toast
-  const xp = delta <= 0 ? '+5 XP' : delta === 1 ? '+10 XP' : '+20 XP';
-  showXpToast(xp);
+  // Logical Points system:
+  // delta <= 0 ("Otra vez" / failed recall) = 0 XP
+  // delta === 1 ("Bien" / correct recall) = +10 XP
+  // delta === 2 ("Fácil" / mastered recall) = +20 XP
+  if (delta <= 0) {
+    showXpToast('0 XP');
+  } else if (delta === 1) {
+    addPoints(10, '+10 XP');
+  } else if (delta === 2) {
+    addPoints(20, '+20 XP');
+  }
 
-  // Mastered confetti!
+  // Mastered bonus!
   if (next === 3 && cur < 3) {
     spawnConfetti(30);
     fireStreak();
+    setTimeout(() => addPoints(25, '¡Dominada! +25 XP'), 350);
+  } else {
+    saveProgress();
   }
 
   // Slide card out then show next
@@ -1266,13 +1309,16 @@ function selectChoice(val) {
   state.quizScore.total++;
   if (isCorrect) {
     state.quizScore.correct++;
-    showXpToast('¡Correcto! +15 XP');
+    addPoints(15, '¡Correcto! +15 XP');
     spawnConfetti(20);
-    if (next === 3 && cur < 3) fireStreak();
+    if (next === 3 && cur < 3) {
+      fireStreak();
+      setTimeout(() => addPoints(25, '¡Dominada! +25 XP'), 350);
+    }
   } else {
-    showXpToast('Casi… +3 XP');
+    showXpToast('¡Incorrecto! 0 XP');
+    saveProgress();
   }
-  saveProgress();
   render();
 }
 
@@ -1284,7 +1330,11 @@ function nextQuiz() {
 function resetProgress() {
   if (!confirm('¿Borrar todo tu progreso? Esta acción no se puede deshacer.')) return;
   state.progress = {};
+  state.streak = 0;
+  state.points = 0;
   state.quizScore = {correct: 0, total: 0};
+  state.customWords = [];
+  state.customQuizScore = {correct: 0, total: 0};
   saveProgress();
   state.currentCard = pickCard();
   state.flipped = false;
@@ -1336,8 +1386,7 @@ function addCustomWord(es, en, ex) {
   }
   state.customWords.push({es, en, ex: ex || `${es} — ${en}`, cat: 'Mis palabras'});
   state.formError = '';
-  saveProgress();
-  showXpToast('¡Palabra añadida!');
+  addPoints(5, '¡Palabra añadida! +5 XP');
   render();
 }
 
@@ -1359,11 +1408,22 @@ function rateCustomCard(delta) {
   if (next > 3) next = 3;
   state.progress[word] = {box: next, lastReview: Date.now()};
   state.customSessionCount++;
-  saveProgress();
 
-  const xp = delta <= 0 ? '+5 XP' : delta === 1 ? '+10 XP' : '+20 XP';
-  showXpToast(xp);
-  if (next === 3 && cur < 3) { spawnConfetti(30); fireStreak(); }
+  if (delta <= 0) {
+    showXpToast('0 XP');
+  } else if (delta === 1) {
+    addPoints(10, '+10 XP');
+  } else if (delta === 2) {
+    addPoints(20, '+20 XP');
+  }
+
+  if (next === 3 && cur < 3) {
+    spawnConfetti(30);
+    fireStreak();
+    setTimeout(() => addPoints(25, '¡Dominada! +25 XP'), 350);
+  } else {
+    saveProgress();
+  }
 
   const dir = delta <= 0 ? 'left' : 'right';
   const card = document.getElementById('custom-flashcard');
@@ -1402,13 +1462,16 @@ function selectCustomChoice(val) {
   state.customQuizScore.total++;
   if (isCorrect) {
     state.customQuizScore.correct++;
-    showXpToast('¡Correcto! +15 XP');
+    addPoints(15, '¡Correcto! +15 XP');
     spawnConfetti(20);
-    if (next === 3 && cur < 3) fireStreak();
+    if (next === 3 && cur < 3) {
+      fireStreak();
+      setTimeout(() => addPoints(25, '¡Dominada! +25 XP'), 350);
+    }
   } else {
-    showXpToast('Casi… +3 XP');
+    showXpToast('¡Incorrecto! 0 XP');
+    saveProgress();
   }
-  saveProgress();
   render();
 }
 
@@ -1656,7 +1719,7 @@ function renderProgress() {
     <div class="stats-row">
       <div class="stat-box"><div class="stat-num">${mastered}</div><div class="stat-label">Dominadas</div></div>
       <div class="stat-box"><div class="stat-num">${learning}</div><div class="stat-label">Aprendiendo</div></div>
-      <div class="stat-box"><div class="stat-num">${untouched}</div><div class="stat-label">Nuevas</div></div>
+      <div class="stat-box"><div class="stat-num">${state.points || 0}</div><div class="stat-label">Puntos XP</div></div>
     </div>
     <div class="mosaic-title">Tu mosaico de progreso</div>
     <div class="mosaic-sub">Cada azulejo es una palabra. Pasa el cursor para ver cuál.</div>
@@ -1676,13 +1739,12 @@ function renderProgress() {
 
 function render() {
   const contentEl = document.getElementById('content');
-  const streakEl = document.getElementById('streak-badge');
   if (!state.loaded) {
     contentEl.innerHTML = '<div class="loading-state">Cargando tu progreso…</div>';
     return;
   }
 
-  streakEl.textContent = `🔥 ${state.streak}`;
+  renderHeaderBadges();
 
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.tab === state.currentTab);
