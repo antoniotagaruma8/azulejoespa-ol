@@ -232,10 +232,12 @@ html, body { height: 100%; }
 .card-category {
   font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   font-weight: 700;
-  opacity: 0.75;
-  margin-bottom: 14px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  display: inline-block;
 }
 
 .card-word-es {
@@ -1160,6 +1162,24 @@ html, body { height: 100%; }
 
 const STORAGE_KEY = 'progress';
 
+const CATEGORY_THEMES = {
+  'Gramática':     { bg: '#EEF2FF', text: '#3730A3', pill: '#C7D2FE', border: '#818CF8' }, // Soft Pastel Indigo/Lavender
+  'Verbos':        { bg: '#ECFDF5', text: '#065F46', pill: '#A7F3D0', border: '#34D399' }, // Soft Pastel Mint
+  'Sustantivos':    { bg: '#F0F9FF', text: '#075985', pill: '#BAE6FD', border: '#38BDF8' }, // Soft Pastel Sky Blue
+  'Tiempo':        { bg: '#FFFBEB', text: '#92400E', pill: '#FDE68A', border: '#FBBF24' }, // Soft Pastel Amber Gold
+  'Frases':        { bg: '#FFF1F2', text: '#9F1239', pill: '#FECDD3', border: '#FB7185' }, // Soft Pastel Soft Rose
+  'Adjetivos':     { bg: '#FFF7ED', text: '#9A3412', pill: '#FED7AA', border: '#FB923C' }, // Soft Pastel Apricot/Peach
+  'Números':       { bg: '#F0FDF4', text: '#166534', pill: '#BBF7D0', border: '#4ADE80' }, // Soft Pastel Sage
+  'Exclamaciones': { bg: '#FEFCE8', text: '#854D0E', pill: '#FEF08A', border: '#FACC15' }, // Soft Pastel Butter
+  'Pronombres':    { bg: '#FAF5FF', text: '#6B21A8', pill: '#E9D5FF', border: '#C084FC' }, // Soft Pastel Lilac
+  'Afirmaciones':  { bg: '#ECFEFF', text: '#155E75', pill: '#A5F3FC', border: '#22D3EE' }, // Soft Pastel Cyan Ice
+  'Mis palabras':  { bg: '#FDF2F8', text: '#9D174D', pill: '#FBCFE8', border: '#F472B6' }, // Soft Pastel Pink Blush
+};
+
+function getCategoryTheme(cat) {
+  return CATEGORY_THEMES[cat] || { bg: '#F8FAFC', text: '#1E293B', pill: '#E2E8F0', border: '#94A3B8' };
+}
+
 let state = {
   loaded: false,
   progress: {}, // word -> {box: 0-3, lastReview: timestamp}
@@ -1743,6 +1763,7 @@ function renderCards() {
   const box = getBox(c.es);
   const boxLabel = box === 0 ? 'Nueva' : box === 1 ? 'Aprendiendo' : box === 2 ? 'Repasando' : 'Dominada';
   const pillClass = box <= 1 ? 'pill-0' : box === 2 ? 'pill-1' : 'pill-2';
+  const theme = getCategoryTheme(c.cat);
 
   return `
     <div class="card-progress-row">
@@ -1751,17 +1772,17 @@ function renderCards() {
     </div>
     <div class="flashcard-wrap">
       <div class="flashcard ${state.flipped ? 'flipped' : ''}" id="flashcard">
-        <div class="card-face card-front">
-          <div class="card-category">${escapeHtml(c.cat)}</div>
-          <div class="card-word-es">
+        <div class="card-face card-front" style="background: ${theme.bg}; color: ${theme.text}; border: 2px solid ${theme.border}; box-shadow: 0 14px 30px -6px ${theme.border}55;">
+          <div class="card-category" style="background: ${theme.pill}; color: ${theme.text};">${escapeHtml(c.cat)}</div>
+          <div class="card-word-es" style="color: ${theme.text};">
             ${escapeHtml(c.es)}
-            <button class="audio-btn" data-action="speak" data-text="${escapeHtml(c.es)}" title="Escuchar pronunciación">${SPEAKER_ICON}</button>
+            <button class="audio-btn" style="background: rgba(255,255,255,0.7); color: ${theme.text}; border: 1px solid ${theme.border};" data-action="speak" data-text="${escapeHtml(c.es)}" title="Escuchar pronunciación">${SPEAKER_ICON}</button>
           </div>
-          <div class="card-hint">toca para voltear · desliza para puntuar</div>
+          <div class="card-hint" style="color: ${theme.text}; opacity: 0.75;">toca para voltear · desliza para puntuar</div>
         </div>
-        <div class="card-face card-back">
-          <div class="card-category">Traducción</div>
-          <div class="card-word-en">${escapeHtml(c.en)}</div>
+        <div class="card-face card-back" style="border-top: 6px solid ${theme.border};">
+          <div class="card-category" style="background: ${theme.pill}; color: ${theme.text};">Traducción</div>
+          <div class="card-word-en" style="color: ${theme.text};">${escapeHtml(c.en)}</div>
           <div class="card-example">
             ${formatExample(c.ex)}
             <button class="audio-btn dark" style="width:28px; height:28px; margin-left:6px;" data-action="speak" data-text="${escapeHtml(c.ex.replace(/__/g,''))}" title="Escuchar frase">${SPEAKER_ICON}</button>
@@ -1790,6 +1811,7 @@ function renderQuiz() {
   const item = state.quizItem;
   const prompt = state.quizDirection === 'es-en' ? item.es : item.en;
   const directionLabel = state.quizDirection === 'es-en' ? 'Español → Inglés' : 'Inglés → Español';
+  const theme = getCategoryTheme(item.cat);
 
   const choicesHtml = state.quizChoices.map(choice => {
     let cls = 'choice-btn';
@@ -1805,11 +1827,11 @@ function renderQuiz() {
     <div class="quiz-header">
       <span class="quiz-score">Puntuación: ${state.quizScore.correct}/${state.quizScore.total}</span>
     </div>
-    <div class="quiz-prompt-card">
-      <div class="quiz-direction">${directionLabel}</div>
-      <div class="quiz-word">
+    <div class="quiz-prompt-card" style="background: ${theme.bg}; color: ${theme.text}; border: 2px solid ${theme.border}; box-shadow: 0 14px 30px -6px ${theme.border}55;">
+      <div class="quiz-direction" style="color: ${theme.text}; opacity: 0.85;">${directionLabel} • <span style="background: ${theme.pill}; color: ${theme.text}; padding: 3px 10px; border-radius: 12px; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.05em;">${escapeHtml(item.cat || '')}</span></div>
+      <div class="quiz-word" style="color: ${theme.text};">
         ${escapeHtml(prompt)}
-        ${state.quizDirection === 'es-en' ? `<button class="audio-btn" data-action="speak" data-text="${escapeHtml(prompt)}" title="Escuchar pronunciación">${SPEAKER_ICON}</button>` : ''}
+        ${state.quizDirection === 'es-en' ? `<button class="audio-btn" style="background: rgba(255,255,255,0.7); color: ${theme.text}; border: 1px solid ${theme.border};" data-action="speak" data-text="${escapeHtml(prompt)}" title="Escuchar pronunciación">${SPEAKER_ICON}</button>` : ''}
       </div>
     </div>
     <div class="choices">${choicesHtml}</div>
@@ -1863,6 +1885,7 @@ function renderCustomCards() {
   const box = getBox(c.es);
   const boxLabel = box === 0 ? 'Nueva' : box === 1 ? 'Aprendiendo' : box === 2 ? 'Repasando' : 'Dominada';
   const pillClass = box <= 1 ? 'pill-0' : box === 2 ? 'pill-1' : 'pill-2';
+  const theme = getCategoryTheme(c.cat);
 
   return `
     <div class="card-progress-row">
@@ -1871,17 +1894,17 @@ function renderCustomCards() {
     </div>
     <div class="flashcard-wrap">
       <div class="flashcard ${state.customFlipped ? 'flipped' : ''}" id="custom-flashcard">
-        <div class="card-face card-front">
-          <div class="card-category">${escapeHtml(c.cat)}</div>
-          <div class="card-word-es">
+        <div class="card-face card-front" style="background: ${theme.bg}; color: ${theme.text}; border: 2px solid ${theme.border}; box-shadow: 0 14px 30px -6px ${theme.border}55;">
+          <div class="card-category" style="background: ${theme.pill}; color: ${theme.text};">${escapeHtml(c.cat)}</div>
+          <div class="card-word-es" style="color: ${theme.text};">
             ${escapeHtml(c.es)}
-            <button class="audio-btn" data-action="speak" data-text="${escapeHtml(c.es)}" title="Escuchar pronunciación">${SPEAKER_ICON}</button>
+            <button class="audio-btn" style="background: rgba(255,255,255,0.7); color: ${theme.text}; border: 1px solid ${theme.border};" data-action="speak" data-text="${escapeHtml(c.es)}" title="Escuchar pronunciación">${SPEAKER_ICON}</button>
           </div>
-          <div class="card-hint">toca para voltear</div>
+          <div class="card-hint" style="color: ${theme.text}; opacity: 0.75;">toca para voltear</div>
         </div>
-        <div class="card-face card-back">
-          <div class="card-category">Traducción</div>
-          <div class="card-word-en">${escapeHtml(c.en)}</div>
+        <div class="card-face card-back" style="border-top: 6px solid ${theme.border};">
+          <div class="card-category" style="background: ${theme.pill}; color: ${theme.text};">Traducción</div>
+          <div class="card-word-en" style="color: ${theme.text};">${escapeHtml(c.en)}</div>
           <div class="card-example">
             ${formatExample(c.ex)}
             <button class="audio-btn dark" style="width:28px; height:28px; margin-left:6px;" data-action="speak" data-text="${escapeHtml(c.ex.replace(/__/g,''))}" title="Escuchar frase">${SPEAKER_ICON}</button>
@@ -1913,6 +1936,7 @@ function renderCustomQuiz() {
   const item = state.customQuizItem;
   const prompt = state.customQuizDirection === 'es-en' ? item.es : item.en;
   const directionLabel = state.customQuizDirection === 'es-en' ? 'Español → Inglés' : 'Inglés → Español';
+  const theme = getCategoryTheme(item.cat);
 
   const choicesHtml = state.customQuizChoices.map(choice => {
     let cls = 'choice-btn';
@@ -1928,9 +1952,9 @@ function renderCustomQuiz() {
     <div class="quiz-header">
       <span class="quiz-score">Puntuación: ${state.customQuizScore.correct}/${state.customQuizScore.total}</span>
     </div>
-    <div class="quiz-prompt-card">
-      <div class="quiz-direction">${directionLabel}</div>
-      <div class="quiz-word">${escapeHtml(prompt)}</div>
+    <div class="quiz-prompt-card" style="background: ${theme.bg}; color: ${theme.text}; border: 2px solid ${theme.border}; box-shadow: 0 14px 30px -6px ${theme.border}55;">
+      <div class="quiz-direction" style="color: ${theme.text}; opacity: 0.85;">${directionLabel} • <span style="background: ${theme.pill}; color: ${theme.text}; padding: 3px 10px; border-radius: 12px; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.05em;">${escapeHtml(item.cat || '')}</span></div>
+      <div class="quiz-word" style="color: ${theme.text};">${escapeHtml(prompt)}</div>
     </div>
     <div class="choices">${choicesHtml}</div>
     ${state.customQuizSelected !== null ? `<button class="next-btn" data-action="next-quiz-custom">Siguiente palabra →</button>` : ''}
@@ -1974,9 +1998,10 @@ function renderProgress() {
     const pct2 = (box2 / words.length) * 100;
     const pct3 = (box3 / words.length) * 100;
     const totalPct = Math.round((reviewed / words.length) * 100);
+    const theme = getCategoryTheme(cat);
     return `
-      <div class="category-row">
-        <span class="category-name">${escapeHtml(cat)}</span>
+      <div class="category-row" style="border-left: 5px solid ${theme.border};">
+        <span class="category-name"><span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:${theme.border}; margin-right:8px;"></span>${escapeHtml(cat)}</span>
         <div style="display:flex; align-items:center; gap:10px;">
           <div class="category-bar-wrap" title="${box1} Aprendiendo · ${box2} Repasando · ${box3} Dominada">
             <div style="display:flex; height:100%; border-radius:3px; overflow:hidden;">
