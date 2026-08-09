@@ -292,30 +292,31 @@ html, body { height: 100%; }
 .rate-key { font-family: 'JetBrains Mono', monospace; font-size: 10px; opacity: 0.6; }
 
 .audio-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   color: white;
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 17px;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   vertical-align: middle;
   margin-left: 8px;
   touch-action: manipulation;
+  padding: 0;
+  flex-shrink: 0;
 }
 
 .audio-btn:hover {
-  background: rgba(255, 255, 255, 0.38);
-  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.32);
+  transform: scale(1.08);
 }
 
 .audio-btn:active {
-  transform: scale(0.92);
+  transform: scale(0.94);
 }
 
 .audio-btn.dark {
@@ -327,6 +328,7 @@ html, body { height: 100%; }
 .audio-btn.dark:hover {
   background: #E6F1F3;
   color: var(--azul-light);
+  border-color: rgba(14,124,134,0.3);
 }
 
 .flip-prompt {
@@ -1222,6 +1224,99 @@ async function saveProgress() {
   }
 }
 
+let audioCtx = null;
+function getAudioContext() {
+  if (!audioCtx && (window.AudioContext || window.webkitAudioContext)) {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AudioCtx();
+  }
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  return audioCtx;
+}
+
+function playSound(type) {
+  try {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+
+    if (type === 'flip') {
+      // Soft iOS-like card flip pop (320Hz -> 100Hz)
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.exponentialRampToValueAtTime(100, now + 0.04);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.04);
+    } else if (type === 'correct') {
+      // Gentle 2-note success chime (E5 -> B5)
+      [659.25, 987.77].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        const startTime = now + (i * 0.06);
+        gain.gain.setValueAtTime(0.08, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.22);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(startTime);
+        osc.stop(startTime + 0.22);
+      });
+    } else if (type === 'wrong') {
+      // Soft low thud (gentle, non-intrusive)
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(180, now);
+      osc.frequency.exponentialRampToValueAtTime(110, now + 0.12);
+      gain.gain.setValueAtTime(0.09, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.12);
+    } else if (type === 'mastered') {
+      // Premium 4-note celebration arpeggio (C5 -> E5 -> G5 -> C6)
+      [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        const startTime = now + (i * 0.07);
+        gain.gain.setValueAtTime(0.09, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(startTime);
+        osc.stop(startTime + 0.35);
+      });
+    } else if (type === 'click') {
+      // Soft micro click
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(600, now);
+      osc.frequency.exponentialRampToValueAtTime(200, now + 0.02);
+      gain.gain.setValueAtTime(0.05, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.02);
+    }
+  } catch (e) {
+    // Ignore audio errors gracefully
+  }
+}
+
 function speakWord(text) {
   if (!text || !('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
@@ -1231,6 +1326,8 @@ function speakWord(text) {
   utterance.rate = 0.88;
   window.speechSynthesis.speak(utterance);
 }
+
+const SPEAKER_ICON = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
 
 function getBox(word) {
   return (state.progress[word] && state.progress[word].box) || 0;
@@ -1308,15 +1405,14 @@ function rateCard(delta) {
   state.progress[word] = {box: next, lastReview: Date.now()};
   state.sessionCount++;
 
-  // Logical Points system:
-  // delta <= 0 ("Otra vez" / failed recall) = 0 XP
-  // delta === 1 ("Bien" / correct recall) = +10 XP
-  // delta === 2 ("Fácil" / mastered recall) = +20 XP
   if (delta <= 0) {
+    playSound('wrong');
     showXpToast('0 XP');
   } else if (delta === 1) {
+    playSound('click');
     addPoints(10, '+10 XP');
   } else if (delta === 2) {
+    playSound('correct');
     addPoints(20, '+20 XP');
   }
 
@@ -1324,7 +1420,7 @@ function rateCard(delta) {
   if (next === 3 && cur < 3) {
     spawnConfetti(30);
     fireStreak();
-    setTimeout(() => addPoints(25, '¡Dominada! +25 XP'), 350);
+    setTimeout(() => { playSound('mastered'); addPoints(25, '¡Dominada! +25 XP'); }, 350);
   } else {
     saveProgress();
   }
@@ -1386,13 +1482,15 @@ function selectChoice(val) {
   state.quizScore.total++;
   if (isCorrect) {
     state.quizScore.correct++;
+    playSound('correct');
     addPoints(15, '¡Correcto! +15 XP');
     spawnConfetti(20);
     if (next === 3 && cur < 3) {
       fireStreak();
-      setTimeout(() => addPoints(25, '¡Dominada! +25 XP'), 350);
+      setTimeout(() => { playSound('mastered'); addPoints(25, '¡Dominada! +25 XP'); }, 350);
     }
   } else {
+    playSound('wrong');
     showXpToast('¡Incorrecto! 0 XP');
     saveProgress();
   }
@@ -1400,6 +1498,7 @@ function selectChoice(val) {
 }
 
 function nextQuiz() {
+  playSound('click');
   pickQuizItem();
   render();
 }
@@ -1419,6 +1518,7 @@ function resetProgress() {
 }
 
 function switchTab(tab) {
+  playSound('click');
   state.currentTab = tab;
   if (tab === 'cards' && !state.currentCard) {
     state.currentCard = pickCard();
@@ -1434,6 +1534,7 @@ function switchTab(tab) {
 }
 
 function switchCustomSubTab(sub) {
+  playSound('click');
   state.customSubTab = sub;
   state.formError = '';
   if (sub === 'cards' && state.customWords.length > 0) {
@@ -1463,6 +1564,7 @@ function addCustomWord(es, en, ex) {
   }
   state.customWords.push({es, en, ex: ex || `${es} — ${en}`, cat: 'Mis palabras'});
   state.formError = '';
+  playSound('correct');
   addPoints(5, '¡Palabra añadida! +5 XP');
   render();
 }
@@ -1487,17 +1589,20 @@ function rateCustomCard(delta) {
   state.customSessionCount++;
 
   if (delta <= 0) {
+    playSound('wrong');
     showXpToast('0 XP');
   } else if (delta === 1) {
+    playSound('click');
     addPoints(10, '+10 XP');
   } else if (delta === 2) {
+    playSound('correct');
     addPoints(20, '+20 XP');
   }
 
   if (next === 3 && cur < 3) {
     spawnConfetti(30);
     fireStreak();
-    setTimeout(() => addPoints(25, '¡Dominada! +25 XP'), 350);
+    setTimeout(() => { playSound('mastered'); addPoints(25, '¡Dominada! +25 XP'); }, 350);
   } else {
     saveProgress();
   }
@@ -1539,13 +1644,15 @@ function selectCustomChoice(val) {
   state.customQuizScore.total++;
   if (isCorrect) {
     state.customQuizScore.correct++;
+    playSound('correct');
     addPoints(15, '¡Correcto! +15 XP');
     spawnConfetti(20);
     if (next === 3 && cur < 3) {
       fireStreak();
-      setTimeout(() => addPoints(25, '¡Dominada! +25 XP'), 350);
+      setTimeout(() => { playSound('mastered'); addPoints(25, '¡Dominada! +25 XP'); }, 350);
     }
   } else {
+    playSound('wrong');
     showXpToast('¡Incorrecto! 0 XP');
     saveProgress();
   }
@@ -1584,7 +1691,7 @@ function renderCards() {
           <div class="card-category">${escapeHtml(c.cat)}</div>
           <div class="card-word-es">
             ${escapeHtml(c.es)}
-            <button class="audio-btn" data-action="speak" data-text="${escapeHtml(c.es)}" title="Escuchar pronunciación">🔊</button>
+            <button class="audio-btn" data-action="speak" data-text="${escapeHtml(c.es)}" title="Escuchar pronunciación">${SPEAKER_ICON}</button>
           </div>
           <div class="card-hint">toca para voltear · desliza para puntuar</div>
         </div>
@@ -1593,7 +1700,7 @@ function renderCards() {
           <div class="card-word-en">${escapeHtml(c.en)}</div>
           <div class="card-example">
             ${formatExample(c.ex)}
-            <button class="audio-btn dark" style="width:30px; height:30px; font-size:13px; margin-left:6px;" data-action="speak" data-text="${escapeHtml(c.ex.replace(/__/g,''))}" title="Escuchar frase">🔊</button>
+            <button class="audio-btn dark" style="width:28px; height:28px; margin-left:6px;" data-action="speak" data-text="${escapeHtml(c.ex.replace(/__/g,''))}" title="Escuchar frase">${SPEAKER_ICON}</button>
           </div>
         </div>
       </div>
@@ -1638,7 +1745,7 @@ function renderQuiz() {
       <div class="quiz-direction">${directionLabel}</div>
       <div class="quiz-word">
         ${escapeHtml(prompt)}
-        ${state.quizDirection === 'es-en' ? `<button class="audio-btn" data-action="speak" data-text="${escapeHtml(prompt)}" title="Escuchar pronunciación">🔊</button>` : ''}
+        ${state.quizDirection === 'es-en' ? `<button class="audio-btn" data-action="speak" data-text="${escapeHtml(prompt)}" title="Escuchar pronunciación">${SPEAKER_ICON}</button>` : ''}
       </div>
     </div>
     <div class="choices">${choicesHtml}</div>
@@ -1653,7 +1760,7 @@ function renderCustomManage() {
         <div class="word-item">
           <div class="word-item-text">
             <span class="word-item-es">${escapeHtml(w.es)}</span>
-            <button class="audio-btn dark" style="width:28px; height:28px; font-size:12px; margin-left:6px;" data-action="speak" data-text="${escapeHtml(w.es)}" title="Escuchar">🔊</button>
+            <button class="audio-btn dark" style="width:26px; height:26px; margin-left:6px;" data-action="speak" data-text="${escapeHtml(w.es)}" title="Escuchar">${SPEAKER_ICON}</button>
             <span class="word-item-en">${escapeHtml(w.en)}</span>
           </div>
           <button class="word-item-delete" data-action="delete-word" data-index="${i}">Eliminar</button>
@@ -1704,7 +1811,7 @@ function renderCustomCards() {
           <div class="card-category">${escapeHtml(c.cat)}</div>
           <div class="card-word-es">
             ${escapeHtml(c.es)}
-            <button class="audio-btn" data-action="speak" data-text="${escapeHtml(c.es)}" title="Escuchar pronunciación">🔊</button>
+            <button class="audio-btn" data-action="speak" data-text="${escapeHtml(c.es)}" title="Escuchar pronunciación">${SPEAKER_ICON}</button>
           </div>
           <div class="card-hint">toca para voltear</div>
         </div>
@@ -1713,7 +1820,7 @@ function renderCustomCards() {
           <div class="card-word-en">${escapeHtml(c.en)}</div>
           <div class="card-example">
             ${formatExample(c.ex)}
-            <button class="audio-btn dark" style="width:30px; height:30px; font-size:13px; margin-left:6px;" data-action="speak" data-text="${escapeHtml(c.ex.replace(/__/g,''))}" title="Escuchar frase">🔊</button>
+            <button class="audio-btn dark" style="width:28px; height:28px; margin-left:6px;" data-action="speak" data-text="${escapeHtml(c.ex.replace(/__/g,''))}" title="Escuchar frase">${SPEAKER_ICON}</button>
           </div>
         </div>
       </div>
@@ -1887,6 +1994,7 @@ function attachHandlers() {
   if (flashcard) {
     flashcard.addEventListener('click', () => {
       if (isSwiping) { isSwiping = false; return; }
+      playSound('flip');
       state.flipped = !state.flipped;
       render();
     });
@@ -1915,6 +2023,7 @@ function attachHandlers() {
   if (customFlashcard) {
     customFlashcard.addEventListener('click', () => {
       if (isSwiping) { isSwiping = false; return; }
+      playSound('flip');
       state.customFlipped = !state.customFlipped;
       render();
     });
