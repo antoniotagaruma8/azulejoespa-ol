@@ -349,6 +349,23 @@ html, body { height: 100%; }
   border-color: rgba(99,102,241,0.3);
 }
 
+.card-audio-btn {
+  position: absolute !important;
+  bottom: 16px !important;
+  left: 16px !important;
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 50% !important;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin-left: 0 !important;
+}
+
+.card-audio-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
 .flip-prompt {
   text-align: center;
   color: var(--gris);
@@ -1774,19 +1791,15 @@ function renderCards() {
       <div class="flashcard ${state.flipped ? 'flipped' : ''}" id="flashcard">
         <div class="card-face card-front" style="background: ${theme.bg}; color: ${theme.text}; border: 2px solid ${theme.border}; box-shadow: 0 14px 30px -6px ${theme.border}55;">
           <div class="card-category" style="background: ${theme.pill}; color: ${theme.text};">${escapeHtml(c.cat)}</div>
-          <div class="card-word-es" style="color: ${theme.text};">
-            ${escapeHtml(c.es)}
-            <button class="audio-btn" style="background: rgba(255,255,255,0.7); color: ${theme.text}; border: 1px solid ${theme.border};" data-action="speak" data-text="${escapeHtml(c.es)}" title="Escuchar pronunciación">${SPEAKER_ICON}</button>
-          </div>
+          <div class="card-word-es" style="color: ${theme.text};">${escapeHtml(c.es)}</div>
           <div class="card-hint" style="color: ${theme.text}; opacity: 0.75;">toca para voltear · desliza para puntuar</div>
+          <button class="audio-btn card-audio-btn" style="background: rgba(255,255,255,0.85); color: ${theme.text}; border: 1.5px solid ${theme.border};" data-action="speak" data-text="${escapeHtml(c.es)}" title="Escuchar pronunciación">${SPEAKER_ICON}</button>
         </div>
         <div class="card-face card-back" style="border-top: 6px solid ${theme.border};">
           <div class="card-category" style="background: ${theme.pill}; color: ${theme.text};">Traducción</div>
           <div class="card-word-en" style="color: ${theme.text};">${escapeHtml(c.en)}</div>
-          <div class="card-example">
-            ${formatExample(c.ex)}
-            <button class="audio-btn dark" style="width:28px; height:28px; margin-left:6px;" data-action="speak" data-text="${escapeHtml(c.ex.replace(/__/g,''))}" title="Escuchar frase">${SPEAKER_ICON}</button>
-          </div>
+          <div class="card-example">${formatExample(c.ex)}</div>
+          <button class="audio-btn dark card-audio-btn" style="background: #F1F5F9; color: #334155; border: 1.5px solid #CBD5E1;" data-action="speak" data-text="${escapeHtml(c.ex.replace(/__/g,''))}" title="Escuchar frase">${SPEAKER_ICON}</button>
         </div>
       </div>
     </div>
@@ -1896,19 +1909,15 @@ function renderCustomCards() {
       <div class="flashcard ${state.customFlipped ? 'flipped' : ''}" id="custom-flashcard">
         <div class="card-face card-front" style="background: ${theme.bg}; color: ${theme.text}; border: 2px solid ${theme.border}; box-shadow: 0 14px 30px -6px ${theme.border}55;">
           <div class="card-category" style="background: ${theme.pill}; color: ${theme.text};">${escapeHtml(c.cat)}</div>
-          <div class="card-word-es" style="color: ${theme.text};">
-            ${escapeHtml(c.es)}
-            <button class="audio-btn" style="background: rgba(255,255,255,0.7); color: ${theme.text}; border: 1px solid ${theme.border};" data-action="speak" data-text="${escapeHtml(c.es)}" title="Escuchar pronunciación">${SPEAKER_ICON}</button>
-          </div>
+          <div class="card-word-es" style="color: ${theme.text};">${escapeHtml(c.es)}</div>
           <div class="card-hint" style="color: ${theme.text}; opacity: 0.75;">toca para voltear</div>
+          <button class="audio-btn card-audio-btn" style="background: rgba(255,255,255,0.85); color: ${theme.text}; border: 1.5px solid ${theme.border};" data-action="speak" data-text="${escapeHtml(c.es)}" title="Escuchar pronunciación">${SPEAKER_ICON}</button>
         </div>
         <div class="card-face card-back" style="border-top: 6px solid ${theme.border};">
           <div class="card-category" style="background: ${theme.pill}; color: ${theme.text};">Traducción</div>
           <div class="card-word-en" style="color: ${theme.text};">${escapeHtml(c.en)}</div>
-          <div class="card-example">
-            ${formatExample(c.ex)}
-            <button class="audio-btn dark" style="width:28px; height:28px; margin-left:6px;" data-action="speak" data-text="${escapeHtml(c.ex.replace(/__/g,''))}" title="Escuchar frase">${SPEAKER_ICON}</button>
-          </div>
+          <div class="card-example">${formatExample(c.ex)}</div>
+          <button class="audio-btn dark card-audio-btn" style="background: #F1F5F9; color: #334155; border: 1.5px solid #CBD5E1;" data-action="speak" data-text="${escapeHtml(c.ex.replace(/__/g,''))}" title="Escuchar frase">${SPEAKER_ICON}</button>
         </div>
       </div>
     </div>
