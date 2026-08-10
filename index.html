@@ -1440,6 +1440,87 @@ html, body { height: 100%; }
   right: 54px;
 }
 
+/* ── Lesson 50-Q Quiz UI ── */
+.leccion-quiz-progress-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 7px;
+  opacity: 0.85;
+}
+.leccion-progress-bar {
+  height: 7px;
+  background: rgba(0,0,0,0.09);
+  border-radius: 4px;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.leccion-progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.45s cubic-bezier(0.4,0,0.2,1);
+}
+.leccion-next-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg,#2563EB 0%,#1D4ED8 100%);
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px -4px rgba(37,99,235,0.35);
+  transition: transform 0.18s, box-shadow 0.18s;
+  touch-action: manipulation;
+}
+.leccion-next-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -4px rgba(37,99,235,0.4); }
+.leccion-quiz-complete {
+  text-align: center;
+  padding: 28px 16px 20px;
+  border-radius: 18px;
+  margin-top: 12px;
+  border: 2px solid;
+}
+.leccion-quiz-complete .cq-trophy { font-size: 44px; margin-bottom: 8px; }
+.leccion-quiz-complete .cq-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.leccion-quiz-complete .cq-score {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 30px;
+  font-weight: 800;
+  color: #2563EB;
+  margin-bottom: 4px;
+}
+.leccion-quiz-complete .cq-msg {
+  font-size: 13px;
+  opacity: 0.7;
+  margin-bottom: 16px;
+}
+.leccion-quiz-restart-btn {
+  background: white;
+  border: 2px solid #C7D2FE;
+  border-radius: 12px;
+  padding: 11px 26px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: #4338CA;
+  cursor: pointer;
+  transition: all 0.18s;
+  touch-action: manipulation;
+}
+.leccion-quiz-restart-btn:hover { background: #EEF2FF; border-color: #818CF8; }
+
 </style>
 </head>
 <body>
@@ -1581,7 +1662,14 @@ async function loadProgress() {
       state.customWords = data.customWords || [];
       state.customQuizScore = data.customQuizScore || {correct:0, total:0};
       state.leccionesCompleted = data.leccionesCompleted || {};
-      state.leccionesQuiz = data.leccionesQuiz || {};
+      // Only keep quiz state that matches the new 50-Q format (has currentIndex)
+      const rawLQ = data.leccionesQuiz || {};
+      state.leccionesQuiz = {};
+      Object.keys(rawLQ).forEach(id => {
+        if (rawLQ[id] && typeof rawLQ[id].currentIndex === 'number') {
+          state.leccionesQuiz[id] = rawLQ[id];
+        }
+      });
 
       // Points persistence with fallback calculation from progress
       const computedMinPoints = calculateEarnedPoints(state.progress, state.customWords, state.quizScore, state.customQuizScore);
@@ -2075,218 +2163,3761 @@ function nextCustomQuiz() {
 
 const LESSONS = [
   {
-    id: 'l1',
-    num: '01',
-    title: 'Artículos y Género',
-    subtitle: 'El, La, Un, Una — Noun genders & articles',
-    theme: { bg: '#EEF2FF', text: '#3730A3', pill: '#C7D2FE', border: '#818CF8', headBg: '#6366F1', headText: '#fff' },
-    sections: [
+    "id": "l1",
+    "num": "01",
+    "title": "Artículos y Género",
+    "subtitle": "El, La, Un, Una — Noun genders & articles",
+    "theme": {
+      "bg": "#EEF2FF",
+      "text": "#3730A3",
+      "pill": "#C7D2FE",
+      "border": "#818CF8",
+      "headBg": "#6366F1",
+      "headText": "#fff"
+    },
+    "sections": [
       {
-        type: 'rules',
-        title: 'Basic Rules',
-        items: [
-          { title: 'Definite Article (The)', body: '<span class="formula-tag" style="background:#C7D2FE;color:#3730A3;">el</span> (masc.) + <span class="formula-tag" style="background:#C7D2FE;color:#3730A3;">la</span> (fem.) + <span class="formula-tag" style="background:#C7D2FE;color:#3730A3;">los / las</span> (plural)', bg: '#EEF2FF', border: '#818CF8', text: '#3730A3' },
-          { title: 'Indefinite Article (A / An)', body: '<span class="formula-tag" style="background:#E0E7FF;color:#4338CA;">un</span> (masc.) + <span class="formula-tag" style="background:#E0E7FF;color:#4338CA;">una</span> (fem.) + <span class="formula-tag" style="background:#E0E7FF;color:#4338CA;">unos / unas</span> (plural)', bg: '#EEF2FF', border: '#818CF8', text: '#3730A3' },
-          { title: 'Gender Rule', body: 'Nouns ending in <strong>-o</strong> → usually masculine (el libro, el gato)<br>Nouns ending in <strong>-a</strong> → usually feminine (la casa, la mesa)<br>⚠️ Exceptions: el agua (water), el día (day), la mano (hand)', bg: '#F0F4FF', border: '#A5B4FC', text: '#3730A3' },
+        "type": "rules",
+        "title": "Basic Rules",
+        "items": [
+          {
+            "title": "Definite Article (The)",
+            "body": "<span class=\"formula-tag\" style=\"background:#C7D2FE;color:#3730A3;\">el</span> (masc.) + <span class=\"formula-tag\" style=\"background:#C7D2FE;color:#3730A3;\">la</span> (fem.) + <span class=\"formula-tag\" style=\"background:#C7D2FE;color:#3730A3;\">los / las</span> (plural)",
+            "bg": "#EEF2FF",
+            "border": "#818CF8",
+            "text": "#3730A3"
+          },
+          {
+            "title": "Indefinite Article (A / An)",
+            "body": "<span class=\"formula-tag\" style=\"background:#E0E7FF;color:#4338CA;\">un</span> (masc.) + <span class=\"formula-tag\" style=\"background:#E0E7FF;color:#4338CA;\">una</span> (fem.) + <span class=\"formula-tag\" style=\"background:#E0E7FF;color:#4338CA;\">unos / unas</span> (plural)",
+            "bg": "#EEF2FF",
+            "border": "#818CF8",
+            "text": "#3730A3"
+          },
+          {
+            "title": "Gender Rule",
+            "body": "Nouns ending in <strong>-o</strong> → usually masculine (el libro, el gato)<br>Nouns ending in <strong>-a</strong> → usually feminine (la casa, la mesa)<br>⚠️ Exceptions: el agua (water), el día (day), la mano (hand)",
+            "bg": "#F0F4FF",
+            "border": "#A5B4FC",
+            "text": "#3730A3"
+          }
         ]
       },
       {
-        type: 'examples',
-        title: 'Examples',
-        items: [
-          { es: 'el libro', en: 'the book', audio: 'el libro' },
-          { es: 'la casa', en: 'the house', audio: 'la casa' },
-          { es: 'un hombre', en: 'a man', audio: 'un hombre' },
-          { es: 'una mujer', en: 'a woman', audio: 'una mujer' },
-          { es: 'los libros', en: 'the books', audio: 'los libros' },
-          { es: 'las casas', en: 'the houses', audio: 'las casas' },
+        "type": "examples",
+        "title": "Examples",
+        "items": [
+          {
+            "es": "el libro",
+            "en": "the book",
+            "audio": "el libro"
+          },
+          {
+            "es": "la casa",
+            "en": "the house",
+            "audio": "la casa"
+          },
+          {
+            "es": "un hombre",
+            "en": "a man",
+            "audio": "un hombre"
+          },
+          {
+            "es": "una mujer",
+            "en": "a woman",
+            "audio": "una mujer"
+          },
+          {
+            "es": "los libros",
+            "en": "the books",
+            "audio": "los libros"
+          },
+          {
+            "es": "las casas",
+            "en": "the houses",
+            "audio": "las casas"
+          }
         ]
       }
     ],
-    quiz: { q: 'Which article is correct for "libro" (book)?', choices: ['el libro', 'la libro', 'lo libro', 'les libro'], correct: 'el libro', explanation: '"Libro" ends in -o → it is masculine → use "el libro".' }
-  },
-  {
-    id: 'l2',
-    num: '02',
-    title: 'Ser vs. Estar',
-    subtitle: 'The two "to be" verbs — Permanent vs. Temporary',
-    theme: { bg: '#ECFDF5', text: '#065F46', pill: '#A7F3D0', border: '#34D399', headBg: '#10B981', headText: '#fff' },
-    sections: [
+    "quizzes": [
       {
-        type: 'rules',
-        title: 'When to use SER vs. ESTAR',
-        items: [
-          { title: 'SER (Permanent / Identity) — use the mnemonic DOCTOR', body: '<strong>D</strong>escription (María <em>es</em> alta — Maria is tall)<br><strong>O</strong>ccupation (Soy estudiante — I am a student)<br><strong>C</strong>haracteristics (El coche <em>es</em> rojo — The car is red)<br><strong>T</strong>ime / Date (Son las tres — It is three o\'clock)<br><strong>O</strong>rigin (Soy de Filipinas — I am from the Philippines)<br><strong>R</strong>elationship (Es mi madre — She is my mother)', bg: '#ECFDF5', border: '#34D399', text: '#065F46' },
-          { title: 'ESTAR (Temporary / State) — use the mnemonic PLACE', body: '<strong>P</strong>osition (El libro <em>está</em> aquí — The book is here)<br><strong>L</strong>ocation (Estoy en casa — I am at home)<br><strong>A</strong>ction / ongoing (Estoy comiendo — I am eating)<br><strong>C</strong>ondition (Estoy cansado — I am tired)<br><strong>E</strong>motion (Está feliz — She is happy)', bg: '#F0FDF9', border: '#6EE7B7', text: '#065F46' },
-        ]
-      },
-      {
-        type: 'table',
-        title: 'Conjugation: SER and ESTAR (Present Tense)',
-        headers: ['Pronoun', 'SER', 'ESTAR'],
-        rows: [
-          ['yo', 'soy', 'estoy'],
-          ['tú', 'eres', 'estás'],
-          ['él / ella', 'es', 'está'],
-          ['nosotros', 'somos', 'estamos'],
-          ['vosotros', 'sois', 'estáis'],
-          ['ellos / ellas', 'son', 'están'],
+        "q": "Which definite article (the) is correct for \"semanas\"?",
+        "choices": [
+          "el semanas",
+          "la semanas",
+          "los semanas",
+          "las semanas"
         ],
-        bg: '#ECFDF5', thBg: '#A7F3D0', thText: '#065F46'
+        "correct": "las semanas",
+        "explanation": "\"semana\" is a feminine plural noun."
       },
       {
-        type: 'examples',
-        title: 'Examples',
-        items: [
-          { es: 'Soy de Filipinas', en: 'I am from the Philippines', audio: 'Soy de Filipinas' },
-          { es: 'Estoy cansado', en: 'I am tired', audio: 'Estoy cansado' },
-          { es: 'Ella es médica', en: 'She is a doctor', audio: 'Ella es médica' },
-          { es: 'El café está caliente', en: 'The coffee is hot', audio: 'El café está caliente' },
-        ]
-      }
-    ],
-    quiz: { q: 'Which is correct for "I am tired" in Spanish?', choices: ['Soy cansado', 'Estoy cansado', 'Ser cansado', 'Es cansado'], correct: 'Estoy cansado', explanation: '"Cansado" (tired) is a temporary state → use ESTAR → "Estoy cansado".' }
-  },
-  {
-    id: 'l3',
-    num: '03',
-    title: 'Presente de Indicativo',
-    subtitle: 'Conjugating regular -AR, -ER, -IR verbs + top irregulars',
-    theme: { bg: '#F0F9FF', text: '#075985', pill: '#BAE6FD', border: '#38BDF8', headBg: '#0EA5E9', headText: '#fff' },
-    sections: [
-      {
-        type: 'rules',
-        title: 'Regular Verb Endings',
-        items: [
-          { title: '-AR Verbs (hablar, trabajar, llamar…) — to speak, to work, to call', body: '<span class="formula-tag" style="background:#BAE6FD;color:#075985;">yo → -o</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">tú → -as</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">él/ella → -a</span><br><span class="formula-tag" style="background:#E0F2FE;color:#075985;">nosotros → -amos</span> <span class="formula-tag" style="background:#E0F2FE;color:#075985;">ellos → -an</span><br>Example: yo habl<strong>o</strong>, tú habl<strong>as</strong>, él habl<strong>a</strong>', bg: '#F0F9FF', border: '#38BDF8', text: '#075985' },
-          { title: '-ER Verbs (comer, beber, hacer…) — to eat, to drink, to do', body: '<span class="formula-tag" style="background:#BAE6FD;color:#075985;">yo → -o</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">tú → -es</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">él/ella → -e</span><br><span class="formula-tag" style="background:#E0F2FE;color:#075985;">nosotros → -emos</span> <span class="formula-tag" style="background:#E0F2FE;color:#075985;">ellos → -en</span><br>Example: yo com<strong>o</strong>, tú com<strong>es</strong>, él com<strong>e</strong>', bg: '#F0F9FF', border: '#38BDF8', text: '#075985' },
-          { title: '-IR Verbs (vivir, escribir, abrir…) — to live, to write, to open', body: '<span class="formula-tag" style="background:#BAE6FD;color:#075985;">yo → -o</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">tú → -es</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">él/ella → -e</span><br><span class="formula-tag" style="background:#E0F2FE;color:#075985;">nosotros → -imos</span> <span class="formula-tag" style="background:#E0F2FE;color:#075985;">ellos → -en</span><br>Example: yo viv<strong>o</strong>, tú viv<strong>es</strong>, él viv<strong>e</strong>', bg: '#F0F9FF', border: '#38BDF8', text: '#075985' },
-        ]
-      },
-      {
-        type: 'table',
-        title: 'Most Common Irregular Verbs',
-        headers: ['Pronoun', 'TENER (to have)', 'IR (to go)', 'HACER (to do)'],
-        rows: [
-          ['yo', 'tengo', 'voy', 'hago'],
-          ['tú', 'tienes', 'vas', 'haces'],
-          ['él / ella', 'tiene', 'va', 'hace'],
-          ['nosotros', 'tenemos', 'vamos', 'hacemos'],
-          ['ellos', 'tienen', 'van', 'hacen'],
+        "q": "Which indefinite article (a/some) is correct for \"dolores\"?",
+        "choices": [
+          "un dolores",
+          "una dolores",
+          "unos dolores",
+          "unas dolores"
         ],
-        bg: '#F0F9FF', thBg: '#BAE6FD', thText: '#075985'
+        "correct": "unos dolores",
+        "explanation": "\"dolor\" is a masculine plural noun."
       },
       {
-        type: 'examples',
-        title: 'Examples',
-        items: [
-          { es: 'Yo hablo español', en: 'I speak Spanish', audio: 'Yo hablo español' },
-          { es: 'Ella come una manzana', en: 'She eats an apple', audio: 'Ella come una manzana' },
-          { es: 'Tengo hambre', en: 'I am hungry', audio: 'Tengo hambre' },
-          { es: '¿Adónde vas?', en: 'Where are you going?', audio: '¿Adónde vas?' },
-        ]
-      }
-    ],
-    quiz: { q: 'How do you conjugate "hablar" (to speak) for "yo" (I)?', choices: ['yo hablas', 'yo hablo', 'yo hablar', 'yo habe'], correct: 'yo hablo', explanation: '-AR verbs: the ending for "yo" (I) is always -o → "yo hablo" (I speak).' }
-  },
-  {
-    id: 'l4',
-    num: '04',
-    title: 'Los Tiempos del Pasado',
-    subtitle: 'Pretérito Indefinido vs. Pretérito Imperfecto',
-    theme: { bg: '#FFFBEB', text: '#92400E', pill: '#FDE68A', border: '#FBBF24', headBg: '#F59E0B', headText: '#fff' },
-    sections: [
-      {
-        type: 'rules',
-        title: 'When to Use Each Past Tense',
-        items: [
-          { title: 'Pretérito Indefinido — Completed Past Action', body: 'Use for finished actions in the past:<br>"Ayer <strong>comí</strong> pizza." → Yesterday I <strong>ate</strong> pizza.<br>"<strong>Fui</strong> a España en 2022." → I <strong>went</strong> to Spain in 2022.<br>⏰ <em>Trigger words: ayer (yesterday), una vez (once), en 2020, el otro día…</em>', bg: '#FFFBEB', border: '#FBBF24', text: '#92400E' },
-          { title: 'Pretérito Imperfecto — Habitual / Ongoing Past', body: 'Use for habits or actions that were ongoing in the past:<br>"De niño <strong>jugaba</strong> fútbol." → As a child, I <strong>used to play</strong> soccer.<br>"<strong>Llovía</strong> cuando llegué." → It <strong>was raining</strong> when I arrived.<br>⏰ <em>Trigger words: siempre (always), todos los días (every day), de niño (as a child)…</em>', bg: '#FEF9E7', border: '#FCD34D', text: '#92400E' },
-        ]
-      },
-      {
-        type: 'table',
-        title: 'Pretérito Indefinido: -AR endings (hablar = to speak)',
-        headers: ['Pronoun', 'Ending', 'Example'],
-        rows: [
-          ['yo', '-é', 'hablé (I spoke)'],
-          ['tú', '-aste', 'hablaste (you spoke)'],
-          ['él / ella', '-ó', 'habló (he/she spoke)'],
-          ['nosotros', '-amos', 'hablamos (we spoke)'],
-          ['ellos', '-aron', 'hablaron (they spoke)'],
+        "q": "Which definite article (the) is correct for \"hombres\"?",
+        "choices": [
+          "el hombres",
+          "la hombres",
+          "los hombres",
+          "las hombres"
         ],
-        bg: '#FFFBEB', thBg: '#FDE68A', thText: '#92400E'
+        "correct": "los hombres",
+        "explanation": "\"hombre\" is a masculine plural noun."
       },
       {
-        type: 'examples',
-        title: 'Examples',
-        items: [
-          { es: 'Ayer fui al mercado', en: 'Yesterday I went to the market', audio: 'Ayer fui al mercado' },
-          { es: 'Cuando era niño, vivía en Manila', en: 'When I was a child, I lived in Manila', audio: 'Cuando era niño, vivía en Manila' },
-          { es: 'Comí mucho anoche', en: 'I ate a lot last night', audio: 'Comí mucho anoche' },
-          { es: 'Siempre estudiaba por la noche', en: 'I always used to study at night', audio: 'Siempre estudiaba por la noche' },
-        ]
+        "q": "Which definite article (the) is correct for \"segundo\"?",
+        "choices": [
+          "el segundo",
+          "la segundo",
+          "los segundo",
+          "las segundo"
+        ],
+        "correct": "el segundo",
+        "explanation": "\"segundo\" is a masculine singular noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"gatos\"?",
+        "choices": [
+          "el gatos",
+          "la gatos",
+          "los gatos",
+          "las gatos"
+        ],
+        "correct": "los gatos",
+        "explanation": "\"gato\" is a masculine plural noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"mujeres\"?",
+        "choices": [
+          "el mujeres",
+          "la mujeres",
+          "los mujeres",
+          "las mujeres"
+        ],
+        "correct": "las mujeres",
+        "explanation": "\"mujer\" is a feminine plural noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"reloj\"?",
+        "choices": [
+          "el reloj",
+          "la reloj",
+          "los reloj",
+          "las reloj"
+        ],
+        "correct": "el reloj",
+        "explanation": "\"reloj\" is a masculine singular noun."
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"hombre\"?",
+        "choices": [
+          "un hombre",
+          "una hombre",
+          "unos hombre",
+          "unas hombre"
+        ],
+        "correct": "un hombre",
+        "explanation": "\"hombre\" is a masculine singular noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"libro\"?",
+        "choices": [
+          "el libro",
+          "la libro",
+          "los libro",
+          "las libro"
+        ],
+        "correct": "el libro",
+        "explanation": "\"libro\" is a masculine singular noun."
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"fotos\"?",
+        "choices": [
+          "un fotos",
+          "una fotos",
+          "unos fotos",
+          "unas fotos"
+        ],
+        "correct": "unas fotos",
+        "explanation": "\"foto\" is a feminine plural noun. It is an exception to the normal gender rules!"
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"mujeres\"?",
+        "choices": [
+          "un mujeres",
+          "una mujeres",
+          "unos mujeres",
+          "unas mujeres"
+        ],
+        "correct": "unas mujeres",
+        "explanation": "\"mujer\" is a feminine plural noun."
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"sillas\"?",
+        "choices": [
+          "un sillas",
+          "una sillas",
+          "unos sillas",
+          "unas sillas"
+        ],
+        "correct": "unas sillas",
+        "explanation": "\"silla\" is a feminine plural noun."
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"moto\"?",
+        "choices": [
+          "un moto",
+          "una moto",
+          "unos moto",
+          "unas moto"
+        ],
+        "correct": "una moto",
+        "explanation": "\"moto\" is a feminine singular noun. It is an exception to the normal gender rules!"
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"gatos\"?",
+        "choices": [
+          "un gatos",
+          "una gatos",
+          "unos gatos",
+          "unas gatos"
+        ],
+        "correct": "unos gatos",
+        "explanation": "\"gato\" is a masculine plural noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"mapa\"?",
+        "choices": [
+          "el mapa",
+          "la mapa",
+          "los mapa",
+          "las mapa"
+        ],
+        "correct": "el mapa",
+        "explanation": "\"mapa\" is a masculine singular noun. It is an exception to the normal gender rules!"
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"semanas\"?",
+        "choices": [
+          "un semanas",
+          "una semanas",
+          "unos semanas",
+          "unas semanas"
+        ],
+        "correct": "unas semanas",
+        "explanation": "\"semana\" is a feminine plural noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"colores\"?",
+        "choices": [
+          "el colores",
+          "la colores",
+          "los colores",
+          "las colores"
+        ],
+        "correct": "los colores",
+        "explanation": "\"color\" is a masculine plural noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"minuto\"?",
+        "choices": [
+          "el minuto",
+          "la minuto",
+          "los minuto",
+          "las minuto"
+        ],
+        "correct": "el minuto",
+        "explanation": "\"minuto\" is a masculine singular noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"sillas\"?",
+        "choices": [
+          "el sillas",
+          "la sillas",
+          "los sillas",
+          "las sillas"
+        ],
+        "correct": "las sillas",
+        "explanation": "\"silla\" is a feminine plural noun."
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"mapa\"?",
+        "choices": [
+          "un mapa",
+          "una mapa",
+          "unos mapa",
+          "unas mapa"
+        ],
+        "correct": "un mapa",
+        "explanation": "\"mapa\" is a masculine singular noun. It is an exception to the normal gender rules!"
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"semanas\"?",
+        "choices": [
+          "un semanas",
+          "una semanas",
+          "unos semanas",
+          "unas semanas"
+        ],
+        "correct": "unas semanas",
+        "explanation": "\"semana\" is a feminine plural noun."
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"planetas\"?",
+        "choices": [
+          "un planetas",
+          "una planetas",
+          "unos planetas",
+          "unas planetas"
+        ],
+        "correct": "unos planetas",
+        "explanation": "\"planeta\" is a masculine plural noun. It is an exception to the normal gender rules!"
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"minutos\"?",
+        "choices": [
+          "un minutos",
+          "una minutos",
+          "unos minutos",
+          "unas minutos"
+        ],
+        "correct": "unos minutos",
+        "explanation": "\"minuto\" is a masculine plural noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"meses\"?",
+        "choices": [
+          "el meses",
+          "la meses",
+          "los meses",
+          "las meses"
+        ],
+        "correct": "los meses",
+        "explanation": "\"mes\" is a masculine plural noun."
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"chica\"?",
+        "choices": [
+          "un chica",
+          "una chica",
+          "unos chica",
+          "unas chica"
+        ],
+        "correct": "una chica",
+        "explanation": "\"chica\" is a feminine singular noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"tren\"?",
+        "choices": [
+          "el tren",
+          "la tren",
+          "los tren",
+          "las tren"
+        ],
+        "correct": "el tren",
+        "explanation": "\"tren\" is a masculine singular noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"sistemas\"?",
+        "choices": [
+          "el sistemas",
+          "la sistemas",
+          "los sistemas",
+          "las sistemas"
+        ],
+        "correct": "los sistemas",
+        "explanation": "\"sistema\" is a masculine plural noun. It is an exception to the normal gender rules!"
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"gato\"?",
+        "choices": [
+          "un gato",
+          "una gato",
+          "unos gato",
+          "unas gato"
+        ],
+        "correct": "un gato",
+        "explanation": "\"gato\" is a masculine singular noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"trenes\"?",
+        "choices": [
+          "el trenes",
+          "la trenes",
+          "los trenes",
+          "las trenes"
+        ],
+        "correct": "los trenes",
+        "explanation": "\"tren\" is a masculine plural noun."
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"papeles\"?",
+        "choices": [
+          "un papeles",
+          "una papeles",
+          "unos papeles",
+          "unas papeles"
+        ],
+        "correct": "unos papeles",
+        "explanation": "\"papel\" is a masculine plural noun."
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"hora\"?",
+        "choices": [
+          "un hora",
+          "una hora",
+          "unos hora",
+          "unas hora"
+        ],
+        "correct": "una hora",
+        "explanation": "\"hora\" is a feminine singular noun."
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"horas\"?",
+        "choices": [
+          "un horas",
+          "una horas",
+          "unos horas",
+          "unas horas"
+        ],
+        "correct": "unas horas",
+        "explanation": "\"hora\" is a feminine plural noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"flores\"?",
+        "choices": [
+          "el flores",
+          "la flores",
+          "los flores",
+          "las flores"
+        ],
+        "correct": "las flores",
+        "explanation": "\"flor\" is a feminine plural noun."
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"dolor\"?",
+        "choices": [
+          "un dolor",
+          "una dolor",
+          "unos dolor",
+          "unas dolor"
+        ],
+        "correct": "un dolor",
+        "explanation": "\"dolor\" is a masculine singular noun."
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"lápiz\"?",
+        "choices": [
+          "un lápiz",
+          "una lápiz",
+          "unos lápiz",
+          "unas lápiz"
+        ],
+        "correct": "un lápiz",
+        "explanation": "\"lápiz\" is a masculine singular noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"hombre\"?",
+        "choices": [
+          "el hombre",
+          "la hombre",
+          "los hombre",
+          "las hombre"
+        ],
+        "correct": "el hombre",
+        "explanation": "\"hombre\" is a masculine singular noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"sillas\"?",
+        "choices": [
+          "el sillas",
+          "la sillas",
+          "los sillas",
+          "las sillas"
+        ],
+        "correct": "las sillas",
+        "explanation": "\"silla\" is a feminine plural noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"problema\"?",
+        "choices": [
+          "el problema",
+          "la problema",
+          "los problema",
+          "las problema"
+        ],
+        "correct": "el problema",
+        "explanation": "\"problema\" is a masculine singular noun. It is an exception to the normal gender rules!"
+      },
+      {
+        "q": "Which definite article (the) is correct for \"mes\"?",
+        "choices": [
+          "el mes",
+          "la mes",
+          "los mes",
+          "las mes"
+        ],
+        "correct": "el mes",
+        "explanation": "\"mes\" is a masculine singular noun."
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"mapa\"?",
+        "choices": [
+          "un mapa",
+          "una mapa",
+          "unos mapa",
+          "unas mapa"
+        ],
+        "correct": "un mapa",
+        "explanation": "\"mapa\" is a masculine singular noun. It is an exception to the normal gender rules!"
+      },
+      {
+        "q": "Which definite article (the) is correct for \"relojes\"?",
+        "choices": [
+          "el relojes",
+          "la relojes",
+          "los relojes",
+          "las relojes"
+        ],
+        "correct": "los relojes",
+        "explanation": "\"reloj\" is a masculine plural noun."
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"segundo\"?",
+        "choices": [
+          "un segundo",
+          "una segundo",
+          "unos segundo",
+          "unas segundo"
+        ],
+        "correct": "un segundo",
+        "explanation": "\"segundo\" is a masculine singular noun."
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"día\"?",
+        "choices": [
+          "un día",
+          "una día",
+          "unos día",
+          "unas día"
+        ],
+        "correct": "un día",
+        "explanation": "\"día\" is a masculine singular noun. It is an exception to the normal gender rules!"
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"chicas\"?",
+        "choices": [
+          "un chicas",
+          "una chicas",
+          "unos chicas",
+          "unas chicas"
+        ],
+        "correct": "unas chicas",
+        "explanation": "\"chica\" is a feminine plural noun."
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"calores\"?",
+        "choices": [
+          "un calores",
+          "una calores",
+          "unos calores",
+          "unas calores"
+        ],
+        "correct": "unos calores",
+        "explanation": "\"calor\" is a masculine plural noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"acción\"?",
+        "choices": [
+          "el acción",
+          "la acción",
+          "los acción",
+          "las acción"
+        ],
+        "correct": "la acción",
+        "explanation": "\"acción\" is a feminine singular noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"semanas\"?",
+        "choices": [
+          "el semanas",
+          "la semanas",
+          "los semanas",
+          "las semanas"
+        ],
+        "correct": "las semanas",
+        "explanation": "\"semana\" is a feminine plural noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"planetas\"?",
+        "choices": [
+          "el planetas",
+          "la planetas",
+          "los planetas",
+          "las planetas"
+        ],
+        "correct": "los planetas",
+        "explanation": "\"planeta\" is a masculine plural noun. It is an exception to the normal gender rules!"
+      },
+      {
+        "q": "Which indefinite article (a/some) is correct for \"mes\"?",
+        "choices": [
+          "un mes",
+          "una mes",
+          "unos mes",
+          "unas mes"
+        ],
+        "correct": "un mes",
+        "explanation": "\"mes\" is a masculine singular noun."
+      },
+      {
+        "q": "Which definite article (the) is correct for \"casa\"?",
+        "choices": [
+          "el casa",
+          "la casa",
+          "los casa",
+          "las casa"
+        ],
+        "correct": "la casa",
+        "explanation": "\"casa\" is a feminine singular noun."
       }
-    ],
-    quiz: { q: '"Ayer _____ al trabajo." Fill in the blank. (Yesterday I ___ to work.)', choices: ['iba', 'fui', 'voy', 'fue'], correct: 'fui', explanation: '"Ayer" (yesterday) signals a completed past action → use Pretérito Indefinido → "fui" (I went).' }
+    ]
   },
   {
-    id: 'l5',
-    num: '05',
-    title: 'Expresar el Futuro',
-    subtitle: 'Ir a + Infinitivo & Futuro Simple endings',
-    theme: { bg: '#FFF1F2', text: '#9F1239', pill: '#FECDD3', border: '#FB7185', headBg: '#F43F5E', headText: '#fff' },
-    sections: [
+    "id": "l2",
+    "num": "02",
+    "title": "Ser vs. Estar",
+    "subtitle": "The two \"to be\" verbs — Permanent vs. Temporary",
+    "theme": {
+      "bg": "#F0FDF4",
+      "text": "#166534",
+      "pill": "#BBF7D0",
+      "border": "#4ADE80",
+      "headBg": "#22C55E",
+      "headText": "#fff"
+    },
+    "sections": [
       {
-        type: 'rules',
-        title: 'Two Ways to Express the Future',
-        items: [
-          { title: 'Near Future: IR A + Infinitive (going to)', body: '<span class="formula-tag" style="background:#FECDD3;color:#9F1239;">Subject + ir (conjugated) + a + verb (infinitive)</span><br>"Voy a estudiar esta noche." → I\'m going to study tonight.<br>"Ella va a comer." → She\'s going to eat.<br>✅ <em>Use this for plans and near-future intentions.</em>', bg: '#FFF1F2', border: '#FB7185', text: '#9F1239' },
-          { title: 'Simple Future: add endings to the infinitive (will + verb)', body: 'Add these endings directly to the infinitive:<br><span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">yo → -é</span> <span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">tú → -ás</span> <span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">él → -á</span><br><span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">nosotros → -emos</span> <span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">ellos → -án</span><br>"Mañana <strong>hablaré</strong> con ella." → Tomorrow I <strong>will talk</strong> to her.', bg: '#FFF0F3', border: '#FDA4AF', text: '#9F1239' },
+        "type": "rules",
+        "title": "When to use which?",
+        "items": [
+          {
+            "title": "Ser (Permanent / Identity - DOCTOR)",
+            "body": "<strong>D</strong>escription, <strong>O</strong>ccupation, <strong>C</strong>haracteristic, <strong>T</strong>ime, <strong>O</strong>rigin, <strong>R</strong>elationship.<br>\"Soy alto\" (I am tall).",
+            "bg": "#F0FDF4",
+            "border": "#4ADE80",
+            "text": "#166534"
+          },
+          {
+            "title": "Estar (Temporary / Location - PLACE)",
+            "body": "<strong>P</strong>osition, <strong>L</strong>ocation, <strong>A</strong>ction, <strong>C</strong>ondition, <strong>E</strong>motion.<br>\"Estoy cansado\" (I am tired).",
+            "bg": "#F0FDF4",
+            "border": "#4ADE80",
+            "text": "#166534"
+          }
         ]
       },
       {
-        type: 'examples',
-        title: 'Examples',
-        items: [
-          { es: 'Voy a aprender español', en: 'I\'m going to learn Spanish', audio: 'Voy a aprender español' },
-          { es: 'Mañana comeré contigo', en: 'Tomorrow I will eat with you', audio: 'Mañana comeré contigo' },
-          { es: '¿Qué vas a hacer hoy?', en: 'What are you going to do today?', audio: '¿Qué vas a hacer hoy?' },
-          { es: 'Hablaremos más tarde', en: 'We will talk later', audio: 'Hablaremos más tarde' },
+        "type": "table",
+        "title": "Present Tense Conjugation",
+        "headers": [
+          "Pronoun",
+          "Ser",
+          "Estar"
+        ],
+        "rows": [
+          [
+            "Yo (I)",
+            "soy",
+            "estoy"
+          ],
+          [
+            "Tú (You)",
+            "eres",
+            "estás"
+          ],
+          [
+            "Él/Ella (He/She)",
+            "es",
+            "está"
+          ],
+          [
+            "Nosotros (We)",
+            "somos",
+            "estamos"
+          ],
+          [
+            "Ellos (They)",
+            "son",
+            "están"
+          ]
         ]
       }
     ],
-    quiz: { q: 'How do you say "I\'m going to eat" in Spanish?', choices: ['Voy a comer', 'Comeré', 'Como', 'Comí'], correct: 'Voy a comer', explanation: 'Near future = IR A + infinitive → "voy a comer" (I\'m going to eat).' }
+    "quizzes": [
+      {
+        "q": "Choose between Ser or Estar: \"Tú ___ aburrido (bored).\"",
+        "choices": [
+          "Tú eres",
+          "Tú es",
+          "Tú está",
+          "Tú estás"
+        ],
+        "correct": "Tú estás",
+        "explanation": "We use Estar here because it indicates Emotion/Condition (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Nosotros ___ cansados.\"",
+        "choices": [
+          "Nosotros somos",
+          "Nosotros está",
+          "Nosotros es",
+          "Nosotros estamos"
+        ],
+        "correct": "Nosotros estamos",
+        "explanation": "We use Estar here because it indicates Condition/Feeling (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Nosotros ___ de España.\"",
+        "choices": [
+          "Nosotros somos",
+          "Nosotros es",
+          "Nosotros está",
+          "Nosotros estamos"
+        ],
+        "correct": "Nosotros somos",
+        "explanation": "We use Ser here because it indicates Origin (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Ellos ___ enfermos.\"",
+        "choices": [
+          "Ellos están",
+          "Ellos está",
+          "Ellos es",
+          "Ellos son"
+        ],
+        "correct": "Ellos están",
+        "explanation": "We use Estar here because it indicates Condition (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Él/Ella ___ cerrado.\"",
+        "choices": [
+          "Él/Ella es",
+          "Él/Ella están",
+          "Él/Ella está",
+          "Él/Ella soy"
+        ],
+        "correct": "Él/Ella está",
+        "explanation": "We use Estar here because it indicates Condition/State (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Yo ___ las tres.\"",
+        "choices": [
+          "Yo estoy",
+          "Yo está",
+          "Yo soy",
+          "Yo es"
+        ],
+        "correct": "Yo soy",
+        "explanation": "We use Ser here because it indicates Time (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Tú ___ comiendo.\"",
+        "choices": [
+          "Tú eres",
+          "Tú es",
+          "Tú está",
+          "Tú estás"
+        ],
+        "correct": "Tú estás",
+        "explanation": "We use Estar here because it indicates Action/Progressive (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Yo ___ las tres.\"",
+        "choices": [
+          "Yo es",
+          "Yo está",
+          "Yo estoy",
+          "Yo soy"
+        ],
+        "correct": "Yo soy",
+        "explanation": "We use Ser here because it indicates Time (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Tú ___ en la oficina.\"",
+        "choices": [
+          "Tú estás",
+          "Tú eres",
+          "Tú está",
+          "Tú es"
+        ],
+        "correct": "Tú estás",
+        "explanation": "We use Estar here because it indicates Location (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Ellos ___ enfermos.\"",
+        "choices": [
+          "Ellos están",
+          "Ellos está",
+          "Ellos es",
+          "Ellos son"
+        ],
+        "correct": "Ellos están",
+        "explanation": "We use Estar here because it indicates Condition (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Nosotros ___ las tres.\"",
+        "choices": [
+          "Nosotros estamos",
+          "Nosotros es",
+          "Nosotros somos",
+          "Nosotros está"
+        ],
+        "correct": "Nosotros somos",
+        "explanation": "We use Ser here because it indicates Time (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Nosotros ___ médicos.\"",
+        "choices": [
+          "Nosotros somos",
+          "Nosotros está",
+          "Nosotros estamos",
+          "Nosotros es"
+        ],
+        "correct": "Nosotros somos",
+        "explanation": "We use Ser here because it indicates Occupation (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Yo ___ español.\"",
+        "choices": [
+          "Yo es",
+          "Yo estoy",
+          "Yo está",
+          "Yo soy"
+        ],
+        "correct": "Yo soy",
+        "explanation": "We use Ser here because it indicates Nationality (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Yo ___ aburrido (boring).\"",
+        "choices": [
+          "Yo está",
+          "Yo es",
+          "Yo soy",
+          "Yo estoy"
+        ],
+        "correct": "Yo soy",
+        "explanation": "We use Ser here because it indicates Characteristic (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Nosotros ___ estudiando.\"",
+        "choices": [
+          "Nosotros es",
+          "Nosotros estamos",
+          "Nosotros está",
+          "Nosotros somos"
+        ],
+        "correct": "Nosotros estamos",
+        "explanation": "We use Estar here because it indicates Action/Progressive (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Nosotros ___ mi hermano.\"",
+        "choices": [
+          "Nosotros es",
+          "Nosotros está",
+          "Nosotros somos",
+          "Nosotros estamos"
+        ],
+        "correct": "Nosotros somos",
+        "explanation": "We use Ser here because it indicates Relationship (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Yo ___ estudiando.\"",
+        "choices": [
+          "Yo soy",
+          "Yo está",
+          "Yo es",
+          "Yo estoy"
+        ],
+        "correct": "Yo estoy",
+        "explanation": "We use Estar here because it indicates Action/Progressive (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Tú ___ cansado.\"",
+        "choices": [
+          "Tú estás",
+          "Tú es",
+          "Tú está",
+          "Tú eres"
+        ],
+        "correct": "Tú estás",
+        "explanation": "We use Estar here because it indicates Condition/Feeling (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Tú ___ de madera.\"",
+        "choices": [
+          "Tú estás",
+          "Tú es",
+          "Tú eres",
+          "Tú está"
+        ],
+        "correct": "Tú eres",
+        "explanation": "We use Ser here because it indicates Material (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Yo ___ cerrado.\"",
+        "choices": [
+          "Yo estoy",
+          "Yo es",
+          "Yo soy",
+          "Yo está"
+        ],
+        "correct": "Yo estoy",
+        "explanation": "We use Estar here because it indicates Condition/State (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Nosotros ___ aburridos (bored).\"",
+        "choices": [
+          "Nosotros somos",
+          "Nosotros es",
+          "Nosotros estamos",
+          "Nosotros está"
+        ],
+        "correct": "Nosotros estamos",
+        "explanation": "We use Estar here because it indicates Emotion/Condition (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Tú ___ aburrido (bored).\"",
+        "choices": [
+          "Tú eres",
+          "Tú está",
+          "Tú es",
+          "Tú estás"
+        ],
+        "correct": "Tú estás",
+        "explanation": "We use Estar here because it indicates Emotion/Condition (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Yo ___ aburrido (boring).\"",
+        "choices": [
+          "Yo está",
+          "Yo estoy",
+          "Yo es",
+          "Yo soy"
+        ],
+        "correct": "Yo soy",
+        "explanation": "We use Ser here because it indicates Characteristic (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Ellos ___ en la oficina.\"",
+        "choices": [
+          "Ellos está",
+          "Ellos es",
+          "Ellos están",
+          "Ellos son"
+        ],
+        "correct": "Ellos están",
+        "explanation": "We use Estar here because it indicates Location (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Yo ___ inteligente.\"",
+        "choices": [
+          "Yo estoy",
+          "Yo está",
+          "Yo es",
+          "Yo soy"
+        ],
+        "correct": "Yo soy",
+        "explanation": "We use Ser here because it indicates Characteristic (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Yo ___ cerrado.\"",
+        "choices": [
+          "Yo está",
+          "Yo estoy",
+          "Yo es",
+          "Yo soy"
+        ],
+        "correct": "Yo estoy",
+        "explanation": "We use Estar here because it indicates Condition/State (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Yo ___ un coche.\"",
+        "choices": [
+          "Yo soy",
+          "Yo estoy",
+          "Yo es",
+          "Yo está"
+        ],
+        "correct": "Yo soy",
+        "explanation": "We use Ser here because it indicates Identification (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Tú ___ mi hermano.\"",
+        "choices": [
+          "Tú está",
+          "Tú estás",
+          "Tú eres",
+          "Tú es"
+        ],
+        "correct": "Tú eres",
+        "explanation": "We use Ser here because it indicates Relationship (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Tú ___ cerrado.\"",
+        "choices": [
+          "Tú estás",
+          "Tú está",
+          "Tú eres",
+          "Tú es"
+        ],
+        "correct": "Tú estás",
+        "explanation": "We use Estar here because it indicates Condition/State (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Yo ___ cansado.\"",
+        "choices": [
+          "Yo soy",
+          "Yo estoy",
+          "Yo es",
+          "Yo está"
+        ],
+        "correct": "Yo estoy",
+        "explanation": "We use Estar here because it indicates Condition/Feeling (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Ellos ___ cansados.\"",
+        "choices": [
+          "Ellos están",
+          "Ellos está",
+          "Ellos es",
+          "Ellos son"
+        ],
+        "correct": "Ellos están",
+        "explanation": "We use Estar here because it indicates Condition/Feeling (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Él/Ella ___ de España.\"",
+        "choices": [
+          "Él/Ella estamos",
+          "Él/Ella es",
+          "Él/Ella está",
+          "Él/Ella somos"
+        ],
+        "correct": "Él/Ella es",
+        "explanation": "We use Ser here because it indicates Origin (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Ellos ___ españoles.\"",
+        "choices": [
+          "Ellos están",
+          "Ellos son",
+          "Ellos está",
+          "Ellos es"
+        ],
+        "correct": "Ellos son",
+        "explanation": "We use Ser here because it indicates Nationality (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Él/Ella ___ estudiando.\"",
+        "choices": [
+          "Él/Ella estoy",
+          "Él/Ella está",
+          "Él/Ella somos",
+          "Él/Ella es"
+        ],
+        "correct": "Él/Ella está",
+        "explanation": "We use Estar here because it indicates Action/Progressive (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Ellos ___ médicos.\"",
+        "choices": [
+          "Ellos son",
+          "Ellos es",
+          "Ellos está",
+          "Ellos están"
+        ],
+        "correct": "Ellos son",
+        "explanation": "We use Ser here because it indicates Occupation (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Tú ___ un coche.\"",
+        "choices": [
+          "Tú está",
+          "Tú estás",
+          "Tú eres",
+          "Tú es"
+        ],
+        "correct": "Tú eres",
+        "explanation": "We use Ser here because it indicates Identification (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Nosotros ___ en la oficina.\"",
+        "choices": [
+          "Nosotros somos",
+          "Nosotros está",
+          "Nosotros estamos",
+          "Nosotros es"
+        ],
+        "correct": "Nosotros estamos",
+        "explanation": "We use Estar here because it indicates Location (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Él/Ella ___ abierto.\"",
+        "choices": [
+          "Él/Ella está",
+          "Él/Ella son",
+          "Él/Ella somos",
+          "Él/Ella es"
+        ],
+        "correct": "Él/Ella está",
+        "explanation": "We use Estar here because it indicates Condition/State (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Nosotros ___ inteligente.\"",
+        "choices": [
+          "Nosotros estamos",
+          "Nosotros somos",
+          "Nosotros es",
+          "Nosotros está"
+        ],
+        "correct": "Nosotros somos",
+        "explanation": "We use Ser here because it indicates Characteristic (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Yo ___ médico.\"",
+        "choices": [
+          "Yo está",
+          "Yo soy",
+          "Yo es",
+          "Yo estoy"
+        ],
+        "correct": "Yo soy",
+        "explanation": "We use Ser here because it indicates Occupation (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Ellos ___ feliz.\"",
+        "choices": [
+          "Ellos es",
+          "Ellos están",
+          "Ellos está",
+          "Ellos son"
+        ],
+        "correct": "Ellos están",
+        "explanation": "We use Estar here because it indicates Emotion (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Él/Ella ___ en Madrid.\"",
+        "choices": [
+          "Él/Ella es",
+          "Él/Ella somos",
+          "Él/Ella está",
+          "Él/Ella son"
+        ],
+        "correct": "Él/Ella está",
+        "explanation": "We use Estar here because it indicates Location (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Él/Ella ___ médico.\"",
+        "choices": [
+          "Él/Ella están",
+          "Él/Ella soy",
+          "Él/Ella es",
+          "Él/Ella está"
+        ],
+        "correct": "Él/Ella es",
+        "explanation": "We use Ser here because it indicates Occupation (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Nosotros ___ inteligente.\"",
+        "choices": [
+          "Nosotros es",
+          "Nosotros estamos",
+          "Nosotros está",
+          "Nosotros somos"
+        ],
+        "correct": "Nosotros somos",
+        "explanation": "We use Ser here because it indicates Characteristic (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Tú ___ abierto.\"",
+        "choices": [
+          "Tú eres",
+          "Tú está",
+          "Tú estás",
+          "Tú es"
+        ],
+        "correct": "Tú estás",
+        "explanation": "We use Estar here because it indicates Condition/State (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Yo ___ cerrado.\"",
+        "choices": [
+          "Yo soy",
+          "Yo es",
+          "Yo estoy",
+          "Yo está"
+        ],
+        "correct": "Yo estoy",
+        "explanation": "We use Estar here because it indicates Condition/State (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Él/Ella ___ español.\"",
+        "choices": [
+          "Él/Ella estamos",
+          "Él/Ella son",
+          "Él/Ella es",
+          "Él/Ella está"
+        ],
+        "correct": "Él/Ella es",
+        "explanation": "We use Ser here because it indicates Nationality (DOCTOR)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Él/Ella ___ cerrado.\"",
+        "choices": [
+          "Él/Ella está",
+          "Él/Ella somos",
+          "Él/Ella es",
+          "Él/Ella son"
+        ],
+        "correct": "Él/Ella está",
+        "explanation": "We use Estar here because it indicates Condition/State (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Él/Ella ___ estudiando.\"",
+        "choices": [
+          "Él/Ella está",
+          "Él/Ella son",
+          "Él/Ella somos",
+          "Él/Ella es"
+        ],
+        "correct": "Él/Ella está",
+        "explanation": "We use Estar here because it indicates Action/Progressive (PLACE)."
+      },
+      {
+        "q": "Choose between Ser or Estar: \"Yo ___ en Madrid.\"",
+        "choices": [
+          "Yo estoy",
+          "Yo es",
+          "Yo soy",
+          "Yo está"
+        ],
+        "correct": "Yo estoy",
+        "explanation": "We use Estar here because it indicates Location (PLACE)."
+      }
+    ]
   },
   {
-    id: 'l6',
-    num: '06',
-    title: 'Pronombres y Estructura',
-    subtitle: 'Direct/Indirect pronouns — me, te, le, lo, la + word order',
-    theme: { bg: '#FAF5FF', text: '#6B21A8', pill: '#E9D5FF', border: '#C084FC', headBg: '#A855F7', headText: '#fff' },
-    sections: [
+    "id": "l3",
+    "num": "03",
+    "title": "Presente Simple",
+    "subtitle": "Present tense verbs (-ar, -er, -ir)",
+    "theme": {
+      "bg": "#FFFBEB",
+      "text": "#92400E",
+      "pill": "#FDE68A",
+      "border": "#FBBF24",
+      "headBg": "#F59E0B",
+      "headText": "#fff"
+    },
+    "sections": [
       {
-        type: 'rules',
-        title: 'Object Pronouns',
-        items: [
-          { title: 'Indirect Object Pronouns (to whom?)', body: '<span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">me</span> (to me) <span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">te</span> (to you) <span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">le</span> (to him/her)<br><span class="formula-tag" style="background:#F3E8FF;color:#6B21A8;">nos</span> (to us) <span class="formula-tag" style="background:#F3E8FF;color:#6B21A8;">les</span> (to them)<br>"<strong>Le</strong> di el libro." → I gave <em>him/her</em> the book.', bg: '#FAF5FF', border: '#C084FC', text: '#6B21A8' },
-          { title: 'Direct Object Pronouns (what / whom?)', body: '<span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">lo / la</span> (it/him/her) <span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">los / las</span> (them)<br>"<strong>Lo</strong> veo." → I see <em>it/him</em>.<br>"<strong>La</strong> quiero." → I love <em>her</em>.', bg: '#F5F3FF', border: '#DDD6FE', text: '#6B21A8' },
-          { title: 'Word Order in Spanish', body: 'Basic order: <span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">Subject + Verb + Object</span><br>"Yo (S) como (V) una manzana (O)." → I eat an apple.<br>Pronoun goes BEFORE the verb: "Yo <strong>la</strong> como." → I eat it.<br>Negation: "Yo <strong>no la</strong> como." → I don\'t eat it.', bg: '#FAF5FF', border: '#C084FC', text: '#6B21A8' },
+        "type": "rules",
+        "title": "How to Conjugate",
+        "items": [
+          {
+            "title": "Step 1: Find the stem",
+            "body": "Remove the -ar, -er, or -ir ending. (hablar → <strong>habl-</strong>)",
+            "bg": "#FFFBEB",
+            "border": "#FBBF24",
+            "text": "#92400E"
+          },
+          {
+            "title": "Step 2: Add the ending",
+            "body": "Match the ending to the pronoun (who is doing the action).",
+            "bg": "#FFFBEB",
+            "border": "#FBBF24",
+            "text": "#92400E"
+          }
         ]
       },
       {
-        type: 'examples',
-        title: 'Examples',
-        items: [
-          { es: 'Me gusta el café', en: 'I like coffee (lit: coffee pleases me)', audio: 'Me gusta el café' },
-          { es: 'Te quiero mucho', en: 'I love you a lot', audio: 'Te quiero mucho' },
-          { es: 'Le doy el dinero', en: 'I give him/her the money', audio: 'Le doy el dinero' },
-          { es: 'No lo entiendo', en: 'I don\'t understand it', audio: 'No lo entiendo' },
+        "type": "table",
+        "title": "Regular Endings",
+        "headers": [
+          "Pronoun",
+          "-ar (hablar / to speak)",
+          "-er (comer / to eat)",
+          "-ir (vivir / to live)"
+        ],
+        "rows": [
+          [
+            "Yo",
+            "-o (hablo)",
+            "-o (como)",
+            "-o (vivo)"
+          ],
+          [
+            "Tú",
+            "-as (hablas)",
+            "-es (comes)",
+            "-es (vives)"
+          ],
+          [
+            "Él/Ella",
+            "-a (habla)",
+            "-e (come)",
+            "-e (vive)"
+          ],
+          [
+            "Nosotros",
+            "-amos (hablamos)",
+            "-emos (comemos)",
+            "-imos (vivimos)"
+          ],
+          [
+            "Ellos",
+            "-an (hablan)",
+            "-en (comen)",
+            "-en (viven)"
+          ]
         ]
       }
     ],
-    quiz: { q: 'How do you say "I like coffee" in Spanish?', choices: ['Yo gusto el café', 'Me gusta el café', 'Le gusta el café', 'Lo gusta el café'], correct: 'Me gusta el café', explanation: '"Gustar" works in reverse: the subject is "café", and "me" = to me. → "Me gusta el café" (Coffee pleases me = I like coffee).' }
+    "quizzes": [
+      {
+        "q": "Conjugate \"aprender\" in Present Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "aprendamos",
+          "aprendo",
+          "aprenda",
+          "aprenden"
+        ],
+        "correct": "aprenden",
+        "explanation": "For regular -er verbs, the \"Ellos/Ellas\" ending in present tense is -en."
+      },
+      {
+        "q": "Conjugate \"comer\" in Present Tense for \"Nosotros\".",
+        "choices": [
+          "coma",
+          "como",
+          "comamos",
+          "comemos"
+        ],
+        "correct": "comemos",
+        "explanation": "For regular -er verbs, the \"Nosotros\" ending in present tense is -emos."
+      },
+      {
+        "q": "Conjugate \"correr\" in Present Tense for \"Yo\".",
+        "choices": [
+          "corro",
+          "corra",
+          "corran",
+          "corramos"
+        ],
+        "correct": "corro",
+        "explanation": "For regular -er verbs, the \"Yo\" ending in present tense is -o."
+      },
+      {
+        "q": "Conjugate \"vivir\" in Present Tense for \"Él/Ella\".",
+        "choices": [
+          "vive",
+          "viva",
+          "vivo",
+          "vivamos"
+        ],
+        "correct": "vive",
+        "explanation": "For regular -ir verbs, the \"Él/Ella\" ending in present tense is -e."
+      },
+      {
+        "q": "Conjugate \"correr\" in Present Tense for \"Él/Ella\".",
+        "choices": [
+          "corramos",
+          "corro",
+          "corre",
+          "corra"
+        ],
+        "correct": "corre",
+        "explanation": "For regular -er verbs, the \"Él/Ella\" ending in present tense is -e."
+      },
+      {
+        "q": "Conjugate \"subir\" in Present Tense for \"Tú\".",
+        "choices": [
+          "subo",
+          "subes",
+          "suba",
+          "subamos"
+        ],
+        "correct": "subes",
+        "explanation": "For regular -ir verbs, the \"Tú\" ending in present tense is -es."
+      },
+      {
+        "q": "Conjugate \"leer\" in Present Tense for \"Tú\".",
+        "choices": [
+          "lees",
+          "lea",
+          "leamos",
+          "leo"
+        ],
+        "correct": "lees",
+        "explanation": "For regular -er verbs, the \"Tú\" ending in present tense is -es."
+      },
+      {
+        "q": "Conjugate \"correr\" in Present Tense for \"Nosotros\".",
+        "choices": [
+          "corremos",
+          "corro",
+          "corramos",
+          "corra"
+        ],
+        "correct": "corremos",
+        "explanation": "For regular -er verbs, the \"Nosotros\" ending in present tense is -emos."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Present Tense for \"Yo\".",
+        "choices": [
+          "escribo",
+          "escriba",
+          "escriban",
+          "escribamos"
+        ],
+        "correct": "escribo",
+        "explanation": "For regular -ir verbs, the \"Yo\" ending in present tense is -o."
+      },
+      {
+        "q": "Conjugate \"trabajar\" in Present Tense for \"Él/Ella\".",
+        "choices": [
+          "trabajo",
+          "trabajamos",
+          "trabaja",
+          "trabaje"
+        ],
+        "correct": "trabaja",
+        "explanation": "For regular -ar verbs, the \"Él/Ella\" ending in present tense is -a."
+      },
+      {
+        "q": "Conjugate \"hablar\" in Present Tense for \"Tú\".",
+        "choices": [
+          "habla",
+          "hablas",
+          "hablamos",
+          "hablo"
+        ],
+        "correct": "hablas",
+        "explanation": "For regular -ar verbs, the \"Tú\" ending in present tense is -as."
+      },
+      {
+        "q": "Conjugate \"correr\" in Present Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "corren",
+          "corro",
+          "corramos",
+          "corra"
+        ],
+        "correct": "corren",
+        "explanation": "For regular -er verbs, the \"Ellos/Ellas\" ending in present tense is -en."
+      },
+      {
+        "q": "Conjugate \"correr\" in Present Tense for \"Tú\".",
+        "choices": [
+          "corro",
+          "corres",
+          "corramos",
+          "corra"
+        ],
+        "correct": "corres",
+        "explanation": "For regular -er verbs, the \"Tú\" ending in present tense is -es."
+      },
+      {
+        "q": "Conjugate \"cantar\" in Present Tense for \"Tú\".",
+        "choices": [
+          "cantas",
+          "canto",
+          "cantamos",
+          "canta"
+        ],
+        "correct": "cantas",
+        "explanation": "For regular -ar verbs, the \"Tú\" ending in present tense is -as."
+      },
+      {
+        "q": "Conjugate \"bailar\" in Present Tense for \"Tú\".",
+        "choices": [
+          "bailamos",
+          "bailo",
+          "baila",
+          "bailas"
+        ],
+        "correct": "bailas",
+        "explanation": "For regular -ar verbs, the \"Tú\" ending in present tense is -as."
+      },
+      {
+        "q": "Conjugate \"aprender\" in Present Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "aprenden",
+          "aprendo",
+          "aprenda",
+          "aprendamos"
+        ],
+        "correct": "aprenden",
+        "explanation": "For regular -er verbs, the \"Ellos/Ellas\" ending in present tense is -en."
+      },
+      {
+        "q": "Conjugate \"subir\" in Present Tense for \"Tú\".",
+        "choices": [
+          "subes",
+          "subamos",
+          "suba",
+          "subo"
+        ],
+        "correct": "subes",
+        "explanation": "For regular -ir verbs, the \"Tú\" ending in present tense is -es."
+      },
+      {
+        "q": "Conjugate \"estudiar\" in Present Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "estudia",
+          "estudian",
+          "estudiamos",
+          "estudio"
+        ],
+        "correct": "estudian",
+        "explanation": "For regular -ar verbs, the \"Ellos/Ellas\" ending in present tense is -an."
+      },
+      {
+        "q": "Conjugate \"correr\" in Present Tense for \"Yo\".",
+        "choices": [
+          "corran",
+          "corra",
+          "corro",
+          "corramos"
+        ],
+        "correct": "corro",
+        "explanation": "For regular -er verbs, the \"Yo\" ending in present tense is -o."
+      },
+      {
+        "q": "Conjugate \"leer\" in Present Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "lea",
+          "leamos",
+          "leo",
+          "leen"
+        ],
+        "correct": "leen",
+        "explanation": "For regular -er verbs, the \"Ellos/Ellas\" ending in present tense is -en."
+      },
+      {
+        "q": "Conjugate \"cantar\" in Present Tense for \"Tú\".",
+        "choices": [
+          "cantamos",
+          "canto",
+          "cantas",
+          "canta"
+        ],
+        "correct": "cantas",
+        "explanation": "For regular -ar verbs, the \"Tú\" ending in present tense is -as."
+      },
+      {
+        "q": "Conjugate \"leer\" in Present Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "leamos",
+          "leen",
+          "lea",
+          "leo"
+        ],
+        "correct": "leen",
+        "explanation": "For regular -er verbs, the \"Ellos/Ellas\" ending in present tense is -en."
+      },
+      {
+        "q": "Conjugate \"cantar\" in Present Tense for \"Nosotros\".",
+        "choices": [
+          "canto",
+          "canta",
+          "cantemos",
+          "cantamos"
+        ],
+        "correct": "cantamos",
+        "explanation": "For regular -ar verbs, the \"Nosotros\" ending in present tense is -amos."
+      },
+      {
+        "q": "Conjugate \"comer\" in Present Tense for \"Él/Ella\".",
+        "choices": [
+          "come",
+          "como",
+          "coma",
+          "comamos"
+        ],
+        "correct": "come",
+        "explanation": "For regular -er verbs, the \"Él/Ella\" ending in present tense is -e."
+      },
+      {
+        "q": "Conjugate \"decidir\" in Present Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "decidamos",
+          "deciden",
+          "decido",
+          "decida"
+        ],
+        "correct": "deciden",
+        "explanation": "For regular -ir verbs, the \"Ellos/Ellas\" ending in present tense is -en."
+      },
+      {
+        "q": "Conjugate \"correr\" in Present Tense for \"Nosotros\".",
+        "choices": [
+          "corro",
+          "corramos",
+          "corra",
+          "corremos"
+        ],
+        "correct": "corremos",
+        "explanation": "For regular -er verbs, the \"Nosotros\" ending in present tense is -emos."
+      },
+      {
+        "q": "Conjugate \"subir\" in Present Tense for \"Tú\".",
+        "choices": [
+          "suba",
+          "subamos",
+          "subes",
+          "subo"
+        ],
+        "correct": "subes",
+        "explanation": "For regular -ir verbs, the \"Tú\" ending in present tense is -es."
+      },
+      {
+        "q": "Conjugate \"aprender\" in Present Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "aprendamos",
+          "aprenda",
+          "aprendo",
+          "aprenden"
+        ],
+        "correct": "aprenden",
+        "explanation": "For regular -er verbs, the \"Ellos/Ellas\" ending in present tense is -en."
+      },
+      {
+        "q": "Conjugate \"cantar\" in Present Tense for \"Tú\".",
+        "choices": [
+          "canto",
+          "cantamos",
+          "canta",
+          "cantas"
+        ],
+        "correct": "cantas",
+        "explanation": "For regular -ar verbs, the \"Tú\" ending in present tense is -as."
+      },
+      {
+        "q": "Conjugate \"beber\" in Present Tense for \"Nosotros\".",
+        "choices": [
+          "bebemos",
+          "bebo",
+          "beba",
+          "bebamos"
+        ],
+        "correct": "bebemos",
+        "explanation": "For regular -er verbs, the \"Nosotros\" ending in present tense is -emos."
+      },
+      {
+        "q": "Conjugate \"correr\" in Present Tense for \"Él/Ella\".",
+        "choices": [
+          "corramos",
+          "corro",
+          "corra",
+          "corre"
+        ],
+        "correct": "corre",
+        "explanation": "For regular -er verbs, the \"Él/Ella\" ending in present tense is -e."
+      },
+      {
+        "q": "Conjugate \"decidir\" in Present Tense for \"Yo\".",
+        "choices": [
+          "decida",
+          "decidan",
+          "decido",
+          "decidamos"
+        ],
+        "correct": "decido",
+        "explanation": "For regular -ir verbs, the \"Yo\" ending in present tense is -o."
+      },
+      {
+        "q": "Conjugate \"vivir\" in Present Tense for \"Yo\".",
+        "choices": [
+          "vivan",
+          "vivamos",
+          "vivo",
+          "viva"
+        ],
+        "correct": "vivo",
+        "explanation": "For regular -ir verbs, the \"Yo\" ending in present tense is -o."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Present Tense for \"Tú\".",
+        "choices": [
+          "escribamos",
+          "escribes",
+          "escribo",
+          "escriba"
+        ],
+        "correct": "escribes",
+        "explanation": "For regular -ir verbs, the \"Tú\" ending in present tense is -es."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Present Tense for \"Nosotros\".",
+        "choices": [
+          "escribo",
+          "escribimos",
+          "escriba",
+          "escribamos"
+        ],
+        "correct": "escribimos",
+        "explanation": "For regular -ir verbs, the \"Nosotros\" ending in present tense is -imos."
+      },
+      {
+        "q": "Conjugate \"decidir\" in Present Tense for \"Yo\".",
+        "choices": [
+          "decidamos",
+          "decido",
+          "decidan",
+          "decida"
+        ],
+        "correct": "decido",
+        "explanation": "For regular -ir verbs, the \"Yo\" ending in present tense is -o."
+      },
+      {
+        "q": "Conjugate \"vivir\" in Present Tense for \"Él/Ella\".",
+        "choices": [
+          "vivamos",
+          "vive",
+          "viva",
+          "vivo"
+        ],
+        "correct": "vive",
+        "explanation": "For regular -ir verbs, the \"Él/Ella\" ending in present tense is -e."
+      },
+      {
+        "q": "Conjugate \"bailar\" in Present Tense for \"Tú\".",
+        "choices": [
+          "bailo",
+          "baila",
+          "bailamos",
+          "bailas"
+        ],
+        "correct": "bailas",
+        "explanation": "For regular -ar verbs, the \"Tú\" ending in present tense is -as."
+      },
+      {
+        "q": "Conjugate \"decidir\" in Present Tense for \"Yo\".",
+        "choices": [
+          "decidan",
+          "decidamos",
+          "decida",
+          "decido"
+        ],
+        "correct": "decido",
+        "explanation": "For regular -ir verbs, the \"Yo\" ending in present tense is -o."
+      },
+      {
+        "q": "Conjugate \"abrir\" in Present Tense for \"Yo\".",
+        "choices": [
+          "abran",
+          "abra",
+          "abro",
+          "abramos"
+        ],
+        "correct": "abro",
+        "explanation": "For regular -ir verbs, the \"Yo\" ending in present tense is -o."
+      },
+      {
+        "q": "Conjugate \"comer\" in Present Tense for \"Nosotros\".",
+        "choices": [
+          "comemos",
+          "coma",
+          "como",
+          "comamos"
+        ],
+        "correct": "comemos",
+        "explanation": "For regular -er verbs, the \"Nosotros\" ending in present tense is -emos."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Present Tense for \"Nosotros\".",
+        "choices": [
+          "escribimos",
+          "escribo",
+          "escribamos",
+          "escriba"
+        ],
+        "correct": "escribimos",
+        "explanation": "For regular -ir verbs, the \"Nosotros\" ending in present tense is -imos."
+      },
+      {
+        "q": "Conjugate \"decidir\" in Present Tense for \"Nosotros\".",
+        "choices": [
+          "decidimos",
+          "decidamos",
+          "decida",
+          "decido"
+        ],
+        "correct": "decidimos",
+        "explanation": "For regular -ir verbs, the \"Nosotros\" ending in present tense is -imos."
+      },
+      {
+        "q": "Conjugate \"beber\" in Present Tense for \"Yo\".",
+        "choices": [
+          "beban",
+          "bebo",
+          "beba",
+          "bebamos"
+        ],
+        "correct": "bebo",
+        "explanation": "For regular -er verbs, the \"Yo\" ending in present tense is -o."
+      },
+      {
+        "q": "Conjugate \"aprender\" in Present Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "aprendamos",
+          "aprenden",
+          "aprenda",
+          "aprendo"
+        ],
+        "correct": "aprenden",
+        "explanation": "For regular -er verbs, the \"Ellos/Ellas\" ending in present tense is -en."
+      },
+      {
+        "q": "Conjugate \"leer\" in Present Tense for \"Tú\".",
+        "choices": [
+          "leamos",
+          "lea",
+          "lees",
+          "leo"
+        ],
+        "correct": "lees",
+        "explanation": "For regular -er verbs, the \"Tú\" ending in present tense is -es."
+      },
+      {
+        "q": "Conjugate \"leer\" in Present Tense for \"Él/Ella\".",
+        "choices": [
+          "lea",
+          "lee",
+          "leo",
+          "leamos"
+        ],
+        "correct": "lee",
+        "explanation": "For regular -er verbs, the \"Él/Ella\" ending in present tense is -e."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Present Tense for \"Yo\".",
+        "choices": [
+          "escribo",
+          "escriban",
+          "escribamos",
+          "escriba"
+        ],
+        "correct": "escribo",
+        "explanation": "For regular -ir verbs, the \"Yo\" ending in present tense is -o."
+      },
+      {
+        "q": "Conjugate \"aprender\" in Present Tense for \"Tú\".",
+        "choices": [
+          "aprendes",
+          "aprenda",
+          "aprendamos",
+          "aprendo"
+        ],
+        "correct": "aprendes",
+        "explanation": "For regular -er verbs, the \"Tú\" ending in present tense is -es."
+      },
+      {
+        "q": "Conjugate \"comer\" in Present Tense for \"Yo\".",
+        "choices": [
+          "coman",
+          "coma",
+          "como",
+          "comamos"
+        ],
+        "correct": "como",
+        "explanation": "For regular -er verbs, the \"Yo\" ending in present tense is -o."
+      }
+    ]
   },
+  {
+    "id": "l4",
+    "num": "04",
+    "title": "Pasado (Pretérito)",
+    "subtitle": "Completed past actions",
+    "theme": {
+      "bg": "#FEF2F2",
+      "text": "#991B1B",
+      "pill": "#FECACA",
+      "border": "#F87171",
+      "headBg": "#EF4444",
+      "headText": "#fff"
+    },
+    "sections": [
+      {
+        "type": "rules",
+        "title": "The Preterite Tense",
+        "items": [
+          {
+            "title": "When to use it",
+            "body": "For actions that were completed in the past at a specific time.<br>\"Ayer comí pizza\" (Yesterday I ate pizza).",
+            "bg": "#FEF2F2",
+            "border": "#F87171",
+            "text": "#991B1B"
+          }
+        ]
+      },
+      {
+        "type": "table",
+        "title": "Regular Endings",
+        "headers": [
+          "Pronoun",
+          "-ar (hablé / I spoke)",
+          "-er/-ir (comí / I ate)"
+        ],
+        "rows": [
+          [
+            "Yo",
+            "-é",
+            "-í"
+          ],
+          [
+            "Tú",
+            "-aste",
+            "-iste"
+          ],
+          [
+            "Él/Ella",
+            "-ó",
+            "-ió"
+          ],
+          [
+            "Nosotros",
+            "-amos",
+            "-imos"
+          ],
+          [
+            "Ellos",
+            "-aron",
+            "-ieron"
+          ]
+        ]
+      }
+    ],
+    "quizzes": [
+      {
+        "q": "Conjugate \"estudiar\" in Past Tense (Preterite) for \"Ellos/Ellas\".",
+        "choices": [
+          "estudiaron",
+          "estudié",
+          "estudió",
+          "estudiaste"
+        ],
+        "correct": "estudiaron",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Ellos/Ellas\" ending is -aron."
+      },
+      {
+        "q": "Conjugate \"correr\" in Past Tense (Preterite) for \"Él/Ella\".",
+        "choices": [
+          "corrió",
+          "corró",
+          "corré",
+          "corraste"
+        ],
+        "correct": "corrió",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Él/Ella\" ending is -ió."
+      },
+      {
+        "q": "Conjugate \"vivir\" in Past Tense (Preterite) for \"Él/Ella\".",
+        "choices": [
+          "vivé",
+          "vivaste",
+          "vivió",
+          "vivó"
+        ],
+        "correct": "vivió",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Él/Ella\" ending is -ió."
+      },
+      {
+        "q": "Conjugate \"comer\" in Past Tense (Preterite) for \"Ellos/Ellas\".",
+        "choices": [
+          "comé",
+          "comaste",
+          "comieron",
+          "comó"
+        ],
+        "correct": "comieron",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Ellos/Ellas\" ending is -ieron."
+      },
+      {
+        "q": "Conjugate \"vivir\" in Past Tense (Preterite) for \"Ellos/Ellas\".",
+        "choices": [
+          "vivó",
+          "vivé",
+          "vivieron",
+          "vivaste"
+        ],
+        "correct": "vivieron",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Ellos/Ellas\" ending is -ieron."
+      },
+      {
+        "q": "Conjugate \"beber\" in Past Tense (Preterite) for \"Él/Ella\".",
+        "choices": [
+          "bebaste",
+          "bebió",
+          "bebé",
+          "bebó"
+        ],
+        "correct": "bebió",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Él/Ella\" ending is -ió."
+      },
+      {
+        "q": "Conjugate \"estudiar\" in Past Tense (Preterite) for \"Yo\".",
+        "choices": [
+          "estudií",
+          "estudió",
+          "estudiaste",
+          "estudié"
+        ],
+        "correct": "estudié",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Yo\" ending is -é."
+      },
+      {
+        "q": "Conjugate \"cantar\" in Past Tense (Preterite) for \"Yo\".",
+        "choices": [
+          "cantí",
+          "cantó",
+          "cantaste",
+          "canté"
+        ],
+        "correct": "canté",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Yo\" ending is -é."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Past Tense (Preterite) for \"Nosotros\".",
+        "choices": [
+          "escribó",
+          "escribé",
+          "escribimos",
+          "escribaste"
+        ],
+        "correct": "escribimos",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Nosotros\" ending is -imos."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Past Tense (Preterite) for \"Yo\".",
+        "choices": [
+          "escribé",
+          "escribaste",
+          "escribó",
+          "escribí"
+        ],
+        "correct": "escribí",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Yo\" ending is -í."
+      },
+      {
+        "q": "Conjugate \"bailar\" in Past Tense (Preterite) for \"Yo\".",
+        "choices": [
+          "bailaste",
+          "bailí",
+          "bailé",
+          "bailó"
+        ],
+        "correct": "bailé",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Yo\" ending is -é."
+      },
+      {
+        "q": "Conjugate \"trabajar\" in Past Tense (Preterite) for \"Yo\".",
+        "choices": [
+          "trabajó",
+          "trabajé",
+          "trabajaste",
+          "trabají"
+        ],
+        "correct": "trabajé",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Yo\" ending is -é."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Past Tense (Preterite) for \"Nosotros\".",
+        "choices": [
+          "escribimos",
+          "escribó",
+          "escribé",
+          "escribaste"
+        ],
+        "correct": "escribimos",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Nosotros\" ending is -imos."
+      },
+      {
+        "q": "Conjugate \"correr\" in Past Tense (Preterite) for \"Ellos/Ellas\".",
+        "choices": [
+          "corró",
+          "corré",
+          "corraste",
+          "corrieron"
+        ],
+        "correct": "corrieron",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Ellos/Ellas\" ending is -ieron."
+      },
+      {
+        "q": "Conjugate \"trabajar\" in Past Tense (Preterite) for \"Él/Ella\".",
+        "choices": [
+          "trabajió",
+          "trabajaste",
+          "trabajé",
+          "trabajó"
+        ],
+        "correct": "trabajó",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Él/Ella\" ending is -ó."
+      },
+      {
+        "q": "Conjugate \"bailar\" in Past Tense (Preterite) for \"Yo\".",
+        "choices": [
+          "bailaste",
+          "bailí",
+          "bailé",
+          "bailó"
+        ],
+        "correct": "bailé",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Yo\" ending is -é."
+      },
+      {
+        "q": "Conjugate \"correr\" in Past Tense (Preterite) for \"Nosotros\".",
+        "choices": [
+          "corró",
+          "corré",
+          "corrimos",
+          "corraste"
+        ],
+        "correct": "corrimos",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Nosotros\" ending is -imos."
+      },
+      {
+        "q": "Conjugate \"vivir\" in Past Tense (Preterite) for \"Nosotros\".",
+        "choices": [
+          "vivó",
+          "vivé",
+          "vivaste",
+          "vivimos"
+        ],
+        "correct": "vivimos",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Nosotros\" ending is -imos."
+      },
+      {
+        "q": "Conjugate \"correr\" in Past Tense (Preterite) for \"Tú\".",
+        "choices": [
+          "corró",
+          "corraste",
+          "corriste",
+          "corré"
+        ],
+        "correct": "corriste",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Tú\" ending is -iste."
+      },
+      {
+        "q": "Conjugate \"estudiar\" in Past Tense (Preterite) for \"Tú\".",
+        "choices": [
+          "estudió",
+          "estudiiste",
+          "estudié",
+          "estudiaste"
+        ],
+        "correct": "estudiaste",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Tú\" ending is -aste."
+      },
+      {
+        "q": "Conjugate \"correr\" in Past Tense (Preterite) for \"Ellos/Ellas\".",
+        "choices": [
+          "corré",
+          "corrieron",
+          "corró",
+          "corraste"
+        ],
+        "correct": "corrieron",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Ellos/Ellas\" ending is -ieron."
+      },
+      {
+        "q": "Conjugate \"vivir\" in Past Tense (Preterite) for \"Nosotros\".",
+        "choices": [
+          "vivimos",
+          "vivó",
+          "vivé",
+          "vivaste"
+        ],
+        "correct": "vivimos",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Nosotros\" ending is -imos."
+      },
+      {
+        "q": "Conjugate \"comer\" in Past Tense (Preterite) for \"Ellos/Ellas\".",
+        "choices": [
+          "comé",
+          "comaste",
+          "comó",
+          "comieron"
+        ],
+        "correct": "comieron",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Ellos/Ellas\" ending is -ieron."
+      },
+      {
+        "q": "Conjugate \"comer\" in Past Tense (Preterite) for \"Yo\".",
+        "choices": [
+          "comé",
+          "comí",
+          "comaste",
+          "comó"
+        ],
+        "correct": "comí",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Yo\" ending is -í."
+      },
+      {
+        "q": "Conjugate \"correr\" in Past Tense (Preterite) for \"Yo\".",
+        "choices": [
+          "corrí",
+          "corraste",
+          "corré",
+          "corró"
+        ],
+        "correct": "corrí",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Yo\" ending is -í."
+      },
+      {
+        "q": "Conjugate \"beber\" in Past Tense (Preterite) for \"Ellos/Ellas\".",
+        "choices": [
+          "bebieron",
+          "bebó",
+          "bebaste",
+          "bebé"
+        ],
+        "correct": "bebieron",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Ellos/Ellas\" ending is -ieron."
+      },
+      {
+        "q": "Conjugate \"cantar\" in Past Tense (Preterite) for \"Él/Ella\".",
+        "choices": [
+          "cantó",
+          "cantaste",
+          "cantió",
+          "canté"
+        ],
+        "correct": "cantó",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Él/Ella\" ending is -ó."
+      },
+      {
+        "q": "Conjugate \"trabajar\" in Past Tense (Preterite) for \"Él/Ella\".",
+        "choices": [
+          "trabajó",
+          "trabajió",
+          "trabajaste",
+          "trabajé"
+        ],
+        "correct": "trabajó",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Él/Ella\" ending is -ó."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Past Tense (Preterite) for \"Ellos/Ellas\".",
+        "choices": [
+          "escribaste",
+          "escribé",
+          "escribó",
+          "escribieron"
+        ],
+        "correct": "escribieron",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Ellos/Ellas\" ending is -ieron."
+      },
+      {
+        "q": "Conjugate \"vivir\" in Past Tense (Preterite) for \"Él/Ella\".",
+        "choices": [
+          "vivaste",
+          "vivé",
+          "vivó",
+          "vivió"
+        ],
+        "correct": "vivió",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Él/Ella\" ending is -ió."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Past Tense (Preterite) for \"Yo\".",
+        "choices": [
+          "escribí",
+          "escribé",
+          "escribaste",
+          "escribó"
+        ],
+        "correct": "escribí",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Yo\" ending is -í."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Past Tense (Preterite) for \"Yo\".",
+        "choices": [
+          "escribaste",
+          "escribí",
+          "escribé",
+          "escribó"
+        ],
+        "correct": "escribí",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Yo\" ending is -í."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Past Tense (Preterite) for \"Nosotros\".",
+        "choices": [
+          "escribó",
+          "escribaste",
+          "escribé",
+          "escribimos"
+        ],
+        "correct": "escribimos",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Nosotros\" ending is -imos."
+      },
+      {
+        "q": "Conjugate \"estudiar\" in Past Tense (Preterite) for \"Ellos/Ellas\".",
+        "choices": [
+          "estudié",
+          "estudió",
+          "estudiaste",
+          "estudiaron"
+        ],
+        "correct": "estudiaron",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Ellos/Ellas\" ending is -aron."
+      },
+      {
+        "q": "Conjugate \"trabajar\" in Past Tense (Preterite) for \"Yo\".",
+        "choices": [
+          "trabajó",
+          "trabajaste",
+          "trabajé",
+          "trabají"
+        ],
+        "correct": "trabajé",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Yo\" ending is -é."
+      },
+      {
+        "q": "Conjugate \"vivir\" in Past Tense (Preterite) for \"Ellos/Ellas\".",
+        "choices": [
+          "vivieron",
+          "vivé",
+          "vivó",
+          "vivaste"
+        ],
+        "correct": "vivieron",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Ellos/Ellas\" ending is -ieron."
+      },
+      {
+        "q": "Conjugate \"beber\" in Past Tense (Preterite) for \"Nosotros\".",
+        "choices": [
+          "bebaste",
+          "bebimos",
+          "bebé",
+          "bebó"
+        ],
+        "correct": "bebimos",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Nosotros\" ending is -imos."
+      },
+      {
+        "q": "Conjugate \"hablar\" in Past Tense (Preterite) for \"Él/Ella\".",
+        "choices": [
+          "habló",
+          "hablaste",
+          "hablió",
+          "hablé"
+        ],
+        "correct": "habló",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Él/Ella\" ending is -ó."
+      },
+      {
+        "q": "Conjugate \"estudiar\" in Past Tense (Preterite) for \"Él/Ella\".",
+        "choices": [
+          "estudiaste",
+          "estudiió",
+          "estudió",
+          "estudié"
+        ],
+        "correct": "estudió",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Él/Ella\" ending is -ó."
+      },
+      {
+        "q": "Conjugate \"vivir\" in Past Tense (Preterite) for \"Él/Ella\".",
+        "choices": [
+          "vivió",
+          "vivaste",
+          "vivó",
+          "vivé"
+        ],
+        "correct": "vivió",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Él/Ella\" ending is -ió."
+      },
+      {
+        "q": "Conjugate \"trabajar\" in Past Tense (Preterite) for \"Ellos/Ellas\".",
+        "choices": [
+          "trabajaste",
+          "trabajó",
+          "trabajaron",
+          "trabajé"
+        ],
+        "correct": "trabajaron",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Ellos/Ellas\" ending is -aron."
+      },
+      {
+        "q": "Conjugate \"estudiar\" in Past Tense (Preterite) for \"Nosotros\".",
+        "choices": [
+          "estudiaste",
+          "estudiamos",
+          "estudió",
+          "estudié"
+        ],
+        "correct": "estudiamos",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Nosotros\" ending is -amos."
+      },
+      {
+        "q": "Conjugate \"comer\" in Past Tense (Preterite) for \"Tú\".",
+        "choices": [
+          "comé",
+          "comó",
+          "comiste",
+          "comaste"
+        ],
+        "correct": "comiste",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Tú\" ending is -iste."
+      },
+      {
+        "q": "Conjugate \"bailar\" in Past Tense (Preterite) for \"Nosotros\".",
+        "choices": [
+          "bailó",
+          "bailé",
+          "bailaste",
+          "bailamos"
+        ],
+        "correct": "bailamos",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Nosotros\" ending is -amos."
+      },
+      {
+        "q": "Conjugate \"beber\" in Past Tense (Preterite) for \"Yo\".",
+        "choices": [
+          "bebí",
+          "bebaste",
+          "bebó",
+          "bebé"
+        ],
+        "correct": "bebí",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Yo\" ending is -í."
+      },
+      {
+        "q": "Conjugate \"comer\" in Past Tense (Preterite) for \"Él/Ella\".",
+        "choices": [
+          "comió",
+          "comaste",
+          "comó",
+          "comé"
+        ],
+        "correct": "comió",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Él/Ella\" ending is -ió."
+      },
+      {
+        "q": "Conjugate \"bailar\" in Past Tense (Preterite) for \"Yo\".",
+        "choices": [
+          "bailé",
+          "bailí",
+          "bailaste",
+          "bailó"
+        ],
+        "correct": "bailé",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Yo\" ending is -é."
+      },
+      {
+        "q": "Conjugate \"hablar\" in Past Tense (Preterite) for \"Nosotros\".",
+        "choices": [
+          "habló",
+          "hablé",
+          "hablaste",
+          "hablamos"
+        ],
+        "correct": "hablamos",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Nosotros\" ending is -amos."
+      },
+      {
+        "q": "Conjugate \"beber\" in Past Tense (Preterite) for \"Él/Ella\".",
+        "choices": [
+          "bebaste",
+          "bebó",
+          "bebé",
+          "bebió"
+        ],
+        "correct": "bebió",
+        "explanation": "For regular -er/-ir verbs in the preterite past tense, the \"Él/Ella\" ending is -ió."
+      },
+      {
+        "q": "Conjugate \"estudiar\" in Past Tense (Preterite) for \"Él/Ella\".",
+        "choices": [
+          "estudié",
+          "estudió",
+          "estudiió",
+          "estudiaste"
+        ],
+        "correct": "estudió",
+        "explanation": "For regular -ar verbs in the preterite past tense, the \"Él/Ella\" ending is -ó."
+      }
+    ]
+  },
+  {
+    "id": "l5",
+    "num": "05",
+    "title": "Futuro Simple",
+    "subtitle": "Actions that will happen",
+    "theme": {
+      "bg": "#F0F9FF",
+      "text": "#0369A1",
+      "pill": "#BAE6FD",
+      "border": "#38BDF8",
+      "headBg": "#0EA5E9",
+      "headText": "#fff"
+    },
+    "sections": [
+      {
+        "type": "rules",
+        "title": "How to Conjugate",
+        "items": [
+          {
+            "title": "The easiest tense!",
+            "body": "Do NOT remove the ending! Keep the full infinitive verb and just add the future ending.",
+            "bg": "#F0F9FF",
+            "border": "#38BDF8",
+            "text": "#0369A1"
+          }
+        ]
+      },
+      {
+        "type": "table",
+        "title": "All Verbs (-ar, -er, -ir)",
+        "headers": [
+          "Pronoun",
+          "Ending",
+          "Example (hablar)"
+        ],
+        "rows": [
+          [
+            "Yo",
+            "-é",
+            "hablaré"
+          ],
+          [
+            "Tú",
+            "-ás",
+            "hablarás"
+          ],
+          [
+            "Él/Ella",
+            "-á",
+            "hablará"
+          ],
+          [
+            "Nosotros",
+            "-emos",
+            "hablaremos"
+          ],
+          [
+            "Ellos",
+            "-án",
+            "hablarán"
+          ]
+        ]
+      },
+      {
+        "type": "examples",
+        "title": "Examples",
+        "items": [
+          {
+            "es": "Comeré mañana",
+            "en": "I will eat tomorrow",
+            "audio": "Comeré mañana"
+          },
+          {
+            "es": "Viajarás a España",
+            "en": "You will travel to Spain",
+            "audio": "Viajarás a España"
+          }
+        ]
+      }
+    ],
+    "quizzes": [
+      {
+        "q": "Conjugate \"comer\" in Future Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "comerá",
+          "comerán",
+          "comerás",
+          "comán"
+        ],
+        "correct": "comerán",
+        "explanation": "In the future tense, you take the full infinitive (\"comer\") and add the \"Ellos/Ellas\" ending -án."
+      },
+      {
+        "q": "Conjugate \"comer\" in Future Tense for \"Tú\".",
+        "choices": [
+          "comás",
+          "comerá",
+          "comeré",
+          "comerás"
+        ],
+        "correct": "comerás",
+        "explanation": "In the future tense, you take the full infinitive (\"comer\") and add the \"Tú\" ending -ás."
+      },
+      {
+        "q": "Conjugate \"estudiar\" in Future Tense for \"Tú\".",
+        "choices": [
+          "estudiará",
+          "estudiarás",
+          "estudiaré",
+          "estudiás"
+        ],
+        "correct": "estudiarás",
+        "explanation": "In the future tense, you take the full infinitive (\"estudiar\") and add the \"Tú\" ending -ás."
+      },
+      {
+        "q": "Conjugate \"comer\" in Future Tense for \"Nosotros\".",
+        "choices": [
+          "comeremos",
+          "comemos",
+          "comerá",
+          "comerás"
+        ],
+        "correct": "comeremos",
+        "explanation": "In the future tense, you take the full infinitive (\"comer\") and add the \"Nosotros\" ending -emos."
+      },
+      {
+        "q": "Conjugate \"beber\" in Future Tense for \"Yo\".",
+        "choices": [
+          "beberás",
+          "beberé",
+          "beberá",
+          "bebé"
+        ],
+        "correct": "beberé",
+        "explanation": "In the future tense, you take the full infinitive (\"beber\") and add the \"Yo\" ending -é."
+      },
+      {
+        "q": "Conjugate \"hablar\" in Future Tense for \"Nosotros\".",
+        "choices": [
+          "hablaremos",
+          "hablará",
+          "hablemos",
+          "hablarás"
+        ],
+        "correct": "hablaremos",
+        "explanation": "In the future tense, you take the full infinitive (\"hablar\") and add the \"Nosotros\" ending -emos."
+      },
+      {
+        "q": "Conjugate \"beber\" in Future Tense for \"Nosotros\".",
+        "choices": [
+          "beberemos",
+          "bebemos",
+          "beberá",
+          "beberás"
+        ],
+        "correct": "beberemos",
+        "explanation": "In the future tense, you take the full infinitive (\"beber\") and add the \"Nosotros\" ending -emos."
+      },
+      {
+        "q": "Conjugate \"comer\" in Future Tense for \"Nosotros\".",
+        "choices": [
+          "comerá",
+          "comerás",
+          "comeremos",
+          "comemos"
+        ],
+        "correct": "comeremos",
+        "explanation": "In the future tense, you take the full infinitive (\"comer\") and add the \"Nosotros\" ending -emos."
+      },
+      {
+        "q": "Conjugate \"trabajar\" in Future Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "trabajarán",
+          "trabajará",
+          "trabaján",
+          "trabajarás"
+        ],
+        "correct": "trabajarán",
+        "explanation": "In the future tense, you take the full infinitive (\"trabajar\") and add the \"Ellos/Ellas\" ending -án."
+      },
+      {
+        "q": "Conjugate \"beber\" in Future Tense for \"Él/Ella\".",
+        "choices": [
+          "bebá",
+          "beberán",
+          "beberás",
+          "beberá"
+        ],
+        "correct": "beberá",
+        "explanation": "In the future tense, you take the full infinitive (\"beber\") and add the \"Él/Ella\" ending -á."
+      },
+      {
+        "q": "Conjugate \"vivir\" in Future Tense for \"Yo\".",
+        "choices": [
+          "vivé",
+          "vivirá",
+          "vivirás",
+          "viviré"
+        ],
+        "correct": "viviré",
+        "explanation": "In the future tense, you take the full infinitive (\"vivir\") and add the \"Yo\" ending -é."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Future Tense for \"Él/Ella\".",
+        "choices": [
+          "escribirá",
+          "escribá",
+          "escribirás",
+          "escribirán"
+        ],
+        "correct": "escribirá",
+        "explanation": "In the future tense, you take the full infinitive (\"escribir\") and add the \"Él/Ella\" ending -á."
+      },
+      {
+        "q": "Conjugate \"comer\" in Future Tense for \"Tú\".",
+        "choices": [
+          "comerá",
+          "comerás",
+          "comás",
+          "comeré"
+        ],
+        "correct": "comerás",
+        "explanation": "In the future tense, you take the full infinitive (\"comer\") and add the \"Tú\" ending -ás."
+      },
+      {
+        "q": "Conjugate \"beber\" in Future Tense for \"Yo\".",
+        "choices": [
+          "bebé",
+          "beberás",
+          "beberá",
+          "beberé"
+        ],
+        "correct": "beberé",
+        "explanation": "In the future tense, you take the full infinitive (\"beber\") and add the \"Yo\" ending -é."
+      },
+      {
+        "q": "Conjugate \"hablar\" in Future Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "hablará",
+          "hablarán",
+          "hablán",
+          "hablarás"
+        ],
+        "correct": "hablarán",
+        "explanation": "In the future tense, you take the full infinitive (\"hablar\") and add the \"Ellos/Ellas\" ending -án."
+      },
+      {
+        "q": "Conjugate \"hablar\" in Future Tense for \"Él/Ella\".",
+        "choices": [
+          "hablará",
+          "hablarán",
+          "hablá",
+          "hablarás"
+        ],
+        "correct": "hablará",
+        "explanation": "In the future tense, you take the full infinitive (\"hablar\") and add the \"Él/Ella\" ending -á."
+      },
+      {
+        "q": "Conjugate \"comer\" in Future Tense for \"Tú\".",
+        "choices": [
+          "comerás",
+          "comás",
+          "comeré",
+          "comerá"
+        ],
+        "correct": "comerás",
+        "explanation": "In the future tense, you take the full infinitive (\"comer\") and add the \"Tú\" ending -ás."
+      },
+      {
+        "q": "Conjugate \"estudiar\" in Future Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "estudián",
+          "estudiará",
+          "estudiarán",
+          "estudiarás"
+        ],
+        "correct": "estudiarán",
+        "explanation": "In the future tense, you take the full infinitive (\"estudiar\") and add the \"Ellos/Ellas\" ending -án."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Future Tense for \"Nosotros\".",
+        "choices": [
+          "escribiremos",
+          "escribirá",
+          "escribemos",
+          "escribirás"
+        ],
+        "correct": "escribiremos",
+        "explanation": "In the future tense, you take the full infinitive (\"escribir\") and add the \"Nosotros\" ending -emos."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Future Tense for \"Yo\".",
+        "choices": [
+          "escribirá",
+          "escribirás",
+          "escribiré",
+          "escribé"
+        ],
+        "correct": "escribiré",
+        "explanation": "In the future tense, you take the full infinitive (\"escribir\") and add the \"Yo\" ending -é."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Future Tense for \"Tú\".",
+        "choices": [
+          "escribirás",
+          "escribirá",
+          "escribiré",
+          "escribás"
+        ],
+        "correct": "escribirás",
+        "explanation": "In the future tense, you take the full infinitive (\"escribir\") and add the \"Tú\" ending -ás."
+      },
+      {
+        "q": "Conjugate \"hablar\" in Future Tense for \"Nosotros\".",
+        "choices": [
+          "hablarás",
+          "hablemos",
+          "hablará",
+          "hablaremos"
+        ],
+        "correct": "hablaremos",
+        "explanation": "In the future tense, you take the full infinitive (\"hablar\") and add the \"Nosotros\" ending -emos."
+      },
+      {
+        "q": "Conjugate \"trabajar\" in Future Tense for \"Él/Ella\".",
+        "choices": [
+          "trabajará",
+          "trabajarán",
+          "trabajá",
+          "trabajarás"
+        ],
+        "correct": "trabajará",
+        "explanation": "In the future tense, you take the full infinitive (\"trabajar\") and add the \"Él/Ella\" ending -á."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Future Tense for \"Él/Ella\".",
+        "choices": [
+          "escribirán",
+          "escribá",
+          "escribirás",
+          "escribirá"
+        ],
+        "correct": "escribirá",
+        "explanation": "In the future tense, you take the full infinitive (\"escribir\") and add the \"Él/Ella\" ending -á."
+      },
+      {
+        "q": "Conjugate \"trabajar\" in Future Tense for \"Yo\".",
+        "choices": [
+          "trabajará",
+          "trabajaré",
+          "trabajé",
+          "trabajarás"
+        ],
+        "correct": "trabajaré",
+        "explanation": "In the future tense, you take the full infinitive (\"trabajar\") and add the \"Yo\" ending -é."
+      },
+      {
+        "q": "Conjugate \"beber\" in Future Tense for \"Yo\".",
+        "choices": [
+          "beberé",
+          "beberá",
+          "beberás",
+          "bebé"
+        ],
+        "correct": "beberé",
+        "explanation": "In the future tense, you take the full infinitive (\"beber\") and add the \"Yo\" ending -é."
+      },
+      {
+        "q": "Conjugate \"beber\" in Future Tense for \"Nosotros\".",
+        "choices": [
+          "beberá",
+          "beberás",
+          "bebemos",
+          "beberemos"
+        ],
+        "correct": "beberemos",
+        "explanation": "In the future tense, you take the full infinitive (\"beber\") and add the \"Nosotros\" ending -emos."
+      },
+      {
+        "q": "Conjugate \"hablar\" in Future Tense for \"Él/Ella\".",
+        "choices": [
+          "hablarán",
+          "hablarás",
+          "hablará",
+          "hablá"
+        ],
+        "correct": "hablará",
+        "explanation": "In the future tense, you take the full infinitive (\"hablar\") and add the \"Él/Ella\" ending -á."
+      },
+      {
+        "q": "Conjugate \"comer\" in Future Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "comerán",
+          "comerás",
+          "comán",
+          "comerá"
+        ],
+        "correct": "comerán",
+        "explanation": "In the future tense, you take the full infinitive (\"comer\") and add the \"Ellos/Ellas\" ending -án."
+      },
+      {
+        "q": "Conjugate \"vivir\" in Future Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "vivirá",
+          "vivirán",
+          "vivirás",
+          "viván"
+        ],
+        "correct": "vivirán",
+        "explanation": "In the future tense, you take the full infinitive (\"vivir\") and add the \"Ellos/Ellas\" ending -án."
+      },
+      {
+        "q": "Conjugate \"trabajar\" in Future Tense for \"Yo\".",
+        "choices": [
+          "trabajaré",
+          "trabajará",
+          "trabajarás",
+          "trabajé"
+        ],
+        "correct": "trabajaré",
+        "explanation": "In the future tense, you take the full infinitive (\"trabajar\") and add the \"Yo\" ending -é."
+      },
+      {
+        "q": "Conjugate \"vivir\" in Future Tense for \"Yo\".",
+        "choices": [
+          "vivé",
+          "vivirá",
+          "viviré",
+          "vivirás"
+        ],
+        "correct": "viviré",
+        "explanation": "In the future tense, you take the full infinitive (\"vivir\") and add the \"Yo\" ending -é."
+      },
+      {
+        "q": "Conjugate \"trabajar\" in Future Tense for \"Tú\".",
+        "choices": [
+          "trabajás",
+          "trabajará",
+          "trabajarás",
+          "trabajaré"
+        ],
+        "correct": "trabajarás",
+        "explanation": "In the future tense, you take the full infinitive (\"trabajar\") and add the \"Tú\" ending -ás."
+      },
+      {
+        "q": "Conjugate \"estudiar\" in Future Tense for \"Él/Ella\".",
+        "choices": [
+          "estudiá",
+          "estudiarás",
+          "estudiarán",
+          "estudiará"
+        ],
+        "correct": "estudiará",
+        "explanation": "In the future tense, you take the full infinitive (\"estudiar\") and add the \"Él/Ella\" ending -á."
+      },
+      {
+        "q": "Conjugate \"comer\" in Future Tense for \"Yo\".",
+        "choices": [
+          "comerá",
+          "comerás",
+          "comeré",
+          "comé"
+        ],
+        "correct": "comeré",
+        "explanation": "In the future tense, you take the full infinitive (\"comer\") and add the \"Yo\" ending -é."
+      },
+      {
+        "q": "Conjugate \"beber\" in Future Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "beberás",
+          "beberá",
+          "bebán",
+          "beberán"
+        ],
+        "correct": "beberán",
+        "explanation": "In the future tense, you take the full infinitive (\"beber\") and add the \"Ellos/Ellas\" ending -án."
+      },
+      {
+        "q": "Conjugate \"comer\" in Future Tense for \"Tú\".",
+        "choices": [
+          "comás",
+          "comeré",
+          "comerás",
+          "comerá"
+        ],
+        "correct": "comerás",
+        "explanation": "In the future tense, you take the full infinitive (\"comer\") and add the \"Tú\" ending -ás."
+      },
+      {
+        "q": "Conjugate \"estudiar\" in Future Tense for \"Tú\".",
+        "choices": [
+          "estudiaré",
+          "estudiarás",
+          "estudiás",
+          "estudiará"
+        ],
+        "correct": "estudiarás",
+        "explanation": "In the future tense, you take the full infinitive (\"estudiar\") and add the \"Tú\" ending -ás."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Future Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "escribirás",
+          "escribán",
+          "escribirá",
+          "escribirán"
+        ],
+        "correct": "escribirán",
+        "explanation": "In the future tense, you take the full infinitive (\"escribir\") and add the \"Ellos/Ellas\" ending -án."
+      },
+      {
+        "q": "Conjugate \"comer\" in Future Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "comerá",
+          "comán",
+          "comerán",
+          "comerás"
+        ],
+        "correct": "comerán",
+        "explanation": "In the future tense, you take the full infinitive (\"comer\") and add the \"Ellos/Ellas\" ending -án."
+      },
+      {
+        "q": "Conjugate \"beber\" in Future Tense for \"Yo\".",
+        "choices": [
+          "beberás",
+          "bebé",
+          "beberé",
+          "beberá"
+        ],
+        "correct": "beberé",
+        "explanation": "In the future tense, you take the full infinitive (\"beber\") and add the \"Yo\" ending -é."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Future Tense for \"Tú\".",
+        "choices": [
+          "escribirá",
+          "escribás",
+          "escribirás",
+          "escribiré"
+        ],
+        "correct": "escribirás",
+        "explanation": "In the future tense, you take the full infinitive (\"escribir\") and add the \"Tú\" ending -ás."
+      },
+      {
+        "q": "Conjugate \"vivir\" in Future Tense for \"Yo\".",
+        "choices": [
+          "viviré",
+          "vivé",
+          "vivirás",
+          "vivirá"
+        ],
+        "correct": "viviré",
+        "explanation": "In the future tense, you take the full infinitive (\"vivir\") and add the \"Yo\" ending -é."
+      },
+      {
+        "q": "Conjugate \"estudiar\" in Future Tense for \"Yo\".",
+        "choices": [
+          "estudié",
+          "estudiarás",
+          "estudiará",
+          "estudiaré"
+        ],
+        "correct": "estudiaré",
+        "explanation": "In the future tense, you take the full infinitive (\"estudiar\") and add the \"Yo\" ending -é."
+      },
+      {
+        "q": "Conjugate \"escribir\" in Future Tense for \"Él/Ella\".",
+        "choices": [
+          "escribirás",
+          "escribá",
+          "escribirán",
+          "escribirá"
+        ],
+        "correct": "escribirá",
+        "explanation": "In the future tense, you take the full infinitive (\"escribir\") and add the \"Él/Ella\" ending -á."
+      },
+      {
+        "q": "Conjugate \"estudiar\" in Future Tense for \"Yo\".",
+        "choices": [
+          "estudié",
+          "estudiaré",
+          "estudiará",
+          "estudiarás"
+        ],
+        "correct": "estudiaré",
+        "explanation": "In the future tense, you take the full infinitive (\"estudiar\") and add the \"Yo\" ending -é."
+      },
+      {
+        "q": "Conjugate \"hablar\" in Future Tense for \"Nosotros\".",
+        "choices": [
+          "hablarás",
+          "hablaremos",
+          "hablará",
+          "hablemos"
+        ],
+        "correct": "hablaremos",
+        "explanation": "In the future tense, you take the full infinitive (\"hablar\") and add the \"Nosotros\" ending -emos."
+      },
+      {
+        "q": "Conjugate \"trabajar\" in Future Tense for \"Nosotros\".",
+        "choices": [
+          "trabajarás",
+          "trabajará",
+          "trabajemos",
+          "trabajaremos"
+        ],
+        "correct": "trabajaremos",
+        "explanation": "In the future tense, you take the full infinitive (\"trabajar\") and add the \"Nosotros\" ending -emos."
+      },
+      {
+        "q": "Conjugate \"estudiar\" in Future Tense for \"Tú\".",
+        "choices": [
+          "estudiaré",
+          "estudiará",
+          "estudiás",
+          "estudiarás"
+        ],
+        "correct": "estudiarás",
+        "explanation": "In the future tense, you take the full infinitive (\"estudiar\") and add the \"Tú\" ending -ás."
+      },
+      {
+        "q": "Conjugate \"estudiar\" in Future Tense for \"Ellos/Ellas\".",
+        "choices": [
+          "estudiarán",
+          "estudián",
+          "estudiará",
+          "estudiarás"
+        ],
+        "correct": "estudiarán",
+        "explanation": "In the future tense, you take the full infinitive (\"estudiar\") and add the \"Ellos/Ellas\" ending -án."
+      }
+    ]
+  },
+  {
+    "id": "l6",
+    "num": "06",
+    "title": "Pronombres de Objeto",
+    "subtitle": "Me, te, lo, la, le — Object Pronouns",
+    "theme": {
+      "bg": "#FAF5FF",
+      "text": "#6B21A8",
+      "pill": "#E9D5FF",
+      "border": "#C084FC",
+      "headBg": "#A855F7",
+      "headText": "#fff"
+    },
+    "sections": [
+      {
+        "type": "rules",
+        "title": "Object Pronouns",
+        "items": [
+          {
+            "title": "Indirect Object Pronouns (to whom?)",
+            "body": "<span class=\"formula-tag\" style=\"background:#E9D5FF;color:#6B21A8;\">me</span> (to me) <span class=\"formula-tag\" style=\"background:#E9D5FF;color:#6B21A8;\">te</span> (to you) <span class=\"formula-tag\" style=\"background:#E9D5FF;color:#6B21A8;\">le</span> (to him/her)<br><span class=\"formula-tag\" style=\"background:#F3E8FF;color:#6B21A8;\">nos</span> (to us) <span class=\"formula-tag\" style=\"background:#F3E8FF;color:#6B21A8;\">les</span> (to them)<br>\"<strong>Le</strong> di el libro.\" → I gave <em>him/her</em> the book.",
+            "bg": "#FAF5FF",
+            "border": "#C084FC",
+            "text": "#6B21A8"
+          },
+          {
+            "title": "Direct Object Pronouns (what / whom?)",
+            "body": "<span class=\"formula-tag\" style=\"background:#E9D5FF;color:#6B21A8;\">lo / la</span> (it/him/her) <span class=\"formula-tag\" style=\"background:#E9D5FF;color:#6B21A8;\">los / las</span> (them)<br>\"<strong>Lo</strong> veo.\" → I see <em>it/him</em>.<br>\"<strong>La</strong> quiero.\" → I love <em>her</em>.",
+            "bg": "#F5F3FF",
+            "border": "#DDD6FE",
+            "text": "#6B21A8"
+          },
+          {
+            "title": "Word Order in Spanish",
+            "body": "Basic order: <span class=\"formula-tag\" style=\"background:#E9D5FF;color:#6B21A8;\">Subject + Verb + Object</span><br>\"Yo (S) como (V) una manzana (O).\" → I eat an apple.<br>Pronoun goes BEFORE the verb: \"Yo <strong>la</strong> como.\" → I eat it.<br>Negation: \"Yo <strong>no la</strong> como.\" → I don't eat it.",
+            "bg": "#FAF5FF",
+            "border": "#C084FC",
+            "text": "#6B21A8"
+          }
+        ]
+      },
+      {
+        "type": "examples",
+        "title": "Examples",
+        "items": [
+          {
+            "es": "Me gusta el café",
+            "en": "I like coffee (lit: coffee pleases me)",
+            "audio": "Me gusta el café"
+          },
+          {
+            "es": "Te quiero mucho",
+            "en": "I love you a lot",
+            "audio": "Te quiero mucho"
+          },
+          {
+            "es": "Le doy el dinero",
+            "en": "I give him/her the money",
+            "audio": "Le doy el dinero"
+          },
+          {
+            "es": "No lo entiendo",
+            "en": "I don't understand it",
+            "audio": "No lo entiendo"
+          }
+        ]
+      }
+    ],
+    "quizzes": [
+      {
+        "q": "Fill in the pronoun: \"I buy it (fem)\" -> Yo ___ compro",
+        "choices": [
+          "las",
+          "la",
+          "nos",
+          "me"
+        ],
+        "correct": "la",
+        "explanation": "\"la\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"They call you\" -> Ellos ___ llaman",
+        "choices": [
+          "los",
+          "te",
+          "les",
+          "las"
+        ],
+        "correct": "te",
+        "explanation": "\"te\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"We see them (masc)\" -> Nosotros ___ vemos",
+        "choices": [
+          "las",
+          "te",
+          "los",
+          "le"
+        ],
+        "correct": "los",
+        "explanation": "\"los\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"I see it (fem)\" -> Yo ___ veo",
+        "choices": [
+          "le",
+          "las",
+          "los",
+          "la"
+        ],
+        "correct": "la",
+        "explanation": "\"la\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"She helps me\" -> Ella ___ ayuda",
+        "choices": [
+          "la",
+          "me",
+          "las",
+          "los"
+        ],
+        "correct": "me",
+        "explanation": "\"me\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"He tells me the truth\" -> Él ___ dice la verdad",
+        "choices": [
+          "los",
+          "la",
+          "me",
+          "te"
+        ],
+        "correct": "me",
+        "explanation": "\"me\" is the correct Indirect Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"I give him the money\" -> Yo ___ doy el dinero",
+        "choices": [
+          "nos",
+          "la",
+          "le",
+          "los"
+        ],
+        "correct": "le",
+        "explanation": "\"le\" is the correct Indirect Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"I give them the book\" -> Yo ___ doy el libro",
+        "choices": [
+          "nos",
+          "me",
+          "las",
+          "les"
+        ],
+        "correct": "les",
+        "explanation": "\"les\" is the correct Indirect Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"I see it (masc)\" -> Yo ___ veo",
+        "choices": [
+          "le",
+          "los",
+          "lo",
+          "te"
+        ],
+        "correct": "lo",
+        "explanation": "\"lo\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"She loves him\" -> Ella ___ quiere",
+        "choices": [
+          "las",
+          "la",
+          "le",
+          "lo"
+        ],
+        "correct": "lo",
+        "explanation": "\"lo\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"They call you\" -> Ellos ___ llaman",
+        "choices": [
+          "te",
+          "les",
+          "los",
+          "las"
+        ],
+        "correct": "te",
+        "explanation": "\"te\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"We buy them (fem)\" -> Nosotros ___ compramos",
+        "choices": [
+          "lo",
+          "la",
+          "las",
+          "los"
+        ],
+        "correct": "las",
+        "explanation": "\"las\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"She helps me\" -> Ella ___ ayuda",
+        "choices": [
+          "me",
+          "te",
+          "la",
+          "les"
+        ],
+        "correct": "me",
+        "explanation": "\"me\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"They call you\" -> Ellos ___ llaman",
+        "choices": [
+          "la",
+          "te",
+          "me",
+          "nos"
+        ],
+        "correct": "te",
+        "explanation": "\"te\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"He tells me the truth\" -> Él ___ dice la verdad",
+        "choices": [
+          "nos",
+          "les",
+          "te",
+          "me"
+        ],
+        "correct": "me",
+        "explanation": "\"me\" is the correct Indirect Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"I give them the book\" -> Yo ___ doy el libro",
+        "choices": [
+          "me",
+          "te",
+          "les",
+          "lo"
+        ],
+        "correct": "les",
+        "explanation": "\"les\" is the correct Indirect Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"He tells me the truth\" -> Él ___ dice la verdad",
+        "choices": [
+          "me",
+          "los",
+          "la",
+          "lo"
+        ],
+        "correct": "me",
+        "explanation": "\"me\" is the correct Indirect Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"She loves him\" -> Ella ___ quiere",
+        "choices": [
+          "lo",
+          "nos",
+          "las",
+          "le"
+        ],
+        "correct": "lo",
+        "explanation": "\"lo\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"I see it (fem)\" -> Yo ___ veo",
+        "choices": [
+          "les",
+          "lo",
+          "las",
+          "la"
+        ],
+        "correct": "la",
+        "explanation": "\"la\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"I give them the book\" -> Yo ___ doy el libro",
+        "choices": [
+          "te",
+          "las",
+          "les",
+          "la"
+        ],
+        "correct": "les",
+        "explanation": "\"les\" is the correct Indirect Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"She loves him\" -> Ella ___ quiere",
+        "choices": [
+          "les",
+          "los",
+          "lo",
+          "la"
+        ],
+        "correct": "lo",
+        "explanation": "\"lo\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"They call you\" -> Ellos ___ llaman",
+        "choices": [
+          "te",
+          "nos",
+          "las",
+          "la"
+        ],
+        "correct": "te",
+        "explanation": "\"te\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"I give him the money\" -> Yo ___ doy el dinero",
+        "choices": [
+          "los",
+          "nos",
+          "la",
+          "le"
+        ],
+        "correct": "le",
+        "explanation": "\"le\" is the correct Indirect Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"We see them (masc)\" -> Nosotros ___ vemos",
+        "choices": [
+          "me",
+          "los",
+          "la",
+          "le"
+        ],
+        "correct": "los",
+        "explanation": "\"los\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"She loves him\" -> Ella ___ quiere",
+        "choices": [
+          "lo",
+          "le",
+          "la",
+          "les"
+        ],
+        "correct": "lo",
+        "explanation": "\"lo\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"She helps me\" -> Ella ___ ayuda",
+        "choices": [
+          "les",
+          "le",
+          "los",
+          "me"
+        ],
+        "correct": "me",
+        "explanation": "\"me\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"She helps me\" -> Ella ___ ayuda",
+        "choices": [
+          "los",
+          "lo",
+          "te",
+          "me"
+        ],
+        "correct": "me",
+        "explanation": "\"me\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"I buy it (fem)\" -> Yo ___ compro",
+        "choices": [
+          "lo",
+          "te",
+          "los",
+          "la"
+        ],
+        "correct": "la",
+        "explanation": "\"la\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"I give them the book\" -> Yo ___ doy el libro",
+        "choices": [
+          "nos",
+          "les",
+          "las",
+          "lo"
+        ],
+        "correct": "les",
+        "explanation": "\"les\" is the correct Indirect Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"We see them (masc)\" -> Nosotros ___ vemos",
+        "choices": [
+          "nos",
+          "le",
+          "les",
+          "los"
+        ],
+        "correct": "los",
+        "explanation": "\"los\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"We see them (masc)\" -> Nosotros ___ vemos",
+        "choices": [
+          "nos",
+          "la",
+          "le",
+          "los"
+        ],
+        "correct": "los",
+        "explanation": "\"los\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"I buy it (fem)\" -> Yo ___ compro",
+        "choices": [
+          "la",
+          "los",
+          "nos",
+          "le"
+        ],
+        "correct": "la",
+        "explanation": "\"la\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"They call you\" -> Ellos ___ llaman",
+        "choices": [
+          "la",
+          "los",
+          "te",
+          "lo"
+        ],
+        "correct": "te",
+        "explanation": "\"te\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"He tells me the truth\" -> Él ___ dice la verdad",
+        "choices": [
+          "te",
+          "los",
+          "le",
+          "me"
+        ],
+        "correct": "me",
+        "explanation": "\"me\" is the correct Indirect Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"We see them (masc)\" -> Nosotros ___ vemos",
+        "choices": [
+          "le",
+          "las",
+          "te",
+          "los"
+        ],
+        "correct": "los",
+        "explanation": "\"los\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"She helps me\" -> Ella ___ ayuda",
+        "choices": [
+          "nos",
+          "los",
+          "le",
+          "me"
+        ],
+        "correct": "me",
+        "explanation": "\"me\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"You write to us\" -> Tú ___ escribes",
+        "choices": [
+          "lo",
+          "te",
+          "nos",
+          "los"
+        ],
+        "correct": "nos",
+        "explanation": "\"nos\" is the correct Indirect Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"I buy it (fem)\" -> Yo ___ compro",
+        "choices": [
+          "me",
+          "te",
+          "le",
+          "la"
+        ],
+        "correct": "la",
+        "explanation": "\"la\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"She helps me\" -> Ella ___ ayuda",
+        "choices": [
+          "las",
+          "le",
+          "me",
+          "los"
+        ],
+        "correct": "me",
+        "explanation": "\"me\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"We buy them (fem)\" -> Nosotros ___ compramos",
+        "choices": [
+          "les",
+          "las",
+          "le",
+          "lo"
+        ],
+        "correct": "las",
+        "explanation": "\"las\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"I buy it (fem)\" -> Yo ___ compro",
+        "choices": [
+          "la",
+          "les",
+          "me",
+          "te"
+        ],
+        "correct": "la",
+        "explanation": "\"la\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"I give him the money\" -> Yo ___ doy el dinero",
+        "choices": [
+          "le",
+          "los",
+          "les",
+          "te"
+        ],
+        "correct": "le",
+        "explanation": "\"le\" is the correct Indirect Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"She loves him\" -> Ella ___ quiere",
+        "choices": [
+          "te",
+          "me",
+          "le",
+          "lo"
+        ],
+        "correct": "lo",
+        "explanation": "\"lo\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"We see them (masc)\" -> Nosotros ___ vemos",
+        "choices": [
+          "la",
+          "nos",
+          "te",
+          "los"
+        ],
+        "correct": "los",
+        "explanation": "\"los\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"I buy it (fem)\" -> Yo ___ compro",
+        "choices": [
+          "le",
+          "nos",
+          "las",
+          "la"
+        ],
+        "correct": "la",
+        "explanation": "\"la\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"We see them (masc)\" -> Nosotros ___ vemos",
+        "choices": [
+          "nos",
+          "lo",
+          "los",
+          "las"
+        ],
+        "correct": "los",
+        "explanation": "\"los\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"I see it (fem)\" -> Yo ___ veo",
+        "choices": [
+          "lo",
+          "los",
+          "la",
+          "me"
+        ],
+        "correct": "la",
+        "explanation": "\"la\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"She loves him\" -> Ella ___ quiere",
+        "choices": [
+          "lo",
+          "les",
+          "te",
+          "le"
+        ],
+        "correct": "lo",
+        "explanation": "\"lo\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"I buy it (fem)\" -> Yo ___ compro",
+        "choices": [
+          "la",
+          "me",
+          "te",
+          "lo"
+        ],
+        "correct": "la",
+        "explanation": "\"la\" is the correct Direct Object pronoun to match the English translation."
+      },
+      {
+        "q": "Fill in the pronoun: \"I see it (fem)\" -> Yo ___ veo",
+        "choices": [
+          "la",
+          "me",
+          "lo",
+          "te"
+        ],
+        "correct": "la",
+        "explanation": "\"la\" is the correct Direct Object pronoun to match the English translation."
+      }
+    ]
+  }
 ];
 
 function buildLeccionHtml(lesson) {
@@ -2323,36 +5954,76 @@ function buildLeccionHtml(lesson) {
     }
   }
 
-  // Mini-quiz
-  const q = lesson.quiz;
+  // Mini-quiz 50Q
+  const quizzes = lesson.quizzes;
+  const totalQ = quizzes.length; // usually 50
+  const qState = quizState || { currentIndex: 0, score: 0, completed: false, lastAnswerState: null };
+  
   let quizHtml = '';
-  if (quizState) {
-    const choicesHtml = q.choices.map(c => {
-      let cls = 'leccion-choice-btn disabled';
-      if (c === q.correct) cls += ' correct';
-      else if (c === quizState.selected && c !== q.correct) cls += ' incorrect';
-      return `<button class="${cls}">${escapeHtml(c)}</button>`;
-    }).join('');
-    const resultMsg = quizState.correct
-      ? `✅ Correct! ${escapeHtml(q.explanation)}`
-      : `❌ The correct answer is: <strong>${escapeHtml(q.correct)}</strong>. ${escapeHtml(q.explanation)}`;
-    const resultStyle = quizState.correct
-      ? `background:#D1FAE5;color:#065F46;border:1.5px solid #34D399;`
-      : `background:#FEE2E2;color:#DC2626;border:1.5px solid #FCA5A5;`;
+  
+  if (qState.completed) {
+    const finalScore = qState.score;
     quizHtml = `
-      <div class="leccion-quiz-title" style="color:${t.text};">🎯 Practice Exercise</div>
-      <div class="leccion-question" style="background:${t.bg};border-color:${t.border};color:${t.text};">${escapeHtml(q.q)}</div>
-      <div class="leccion-choices">${choicesHtml}</div>
-      <div class="leccion-quiz-result show" style="${resultStyle}">${resultMsg}</div>`;
+      <div class="leccion-quiz-complete" style="background:${t.bg};border-color:${t.border};color:${t.text};">
+        <div class="cq-trophy">🏆</div>
+        <div class="cq-title">¡Lección Dominada!</div>
+        <div class="cq-score">${finalScore} / ${totalQ}</div>
+        <div class="cq-msg">Has completado todos los ejercicios de esta lección.</div>
+        <button class="leccion-quiz-restart-btn" data-action="leccion-restart" data-lesson="${lesson.id}">Repetir Ejercicios</button>
+      </div>`;
   } else {
-    const choicesHtml = q.choices.map(c =>
-      `<button class="leccion-choice-btn" data-action="leccion-choice" data-lesson="${lesson.id}" data-val="${escapeHtml(c)}">${escapeHtml(c)}</button>`
-    ).join('');
+    const qIndex = qState.currentIndex || 0;
+    const q = quizzes[qIndex];
+    const progressPct = ((qIndex) / totalQ) * 100;
+    
+    const progressHtml = `
+      <div class="leccion-quiz-progress-row" style="color:${t.text};">
+        <span>Pregunta ${qIndex + 1} de ${totalQ}</span>
+        <span>Aciertos: ${qState.score || 0}</span>
+      </div>
+      <div class="leccion-progress-bar">
+        <div class="leccion-progress-fill" style="width:${progressPct}%;background:${t.border};"></div>
+      </div>
+    `;
+    
+    const isAnswered = !!qState.lastAnswerState;
+    const ans = qState.lastAnswerState;
+    
+    const choicesHtml = q.choices.map(c => {
+      if (isAnswered) {
+        let cls = 'leccion-choice-btn disabled';
+        if (c === q.correct) cls += ' correct';
+        else if (c === ans.selected && c !== q.correct) cls += ' incorrect';
+        return `<button class="${cls}">${escapeHtml(c)}</button>`;
+      } else {
+        return `<button class="leccion-choice-btn" data-action="leccion-choice" data-lesson="${lesson.id}" data-val="${escapeHtml(c)}">${escapeHtml(c)}</button>`;
+      }
+    }).join('');
+    
+    let resultHtml = '';
+    let nextBtnHtml = '';
+    
+    if (isAnswered) {
+      const resultMsg = ans.correct
+        ? `✅ Correct! ${escapeHtml(q.explanation)}`
+        : `❌ The correct answer is: <strong>${escapeHtml(q.correct)}</strong>. ${escapeHtml(q.explanation)}`;
+      const resultStyle = ans.correct
+        ? `background:#D1FAE5;color:#065F46;border:1.5px solid #34D399;`
+        : `background:#FEE2E2;color:#DC2626;border:1.5px solid #FCA5A5;`;
+      resultHtml = `<div class="leccion-quiz-result show" style="${resultStyle}">${resultMsg}</div>`;
+      
+      const nextTxt = (qIndex === totalQ - 1) ? 'Finalizar Lección' : 'Siguiente Pregunta ➔';
+      nextBtnHtml = `<button class="leccion-next-btn" data-action="leccion-next" data-lesson="${lesson.id}">${nextTxt}</button>`;
+    }
+    
     quizHtml = `
+      ${progressHtml}
       <div class="leccion-quiz-title" style="color:${t.text};">🎯 Practice Exercise</div>
       <div class="leccion-question" style="background:${t.bg};border-color:${t.border};color:${t.text};">${escapeHtml(q.q)}</div>
       <div class="leccion-choices">${choicesHtml}</div>
-      <div class="leccion-quiz-result" id="lq-result-${lesson.id}"></div>`;
+      ${resultHtml}
+      ${nextBtnHtml}
+    `;
   }
 
   return `
@@ -2697,6 +6368,215 @@ function render() {
   renderHeaderBadges();
 
   document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === state.currentTab);
+  });
+
+  if (state.currentTab === 'cards') contentEl.innerHTML = renderCards();
+  else if (state.currentTab === 'quiz') contentEl.innerHTML = renderQuiz();
+  else if (state.currentTab === 'lecciones') contentEl.innerHTML = renderLecciones();
+  else if (state.currentTab === 'custom') contentEl.innerHTML = renderCustom();
+  else contentEl.innerHTML = renderProgress();
+
+  attachHandlers();
+}
+
+let isSwiping = false;
+
+function addSwipe(el, onLeft, onRight) {
+  let sx, sy, startT;
+  el.addEventListener('touchstart', e => {
+    sx = e.touches[0].clientX;
+    sy = e.touches[0].clientY;
+    startT = Date.now();
+  }, {passive: true});
+  el.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    const dt = Date.now() - startT;
+    if (dt > 500) return; // too slow, ignore
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+      isSwiping = true;
+      if (dx < -40 && onLeft) onLeft();   // swipe left = skip / Again
+      else if (dx > 40 && onRight) onRight(); // swipe right = Easy
+      setTimeout(() => { isSwiping = false; }, 300);
+    }
+  }, {passive: true});
+}
+
+function attachHandlers() {
+  document.querySelectorAll('[data-action="speak"]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      playSound('click');
+      const text = btn.dataset.text;
+      if (text) speakWord(text);
+    });
+  });
+
+  const flashcard = document.getElementById('flashcard');
+  if (flashcard) {
+    flashcard.addEventListener('click', () => {
+      if (isSwiping) { isSwiping = false; return; }
+      playSound('flip');
+      state.flipped = !state.flipped;
+      render();
+    });
+    addSwipe(
+      flashcard,
+      () => { if (state.flipped) rateCard(-1); },  // swipe left = Again
+      () => { if (state.flipped) rateCard(2); }    // swipe right = Easy
+    );
+  }
+  document.querySelectorAll('[data-action="rate"]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      rateCard(parseInt(btn.dataset.delta, 10));
+    });
+  });
+  document.querySelectorAll('[data-action="choice"]').forEach(btn => {
+    btn.addEventListener('click', () => selectChoice(btn.dataset.val));
+  });
+  const nextBtn = document.querySelector('[data-action="next-quiz"]');
+  if (nextBtn) nextBtn.addEventListener('click', nextQuiz);
+  const resetBtn = document.querySelector('[data-action="reset"]');
+  if (resetBtn) resetBtn.addEventListener('click', resetProgress);
+
+  // custom-words tab
+  const customFlashcard = document.getElementById('custom-flashcard');
+  if (customFlashcard) {
+    customFlashcard.addEventListener('click', () => {
+      if (isSwiping) { isSwiping = false; return; }
+      playSound('flip');
+      state.customFlipped = !state.customFlipped;
+      render();
+    });
+    addSwipe(
+      customFlashcard,
+      () => { if (state.customFlipped) rateCustomCard(-1); },
+      () => { if (state.customFlipped) rateCustomCard(2); }
+    );
+  }
+  document.querySelectorAll('[data-action="rate-custom"]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      rateCustomCard(parseInt(btn.dataset.delta, 10));
+    });
+  });
+  document.querySelectorAll('[data-action="choice-custom"]').forEach(btn => {
+    btn.addEventListener('click', () => selectCustomChoice(btn.dataset.val));
+  });
+  const nextCustomBtn = document.querySelector('[data-action="next-quiz-custom"]');
+  if (nextCustomBtn) nextCustomBtn.addEventListener('click', nextCustomQuiz);
+  document.querySelectorAll('[data-action="custom-subtab"]').forEach(btn => {
+    btn.addEventListener('click', () => switchCustomSubTab(btn.dataset.sub));
+  });
+  const customForm = document.getElementById('custom-word-form');
+  if (customForm) {
+    customForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const es = document.getElementById('input-es').value;
+      const en = document.getElementById('input-en').value;
+      const ex = document.getElementById('input-ex').value;
+      addCustomWord(es, en, ex);
+    });
+  }
+  document.querySelectorAll('[data-action="delete-word"]').forEach(btn => {
+    btn.addEventListener('click', () => deleteCustomWord(parseInt(btn.dataset.index, 10)));
+  });
+
+  // ── Lecciones: accordion toggle ──
+  document.querySelectorAll('[data-action="leccion-toggle"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.lesson;
+      state.leccionesOpen[id] = !state.leccionesOpen[id];
+      playSound('click');
+      render();
+    });
+  });
+
+  // ── Lecciones: 50Q Quiz Handlers ──
+  document.querySelectorAll('[data-action="leccion-choice"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.lesson;
+      const val = btn.dataset.val;
+      
+      let qState = state.leccionesQuiz[id];
+      if (!qState) qState = { currentIndex: 0, score: 0, completed: false, lastAnswerState: null };
+      if (qState.lastAnswerState) return; // already answered current question
+      
+      const lesson = LESSONS.find(l => l.id === id);
+      if (!lesson) return;
+      
+      const currentQ = lesson.quizzes[qState.currentIndex];
+      const isCorrect = val === currentQ.correct;
+      
+      if (isCorrect) {
+        playSound('correct');
+        qState.score += 1;
+      } else {
+        playSound('wrong');
+      }
+      
+      qState.lastAnswerState = { selected: val, correct: isCorrect };
+      state.leccionesQuiz[id] = qState;
+      
+      saveProgress();
+      render();
+    });
+  });
+
+  document.querySelectorAll('[data-action="leccion-next"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.lesson;
+      let qState = state.leccionesQuiz[id];
+      if (!qState || !qState.lastAnswerState) return;
+      
+      const lesson = LESSONS.find(l => l.id === id);
+      if (!lesson) return;
+      
+      qState.currentIndex += 1;
+      qState.lastAnswerState = null;
+      
+      if (qState.currentIndex >= lesson.quizzes.length) {
+        qState.completed = true;
+        playSound('mastered');
+        if (!state.leccionesCompleted[id]) {
+          state.leccionesCompleted[id] = true;
+          addPoints(150, '¡Lección 100% Dominada! +150 XP'); // huge reward for 50 questions
+          spawnConfetti(50);
+        }
+      } else {
+        playSound('click');
+      }
+      
+      state.leccionesQuiz[id] = qState;
+      saveProgress();
+      render();
+      
+      // scroll back up slightly so they can see the next question
+      const card = document.getElementById(`lcard-${id}`);
+      if (card) {
+        // smooth scroll inside the tab content
+        const contentEl = document.getElementById('content');
+        if (contentEl) {
+            contentEl.scrollTo({ top: card.offsetTop - 20, behavior: 'smooth' });
+        }
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-action="leccion-restart"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.lesson;
+      state.leccionesQuiz[id] = { currentIndex: 0, score: 0, completed: false, lastAnswerState: null };
+      playSound('click');
+      saveProgress();
+      render();
+    });
+  });
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.tab === state.currentTab);
   });
 
