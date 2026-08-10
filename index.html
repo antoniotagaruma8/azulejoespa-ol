@@ -1440,127 +1440,11 @@ html, body { height: 100%; }
   right: 54px;
 }
 
-/* SUPABASE MODAL */
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-.modal-overlay.show {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.modal-content {
-  background: white;
-  width: 90%;
-  max-width: 480px;
-  max-height: 90vh;
-  border-radius: 24px;
-  padding: 24px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-  transform: translateY(20px) scale(0.95);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.modal-overlay.show .modal-content {
-  transform: translateY(0) scale(1);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.modal-title {
-  font-family: 'Sora', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: #1E293B;
-}
-
-.modal-close {
-  background: #F1F5F9;
-  border: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  font-size: 18px;
-  font-weight: bold;
-  color: #64748B;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-}
-
-.modal-close:hover {
-  background: #E2E8F0;
-  color: #0F172A;
-}
-
-.modal-body {
-  flex: 1;
-  overflow-y: auto;
-}
-
-.practice-btn {
-  margin-top: 12px;
-  width: 100%;
-  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-  color: white;
-  border: none;
-  border-radius: 14px;
-  padding: 14px;
-  font-weight: 700;
-  font-size: 15px;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.35);
-  transition: transform 0.18s, box-shadow 0.18s;
-}
-
-.practice-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px -4px rgba(16, 185, 129, 0.45);
-}
-
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
 <div class="app-root" id="app-root">
-
-  <!-- 50 QUESTIONS MODAL -->
-  <div class="modal-overlay" id="practice-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="modal-title" id="practice-modal-title">Práctica Extra</div>
-        <button class="modal-close" onclick="closePracticeModal()">×</button>
-      </div>
-      <div class="modal-body" id="practice-modal-body">
-        <!-- Content will be injected via JS -->
-      </div>
-    </div>
-  </div>
-
   <div class="tile-strip"></div>
   <div class="header">
     <div class="header-top">
@@ -2455,19 +2339,11 @@ function buildLeccionHtml(lesson) {
     const resultStyle = quizState.correct
       ? `background:#D1FAE5;color:#065F46;border:1.5px solid #34D399;`
       : `background:#FEE2E2;color:#DC2626;border:1.5px solid #FCA5A5;`;
-      
-    let practiceBtn = '';
-    if (quizState.correct) {
-      const safeTitle = escapeHtml(lesson.title).replace(/'/g, "\\'");
-      practiceBtn = `<button class="practice-btn" style="margin-top: 14px;" data-action="practice-extra" data-lesson="${lesson.id}" data-title="${safeTitle}">¡Practicar 50 preguntas más!</button>`;
-    }
-      
     quizHtml = `
       <div class="leccion-quiz-title" style="color:${t.text};">🎯 Practice Exercise</div>
       <div class="leccion-question" style="background:${t.bg};border-color:${t.border};color:${t.text};">${escapeHtml(q.q)}</div>
       <div class="leccion-choices">${choicesHtml}</div>
-      <div class="leccion-quiz-result show" style="${resultStyle}">${resultMsg}</div>
-      ${practiceBtn}`;
+      <div class="leccion-quiz-result show" style="${resultStyle}">${resultMsg}</div>`;
   } else {
     const choicesHtml = q.choices.map(c =>
       `<button class="leccion-choice-btn" data-action="leccion-choice" data-lesson="${lesson.id}" data-val="${escapeHtml(c)}">${escapeHtml(c)}</button>`
@@ -2856,155 +2732,6 @@ function addSwipe(el, onLeft, onRight) {
   }, {passive: true});
 }
 
-// --- SUPABASE & MODAL LOGIC ---
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
-let supabaseClient = null;
-
-if (window.supabase) {
-  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-}
-
-let practiceState = {
-  questions: [],
-  currentIndex: 0,
-  score: 0,
-  loading: false,
-  error: null,
-  selected: null
-};
-
-window.closePracticeModal = function() {
-  document.getElementById('practice-modal').classList.remove('show');
-};
-
-window.openPracticeModal = async function(lessonId, lessonTitle) {
-  const modal = document.getElementById('practice-modal');
-  const titleEl = document.getElementById('practice-modal-title');
-  
-  titleEl.innerText = `${lessonTitle} - Práctica Extra`;
-  modal.classList.add('show');
-  
-  practiceState = { questions: [], currentIndex: 0, score: 0, loading: true, error: null, selected: null };
-  renderPracticeModal();
-
-  if (!supabaseClient) {
-    practiceState.loading = false;
-    practiceState.error = "Supabase no está configurado. Reemplaza YOUR_SUPABASE_URL y YOUR_SUPABASE_ANON_KEY en el código.";
-    renderPracticeModal();
-    return;
-  }
-
-  try {
-    const { data, error } = await supabaseClient
-      .from('lesson_questions')
-      .select('*')
-      .eq('lesson_id', lessonId)
-      .limit(50);
-      
-    if (error) throw error;
-    
-    if (!data || data.length === 0) {
-      practiceState.error = "Aún no hay preguntas para esta lección en la base de datos.";
-    } else {
-      practiceState.questions = data.sort(() => 0.5 - Math.random());
-    }
-  } catch (err) {
-    console.error("Supabase Error:", err);
-    practiceState.error = "Error al cargar las preguntas. Revisa la conexión.";
-  }
-  
-  practiceState.loading = false;
-  renderPracticeModal();
-};
-
-window.selectPracticeChoice = function(choice) {
-  if (practiceState.selected !== null) return;
-  practiceState.selected = choice;
-  
-  const currentQ = practiceState.questions[practiceState.currentIndex];
-  if (choice === currentQ.correct_answer) {
-    practiceState.score++;
-    playSound('correct');
-    addPoints(10, '+10 XP');
-    spawnConfetti(20);
-  } else {
-    playSound('wrong');
-  }
-  saveProgress();
-  renderPracticeModal();
-};
-
-window.nextPracticeQuestion = function() {
-  practiceState.currentIndex++;
-  practiceState.selected = null;
-  renderPracticeModal();
-};
-
-function renderPracticeModal() {
-  const bodyEl = document.getElementById('practice-modal-body');
-  if (!bodyEl) return;
-  
-  if (practiceState.loading) {
-    bodyEl.innerHTML = `<div class="loading-state">Cargando preguntas de Supabase...</div>`;
-    return;
-  }
-  
-  if (practiceState.error) {
-    bodyEl.innerHTML = `<div class="empty-state" style="color: #EF4444; margin-top:20px; font-weight:600;">${escapeHtml(practiceState.error)}</div>`;
-    return;
-  }
-  
-  if (practiceState.currentIndex >= practiceState.questions.length) {
-    bodyEl.innerHTML = `
-      <div class="session-complete">
-        <div class="big">¡Has terminado!</div>
-        <p style="margin-bottom:20px; color:#64748B;">Puntuación: ${practiceState.score} / ${practiceState.questions.length}</p>
-        <button class="practice-btn" onclick="closePracticeModal()">Cerrar</button>
-      </div>
-    `;
-    return;
-  }
-  
-  const q = practiceState.questions[practiceState.currentIndex];
-  
-  // Ensure choices are parsed if they come as JSON string
-  let choices = q.choices;
-  if (typeof choices === 'string') {
-    try { choices = JSON.parse(choices); } catch(e) { choices = [choices]; }
-  }
-  
-  let choicesHtml = (choices || []).map(c => {
-    let cls = 'leccion-choice-btn';
-    if (practiceState.selected !== null) {
-      cls += ' disabled';
-      if (c === q.correct_answer) cls += ' correct';
-      else if (c === practiceState.selected) cls += ' incorrect';
-    }
-    return `<button class="${cls}" onclick="selectPracticeChoice('${escapeHtml(c).replace(/'/g, "\\'")}')">${escapeHtml(c)}</button>`;
-  }).join('');
-  
-  let explHtml = '';
-  if (practiceState.selected !== null && q.explanation) {
-    explHtml = `<div style="margin-top:14px; font-size:14px; color:#475569; background:#F8FAFC; padding:12px; border-radius:10px; border-left: 4px solid #3B82F6;"><strong>💡</strong> ${escapeHtml(q.explanation)}</div>`;
-  }
-  
-  let nextBtn = '';
-  if (practiceState.selected !== null) {
-    nextBtn = `<button class="practice-btn" style="margin-top:20px;" onclick="nextPracticeQuestion()">Siguiente →</button>`;
-  }
-  
-  bodyEl.innerHTML = `
-    <div style="font-size: 12px; color: #64748B; font-family: 'JetBrains Mono', monospace; margin-bottom: 16px; font-weight: bold; text-transform:uppercase;">Pregunta ${practiceState.currentIndex + 1} de ${practiceState.questions.length}</div>
-    <div class="leccion-question" style="background:#F0F9FF; border-color:#38BDF8; color:#075985;">${escapeHtml(q.question)}</div>
-    <div class="leccion-choices" style="grid-template-columns: 1fr; gap: 10px;">
-      ${choicesHtml}
-    </div>
-    ${explHtml}
-    ${nextBtn}
-  `;
-}
-
 function attachHandlers() {
   document.querySelectorAll('[data-action="speak"]').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -3118,14 +2845,6 @@ function attachHandlers() {
       }
       saveProgress();
       render();
-    });
-  });
-
-  document.querySelectorAll('[data-action="practice-extra"]').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      playSound('click');
-      window.openPracticeModal(btn.dataset.lesson, btn.dataset.title);
     });
   });
 }
