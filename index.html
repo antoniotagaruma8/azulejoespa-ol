@@ -416,8 +416,8 @@ html, body { height: 100%; }
 }
 
 .choices {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
@@ -425,8 +425,8 @@ html, body { height: 100%; }
   background: white;
   border: 2px solid #E2E8F0;
   border-radius: 16px;
-  padding: 16px 20px;
-  text-align: left;
+  padding: 18px 14px;
+  text-align: center;
   font-family: 'Inter', sans-serif;
   font-size: 15px;
   font-weight: 600;
@@ -434,9 +434,15 @@ html, body { height: 100%; }
   cursor: pointer;
   transition: all 0.18s ease;
   box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  word-break: break-word;
+  line-height: 1.3;
 }
 
-.choice-btn:hover { border-color: #3B82F6; background: #F8FAFC; transform: translateY(-1px); }
+.choice-btn:hover { border-color: #3B82F6; background: #F8FAFC; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(59,130,246,0.15); }
 
 .choice-btn.correct {
   background: #D1FAE5;
@@ -1356,9 +1362,9 @@ html, body { height: 100%; }
 }
 
 .leccion-choices {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
   margin-bottom: 14px;
 }
 
@@ -1366,20 +1372,28 @@ html, body { height: 100%; }
   background: #F8FAFC;
   border: 1.5px solid #E2E8F0;
   border-radius: 12px;
-  padding: 12px 16px;
+  padding: 14px 12px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  text-align: left;
+  text-align: center;
   transition: all 0.18s;
   font-family: 'Inter', sans-serif;
   color: #0F172A;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  word-break: break-word;
+  line-height: 1.3;
 }
 
 .leccion-choice-btn:hover:not(.disabled) {
   background: #EEF2FF;
   border-color: #818CF8;
   color: #3730A3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99,102,241,0.15);
 }
 
 .leccion-choice-btn.correct {
@@ -2069,16 +2083,16 @@ const LESSONS = [
     sections: [
       {
         type: 'rules',
-        title: 'Regla básica',
+        title: 'Basic Rules',
         items: [
-          { title: 'Artículo Definido (The)', body: '<span class="formula-tag" style="background:#C7D2FE;color:#3730A3;">el</span> (masc.) + <span class="formula-tag" style="background:#C7D2FE;color:#3730A3;">la</span> (fem.) + <span class="formula-tag" style="background:#C7D2FE;color:#3730A3;">los / las</span> (plural)', bg: '#EEF2FF', border: '#818CF8', text: '#3730A3' },
-          { title: 'Artículo Indefinido (A/An)', body: '<span class="formula-tag" style="background:#E0E7FF;color:#4338CA;">un</span> (masc.) + <span class="formula-tag" style="background:#E0E7FF;color:#4338CA;">una</span> (fem.) + <span class="formula-tag" style="background:#E0E7FF;color:#4338CA;">unos / unas</span> (plural)', bg: '#EEF2FF', border: '#818CF8', text: '#3730A3' },
-          { title: 'Regla de Género', body: 'Nouns ending in <strong>-o</strong> → usually masculine (el libro, el gato)<br>Nouns ending in <strong>-a</strong> → usually feminine (la casa, la mesa)<br>¡Excepciones! el agua, el día, la mano', bg: '#F0F4FF', border: '#A5B4FC', text: '#3730A3' },
+          { title: 'Definite Article (The)', body: '<span class="formula-tag" style="background:#C7D2FE;color:#3730A3;">el</span> (masc.) + <span class="formula-tag" style="background:#C7D2FE;color:#3730A3;">la</span> (fem.) + <span class="formula-tag" style="background:#C7D2FE;color:#3730A3;">los / las</span> (plural)', bg: '#EEF2FF', border: '#818CF8', text: '#3730A3' },
+          { title: 'Indefinite Article (A / An)', body: '<span class="formula-tag" style="background:#E0E7FF;color:#4338CA;">un</span> (masc.) + <span class="formula-tag" style="background:#E0E7FF;color:#4338CA;">una</span> (fem.) + <span class="formula-tag" style="background:#E0E7FF;color:#4338CA;">unos / unas</span> (plural)', bg: '#EEF2FF', border: '#818CF8', text: '#3730A3' },
+          { title: 'Gender Rule', body: 'Nouns ending in <strong>-o</strong> → usually masculine (el libro, el gato)<br>Nouns ending in <strong>-a</strong> → usually feminine (la casa, la mesa)<br>⚠️ Exceptions: el agua (water), el día (day), la mano (hand)', bg: '#F0F4FF', border: '#A5B4FC', text: '#3730A3' },
         ]
       },
       {
         type: 'examples',
-        title: 'Ejemplos',
+        title: 'Examples',
         items: [
           { es: 'el libro', en: 'the book', audio: 'el libro' },
           { es: 'la casa', en: 'the house', audio: 'la casa' },
@@ -2089,7 +2103,7 @@ const LESSONS = [
         ]
       }
     ],
-    quiz: { q: '¿Cuál es el artículo correcto para "libro" (book)?', choices: ['el libro', 'la libro', 'lo libro', 'les libro'], correct: 'el libro', explanation: '"Libro" termina en -o → es masculino → "el libro".' }
+    quiz: { q: 'Which article is correct for "libro" (book)?', choices: ['el libro', 'la libro', 'lo libro', 'les libro'], correct: 'el libro', explanation: '"Libro" ends in -o → it is masculine → use "el libro".' }
   },
   {
     id: 'l2',
@@ -2100,16 +2114,16 @@ const LESSONS = [
     sections: [
       {
         type: 'rules',
-        title: 'Cuándo usar SER',
+        title: 'When to use SER vs. ESTAR',
         items: [
-          { title: 'SER (Permanent / Identity)', body: '<strong>D</strong>escription (María <em>es</em> alta)<br><strong>O</strong>ccupation (Soy estudiante)<br><strong>C</strong>haracteristics (El coche <em>es</em> rojo)<br><strong>T</strong>ime / Date (Son las tres)<br><strong>O</strong>rigin (Soy de Filipinas)<br><strong>R</strong>elationship (Es mi madre)', bg: '#ECFDF5', border: '#34D399', text: '#065F46' },
-          { title: 'ESTAR (Temporary / State)', body: '<strong>P</strong>osition (El libro <em>está</em> aquí)<br><strong>L</strong>ocation (Estoy en casa)<br><strong>A</strong>ction (Estoy comiendo)<br><strong>C</strong>ondition (Estoy cansado)<br><strong>E</strong>motion (Está feliz)', bg: '#F0FDF9', border: '#6EE7B7', text: '#065F46' },
+          { title: 'SER (Permanent / Identity) — use the mnemonic DOCTOR', body: '<strong>D</strong>escription (María <em>es</em> alta — Maria is tall)<br><strong>O</strong>ccupation (Soy estudiante — I am a student)<br><strong>C</strong>haracteristics (El coche <em>es</em> rojo — The car is red)<br><strong>T</strong>ime / Date (Son las tres — It is three o\'clock)<br><strong>O</strong>rigin (Soy de Filipinas — I am from the Philippines)<br><strong>R</strong>elationship (Es mi madre — She is my mother)', bg: '#ECFDF5', border: '#34D399', text: '#065F46' },
+          { title: 'ESTAR (Temporary / State) — use the mnemonic PLACE', body: '<strong>P</strong>osition (El libro <em>está</em> aquí — The book is here)<br><strong>L</strong>ocation (Estoy en casa — I am at home)<br><strong>A</strong>ction / ongoing (Estoy comiendo — I am eating)<br><strong>C</strong>ondition (Estoy cansado — I am tired)<br><strong>E</strong>motion (Está feliz — She is happy)', bg: '#F0FDF9', border: '#6EE7B7', text: '#065F46' },
         ]
       },
       {
         type: 'table',
-        title: 'Conjugación: SER y ESTAR (Presente)',
-        headers: ['Pronombre', 'SER', 'ESTAR'],
+        title: 'Conjugation: SER and ESTAR (Present Tense)',
+        headers: ['Pronoun', 'SER', 'ESTAR'],
         rows: [
           ['yo', 'soy', 'estoy'],
           ['tú', 'eres', 'estás'],
@@ -2122,7 +2136,7 @@ const LESSONS = [
       },
       {
         type: 'examples',
-        title: 'Ejemplos',
+        title: 'Examples',
         items: [
           { es: 'Soy de Filipinas', en: 'I am from the Philippines', audio: 'Soy de Filipinas' },
           { es: 'Estoy cansado', en: 'I am tired', audio: 'Estoy cansado' },
@@ -2131,7 +2145,7 @@ const LESSONS = [
         ]
       }
     ],
-    quiz: { q: '¿Cuál es correcto? "I am tired" en español:', choices: ['Soy cansado', 'Estoy cansado', 'Ser cansado', 'Es cansado'], correct: 'Estoy cansado', explanation: '"Cansado" es un estado temporal → usamos ESTAR → "Estoy cansado".' }
+    quiz: { q: 'Which is correct for "I am tired" in Spanish?', choices: ['Soy cansado', 'Estoy cansado', 'Ser cansado', 'Es cansado'], correct: 'Estoy cansado', explanation: '"Cansado" (tired) is a temporary state → use ESTAR → "Estoy cansado".' }
   },
   {
     id: 'l3',
@@ -2142,17 +2156,17 @@ const LESSONS = [
     sections: [
       {
         type: 'rules',
-        title: 'Terminaciones regulares',
+        title: 'Regular Verb Endings',
         items: [
-          { title: 'Verbos -AR (hablar, trabajar, llamar…)', body: '<span class="formula-tag" style="background:#BAE6FD;color:#075985;">yo → -o</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">tú → -as</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">él → -a</span><br><span class="formula-tag" style="background:#E0F2FE;color:#075985;">nosotros → -amos</span> <span class="formula-tag" style="background:#E0F2FE;color:#075985;">ellos → -an</span>', bg: '#F0F9FF', border: '#38BDF8', text: '#075985' },
-          { title: 'Verbos -ER (comer, beber, hacer…)', body: '<span class="formula-tag" style="background:#BAE6FD;color:#075985;">yo → -o</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">tú → -es</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">él → -e</span><br><span class="formula-tag" style="background:#E0F2FE;color:#075985;">nosotros → -emos</span> <span class="formula-tag" style="background:#E0F2FE;color:#075985;">ellos → -en</span>', bg: '#F0F9FF', border: '#38BDF8', text: '#075985' },
-          { title: 'Verbos -IR (vivir, escribir, abrir…)', body: '<span class="formula-tag" style="background:#BAE6FD;color:#075985;">yo → -o</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">tú → -es</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">él → -e</span><br><span class="formula-tag" style="background:#E0F2FE;color:#075985;">nosotros → -imos</span> <span class="formula-tag" style="background:#E0F2FE;color:#075985;">ellos → -en</span>', bg: '#F0F9FF', border: '#38BDF8', text: '#075985' },
+          { title: '-AR Verbs (hablar, trabajar, llamar…) — to speak, to work, to call', body: '<span class="formula-tag" style="background:#BAE6FD;color:#075985;">yo → -o</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">tú → -as</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">él/ella → -a</span><br><span class="formula-tag" style="background:#E0F2FE;color:#075985;">nosotros → -amos</span> <span class="formula-tag" style="background:#E0F2FE;color:#075985;">ellos → -an</span><br>Example: yo habl<strong>o</strong>, tú habl<strong>as</strong>, él habl<strong>a</strong>', bg: '#F0F9FF', border: '#38BDF8', text: '#075985' },
+          { title: '-ER Verbs (comer, beber, hacer…) — to eat, to drink, to do', body: '<span class="formula-tag" style="background:#BAE6FD;color:#075985;">yo → -o</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">tú → -es</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">él/ella → -e</span><br><span class="formula-tag" style="background:#E0F2FE;color:#075985;">nosotros → -emos</span> <span class="formula-tag" style="background:#E0F2FE;color:#075985;">ellos → -en</span><br>Example: yo com<strong>o</strong>, tú com<strong>es</strong>, él com<strong>e</strong>', bg: '#F0F9FF', border: '#38BDF8', text: '#075985' },
+          { title: '-IR Verbs (vivir, escribir, abrir…) — to live, to write, to open', body: '<span class="formula-tag" style="background:#BAE6FD;color:#075985;">yo → -o</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">tú → -es</span> <span class="formula-tag" style="background:#BAE6FD;color:#075985;">él/ella → -e</span><br><span class="formula-tag" style="background:#E0F2FE;color:#075985;">nosotros → -imos</span> <span class="formula-tag" style="background:#E0F2FE;color:#075985;">ellos → -en</span><br>Example: yo viv<strong>o</strong>, tú viv<strong>es</strong>, él viv<strong>e</strong>', bg: '#F0F9FF', border: '#38BDF8', text: '#075985' },
         ]
       },
       {
         type: 'table',
-        title: 'Irregulares más usados',
-        headers: ['Pronombre', 'TENER', 'IR', 'HACER'],
+        title: 'Most Common Irregular Verbs',
+        headers: ['Pronoun', 'TENER (to have)', 'IR (to go)', 'HACER (to do)'],
         rows: [
           ['yo', 'tengo', 'voy', 'hago'],
           ['tú', 'tienes', 'vas', 'haces'],
@@ -2164,7 +2178,7 @@ const LESSONS = [
       },
       {
         type: 'examples',
-        title: 'Ejemplos',
+        title: 'Examples',
         items: [
           { es: 'Yo hablo español', en: 'I speak Spanish', audio: 'Yo hablo español' },
           { es: 'Ella come una manzana', en: 'She eats an apple', audio: 'Ella come una manzana' },
@@ -2173,7 +2187,7 @@ const LESSONS = [
         ]
       }
     ],
-    quiz: { q: '¿Cómo se conjuga "hablar" para "yo"?', choices: ['yo hablas', 'yo hablo', 'yo hablar', 'yo habe'], correct: 'yo hablo', explanation: 'Verbos -AR: la terminación para "yo" es siempre -o → "yo hablo".' }
+    quiz: { q: 'How do you conjugate "hablar" (to speak) for "yo" (I)?', choices: ['yo hablas', 'yo hablo', 'yo hablar', 'yo habe'], correct: 'yo hablo', explanation: '-AR verbs: the ending for "yo" (I) is always -o → "yo hablo" (I speak).' }
   },
   {
     id: 'l4',
@@ -2184,28 +2198,28 @@ const LESSONS = [
     sections: [
       {
         type: 'rules',
-        title: 'Cuándo usar cada uno',
+        title: 'When to Use Each Past Tense',
         items: [
-          { title: 'Pretérito Indefinido — Completed Past', body: 'Acciones terminadas en el pasado:<br>"Ayer <strong>comí</strong> pizza." (Yesterday I ate pizza.)<br>"<strong>Fui</strong> a España en 2022." (I went to Spain in 2022.)<br><em>Trigger words: ayer, el otro día, una vez, en + año</em>', bg: '#FFFBEB', border: '#FBBF24', text: '#92400E' },
-          { title: 'Pretérito Imperfecto — Habitual / Ongoing Past', body: 'Hábitos pasados o acción en progreso:<br>"De niño <strong>jugaba</strong> fútbol." (As a child I used to play soccer.)<br>"<strong>Llovía</strong> cuando llegué." (It was raining when I arrived.)<br><em>Trigger words: siempre, todos los días, de niño, cuando era…</em>', bg: '#FEF9E7', border: '#FCD34D', text: '#92400E' },
+          { title: 'Pretérito Indefinido — Completed Past Action', body: 'Use for finished actions in the past:<br>"Ayer <strong>comí</strong> pizza." → Yesterday I <strong>ate</strong> pizza.<br>"<strong>Fui</strong> a España en 2022." → I <strong>went</strong> to Spain in 2022.<br>⏰ <em>Trigger words: ayer (yesterday), una vez (once), en 2020, el otro día…</em>', bg: '#FFFBEB', border: '#FBBF24', text: '#92400E' },
+          { title: 'Pretérito Imperfecto — Habitual / Ongoing Past', body: 'Use for habits or actions that were ongoing in the past:<br>"De niño <strong>jugaba</strong> fútbol." → As a child, I <strong>used to play</strong> soccer.<br>"<strong>Llovía</strong> cuando llegué." → It <strong>was raining</strong> when I arrived.<br>⏰ <em>Trigger words: siempre (always), todos los días (every day), de niño (as a child)…</em>', bg: '#FEF9E7', border: '#FCD34D', text: '#92400E' },
         ]
       },
       {
         type: 'table',
-        title: 'Pretérito Indefinido: -AR (hablar)',
-        headers: ['Pronombre', 'Terminación', 'Ejemplo'],
+        title: 'Pretérito Indefinido: -AR endings (hablar = to speak)',
+        headers: ['Pronoun', 'Ending', 'Example'],
         rows: [
-          ['yo', '-é', 'hablé'],
-          ['tú', '-aste', 'hablaste'],
-          ['él / ella', '-ó', 'habló'],
-          ['nosotros', '-amos', 'hablamos'],
-          ['ellos', '-aron', 'hablaron'],
+          ['yo', '-é', 'hablé (I spoke)'],
+          ['tú', '-aste', 'hablaste (you spoke)'],
+          ['él / ella', '-ó', 'habló (he/she spoke)'],
+          ['nosotros', '-amos', 'hablamos (we spoke)'],
+          ['ellos', '-aron', 'hablaron (they spoke)'],
         ],
         bg: '#FFFBEB', thBg: '#FDE68A', thText: '#92400E'
       },
       {
         type: 'examples',
-        title: 'Ejemplos',
+        title: 'Examples',
         items: [
           { es: 'Ayer fui al mercado', en: 'Yesterday I went to the market', audio: 'Ayer fui al mercado' },
           { es: 'Cuando era niño, vivía en Manila', en: 'When I was a child, I lived in Manila', audio: 'Cuando era niño, vivía en Manila' },
@@ -2214,7 +2228,7 @@ const LESSONS = [
         ]
       }
     ],
-    quiz: { q: '"Ayer _____ al trabajo." ¿Cuál es correcto? (Yesterday I went to work.)', choices: ['iba', 'fui', 'voy', 'fue'], correct: 'fui', explanation: '"Ayer" indica una acción terminada en el pasado → Pretérito Indefinido → "fui".' }
+    quiz: { q: '"Ayer _____ al trabajo." Fill in the blank. (Yesterday I ___ to work.)', choices: ['iba', 'fui', 'voy', 'fue'], correct: 'fui', explanation: '"Ayer" (yesterday) signals a completed past action → use Pretérito Indefinido → "fui" (I went).' }
   },
   {
     id: 'l5',
@@ -2225,15 +2239,15 @@ const LESSONS = [
     sections: [
       {
         type: 'rules',
-        title: 'Dos formas de expresar el futuro',
+        title: 'Two Ways to Express the Future',
         items: [
-          { title: 'Futuro Próximo: IR A + Infinitivo', body: '<span class="formula-tag" style="background:#FECDD3;color:#9F1239;">Sujeto + ir (conjugado) + a + verbo infinitivo</span><br>"Voy a estudiar esta noche." (I\'m going to study tonight.)<br>"Ella va a comer." (She\'s going to eat.)<br><em>Usado para planes e intenciones próximas.</em>', bg: '#FFF1F2', border: '#FB7185', text: '#9F1239' },
-          { title: 'Futuro Simple (will + verb)', body: 'Añadir terminaciones al infinitivo:<br><span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">yo → -é</span> <span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">tú → -ás</span> <span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">él → -á</span><br><span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">nosotros → -emos</span> <span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">ellos → -án</span><br>"Mañana <strong>hablaré</strong> con ella." (Tomorrow I will talk to her.)', bg: '#FFF0F3', border: '#FDA4AF', text: '#9F1239' },
+          { title: 'Near Future: IR A + Infinitive (going to)', body: '<span class="formula-tag" style="background:#FECDD3;color:#9F1239;">Subject + ir (conjugated) + a + verb (infinitive)</span><br>"Voy a estudiar esta noche." → I\'m going to study tonight.<br>"Ella va a comer." → She\'s going to eat.<br>✅ <em>Use this for plans and near-future intentions.</em>', bg: '#FFF1F2', border: '#FB7185', text: '#9F1239' },
+          { title: 'Simple Future: add endings to the infinitive (will + verb)', body: 'Add these endings directly to the infinitive:<br><span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">yo → -é</span> <span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">tú → -ás</span> <span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">él → -á</span><br><span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">nosotros → -emos</span> <span class="formula-tag" style="background:#FCE7F3;color:#9F1239;">ellos → -án</span><br>"Mañana <strong>hablaré</strong> con ella." → Tomorrow I <strong>will talk</strong> to her.', bg: '#FFF0F3', border: '#FDA4AF', text: '#9F1239' },
         ]
       },
       {
         type: 'examples',
-        title: 'Ejemplos',
+        title: 'Examples',
         items: [
           { es: 'Voy a aprender español', en: 'I\'m going to learn Spanish', audio: 'Voy a aprender español' },
           { es: 'Mañana comeré contigo', en: 'Tomorrow I will eat with you', audio: 'Mañana comeré contigo' },
@@ -2242,7 +2256,7 @@ const LESSONS = [
         ]
       }
     ],
-    quiz: { q: '¿Cómo se dice "I\'m going to eat" en español?', choices: ['Voy a comer', 'Comeré', 'Como', 'Comí'], correct: 'Voy a comer', explanation: 'Futuro próximo = IR A + infinitivo → "voy a comer".' }
+    quiz: { q: 'How do you say "I\'m going to eat" in Spanish?', choices: ['Voy a comer', 'Comeré', 'Como', 'Comí'], correct: 'Voy a comer', explanation: 'Near future = IR A + infinitive → "voy a comer" (I\'m going to eat).' }
   },
   {
     id: 'l6',
@@ -2253,16 +2267,16 @@ const LESSONS = [
     sections: [
       {
         type: 'rules',
-        title: 'Pronombres de Objeto',
+        title: 'Object Pronouns',
         items: [
-          { title: 'Objeto Indirecto (to whom?)', body: '<span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">me</span> (to me) <span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">te</span> (to you) <span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">le</span> (to him/her)<br><span class="formula-tag" style="background:#F3E8FF;color:#6B21A8;">nos</span> (to us) <span class="formula-tag" style="background:#F3E8FF;color:#6B21A8;">les</span> (to them)<br>"<strong>Le</strong> di el libro." (I gave <em>him/her</em> the book.)', bg: '#FAF5FF', border: '#C084FC', text: '#6B21A8' },
-          { title: 'Objeto Directo (what/whom?)', body: '<span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">lo / la</span> (it/him/her) <span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">los / las</span> (them)<br>"<strong>Lo</strong> veo." (I see <em>it/him</em>.)<br>"<strong>La</strong> quiero." (I love <em>her</em>.)', bg: '#F5F3FF', border: '#DDD6FE', text: '#6B21A8' },
-          { title: 'Orden de la Oración (Word Order)', body: 'Español: <span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">Sujeto + Verbo + Objeto</span><br>"Yo (S) como (V) una manzana (O)."<br>Pronombre ANTES del verbo: "Yo <strong>la</strong> como."<br>Negación: "Yo <strong>no la</strong> como."', bg: '#FAF5FF', border: '#C084FC', text: '#6B21A8' },
+          { title: 'Indirect Object Pronouns (to whom?)', body: '<span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">me</span> (to me) <span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">te</span> (to you) <span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">le</span> (to him/her)<br><span class="formula-tag" style="background:#F3E8FF;color:#6B21A8;">nos</span> (to us) <span class="formula-tag" style="background:#F3E8FF;color:#6B21A8;">les</span> (to them)<br>"<strong>Le</strong> di el libro." → I gave <em>him/her</em> the book.', bg: '#FAF5FF', border: '#C084FC', text: '#6B21A8' },
+          { title: 'Direct Object Pronouns (what / whom?)', body: '<span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">lo / la</span> (it/him/her) <span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">los / las</span> (them)<br>"<strong>Lo</strong> veo." → I see <em>it/him</em>.<br>"<strong>La</strong> quiero." → I love <em>her</em>.', bg: '#F5F3FF', border: '#DDD6FE', text: '#6B21A8' },
+          { title: 'Word Order in Spanish', body: 'Basic order: <span class="formula-tag" style="background:#E9D5FF;color:#6B21A8;">Subject + Verb + Object</span><br>"Yo (S) como (V) una manzana (O)." → I eat an apple.<br>Pronoun goes BEFORE the verb: "Yo <strong>la</strong> como." → I eat it.<br>Negation: "Yo <strong>no la</strong> como." → I don\'t eat it.', bg: '#FAF5FF', border: '#C084FC', text: '#6B21A8' },
         ]
       },
       {
         type: 'examples',
-        title: 'Ejemplos',
+        title: 'Examples',
         items: [
           { es: 'Me gusta el café', en: 'I like coffee (lit: coffee pleases me)', audio: 'Me gusta el café' },
           { es: 'Te quiero mucho', en: 'I love you a lot', audio: 'Te quiero mucho' },
@@ -2271,7 +2285,7 @@ const LESSONS = [
         ]
       }
     ],
-    quiz: { q: '"I like coffee" en español es:', choices: ['Yo gusto el café', 'Me gusta el café', 'Le gusta el café', 'Lo gusta el café'], correct: 'Me gusta el café', explanation: '"Gustar" funciona al revés: el sujeto es "café", "me" = a mí. → "Me gusta el café".' }
+    quiz: { q: 'How do you say "I like coffee" in Spanish?', choices: ['Yo gusto el café', 'Me gusta el café', 'Le gusta el café', 'Lo gusta el café'], correct: 'Me gusta el café', explanation: '"Gustar" works in reverse: the subject is "café", and "me" = to me. → "Me gusta el café" (Coffee pleases me = I like coffee).' }
   },
 ];
 
@@ -2320,13 +2334,13 @@ function buildLeccionHtml(lesson) {
       return `<button class="${cls}">${escapeHtml(c)}</button>`;
     }).join('');
     const resultMsg = quizState.correct
-      ? `✅ ¡Correcto! ${escapeHtml(q.explanation)}`
-      : `❌ La respuesta correcta es: <strong>${escapeHtml(q.correct)}</strong>. ${escapeHtml(q.explanation)}`;
+      ? `✅ Correct! ${escapeHtml(q.explanation)}`
+      : `❌ The correct answer is: <strong>${escapeHtml(q.correct)}</strong>. ${escapeHtml(q.explanation)}`;
     const resultStyle = quizState.correct
       ? `background:#D1FAE5;color:#065F46;border:1.5px solid #34D399;`
       : `background:#FEE2E2;color:#DC2626;border:1.5px solid #FCA5A5;`;
     quizHtml = `
-      <div class="leccion-quiz-title" style="color:${t.text};">🎯 Ejercicio Práctico</div>
+      <div class="leccion-quiz-title" style="color:${t.text};">🎯 Practice Exercise</div>
       <div class="leccion-question" style="background:${t.bg};border-color:${t.border};color:${t.text};">${escapeHtml(q.q)}</div>
       <div class="leccion-choices">${choicesHtml}</div>
       <div class="leccion-quiz-result show" style="${resultStyle}">${resultMsg}</div>`;
@@ -2335,7 +2349,7 @@ function buildLeccionHtml(lesson) {
       `<button class="leccion-choice-btn" data-action="leccion-choice" data-lesson="${lesson.id}" data-val="${escapeHtml(c)}">${escapeHtml(c)}</button>`
     ).join('');
     quizHtml = `
-      <div class="leccion-quiz-title" style="color:${t.text};">🎯 Ejercicio Práctico</div>
+      <div class="leccion-quiz-title" style="color:${t.text};">🎯 Practice Exercise</div>
       <div class="leccion-question" style="background:${t.bg};border-color:${t.border};color:${t.text};">${escapeHtml(q.q)}</div>
       <div class="leccion-choices">${choicesHtml}</div>
       <div class="leccion-quiz-result" id="lq-result-${lesson.id}"></div>`;
