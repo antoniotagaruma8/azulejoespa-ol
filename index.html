@@ -2940,6 +2940,9 @@ function render() {
     return;
   }
 
+  const modalBody = document.querySelector('.lesson-modal-body');
+  const modalScrollTop = modalBody ? modalBody.scrollTop : 0;
+
   renderHeaderBadges();
 
   document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -2960,6 +2963,13 @@ function render() {
   contentEl.innerHTML = html;
 
   attachHandlers();
+
+  if (state.activeLessonModal && modalScrollTop > 0) {
+    const newModalBody = document.querySelector('.lesson-modal-body');
+    if (newModalBody) {
+      newModalBody.scrollTop = modalScrollTop;
+    }
+  }
 }
 
 let isSwiping = false;
