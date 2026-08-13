@@ -1522,6 +1522,7 @@ let state = {
   formError: '',
   leccionesOpen: {},       // lessonId -> boolean
   leccionesCompleted: {},  // lessonId -> boolean
+  leccionesQuizProgress: {}, // lessonId -> number (index of current question, 0-9)
   leccionesQuiz: {},       // lessonId -> { selected: val, correct: bool }
 };
 
@@ -2103,7 +2104,18 @@ const LESSONS = [
         ]
       }
     ],
-    quiz: { q: 'Which article is correct for "libro" (book)?', choices: ['el libro', 'la libro', 'lo libro', 'les libro'], correct: 'el libro', explanation: '"Libro" ends in -o → it is masculine → use "el libro".' }
+    quizzes: [
+      { q: 'Which article is correct for "libro" (book)?', choices: ['el libro', 'la libro', 'lo libro', 'les libro'], correct: 'el libro', explanation: '"Libro" ends in -o → it is masculine → use "el libro".' },
+      { q: 'Which article is correct for "casa" (house)?', choices: ['el casa', 'la casa', 'lo casa', 'les casa'], correct: 'la casa', explanation: '"Casa" ends in -a → it is feminine → use "la casa".' },
+      { q: 'Which indefinite article is correct for "hombre" (man)?', choices: ['una hombre', 'un hombre', 'unos hombre', 'unas hombre'], correct: 'un hombre', explanation: '"Hombre" is masculine singular → use "un hombre".' },
+      { q: 'Which indefinite article is correct for "mujer" (woman)?', choices: ['un mujer', 'una mujer', 'unos mujer', 'unas mujer'], correct: 'una mujer', explanation: '"Mujer" is feminine singular → use "una mujer".' },
+      { q: 'How do you say "the books"?', choices: ['las libros', 'los libros', 'el libros', 'la libros'], correct: 'los libros', explanation: 'Plural masculine → use "los".' },
+      { q: 'How do you say "the houses"?', choices: ['los casas', 'las casas', 'el casas', 'la casas'], correct: 'las casas', explanation: 'Plural feminine → use "las".' },
+      { q: 'Which is the correct article for "agua" (water)?', choices: ['la agua', 'el agua', 'lo agua', 'las agua'], correct: 'el agua', explanation: '"Agua" is feminine, but starts with a stressed "a", so we use "el" to avoid a double "a" sound.' },
+      { q: 'Which is the correct article for "mano" (hand)?', choices: ['el mano', 'la mano', 'lo mano', 'les mano'], correct: 'la mano', explanation: '"Mano" is an exception that ends in -o but is feminine.' },
+      { q: 'Which is the correct article for "día" (day)?', choices: ['la día', 'el día', 'lo día', 'las día'], correct: 'el día', explanation: '"Día" is an exception that ends in -a but is masculine.' },
+      { q: 'How do you say "a cat" (masculine)?', choices: ['un gato', 'una gato', 'unos gato', 'el gato'], correct: 'un gato', explanation: 'Indefinite masculine singular → "un gato".' }
+    ]
   },
   {
     id: 'l2',
@@ -2145,7 +2157,18 @@ const LESSONS = [
         ]
       }
     ],
-    quiz: { q: 'Which is correct for "I am tired" in Spanish?', choices: ['Soy cansado', 'Estoy cansado', 'Ser cansado', 'Es cansado'], correct: 'Estoy cansado', explanation: '"Cansado" (tired) is a temporary state → use ESTAR → "Estoy cansado".' }
+    quizzes: [
+      { q: 'Which is correct for "I am tired" in Spanish?', choices: ['Soy cansado', 'Estoy cansado', 'Ser cansado', 'Es cansado'], correct: 'Estoy cansado', explanation: '"Cansado" (tired) is a temporary condition → use ESTAR → "Estoy cansado".' },
+      { q: 'Which verb is used for physical descriptions (like being tall)?', choices: ['Ser', 'Estar', 'Tener', 'Hacer'], correct: 'Ser', explanation: 'Descriptions are permanent characteristics → use SER.' },
+      { q: 'How do you say "She is a doctor"?', choices: ['Ella está médica', 'Ella es médica', 'Ella son médica', 'Ella están médica'], correct: 'Ella es médica', explanation: 'Occupations are treated as identity → use SER.' },
+      { q: 'How do you say "The coffee is hot"?', choices: ['El café es caliente', 'El café está caliente', 'El café son caliente', 'El café están caliente'], correct: 'El café está caliente', explanation: 'Temperature is a temporary state → use ESTAR.' },
+      { q: 'Which is correct for "We are in Madrid"?', choices: ['Somos en Madrid', 'Estamos en Madrid', 'Son en Madrid', 'Están en Madrid'], correct: 'Estamos en Madrid', explanation: 'Location always uses ESTAR.' },
+      { q: 'What is the correct conjugation of SER for "yo"?', choices: ['soy', 'estoy', 'es', 'está'], correct: 'soy', explanation: '"Yo soy" means I am (permanent).' },
+      { q: 'What is the correct conjugation of ESTAR for "ellos"?', choices: ['son', 'están', 'estamos', 'somos'], correct: 'están', explanation: '"Ellos están" means they are (temporary/location).' },
+      { q: 'How do you say "Where are you?" (informal)', choices: ['¿Dónde eres?', '¿Dónde estás?', '¿Dónde es?', '¿Dónde está?'], correct: '¿Dónde estás?', explanation: 'Location uses ESTAR. "You" (informal) is "tú" → "estás".' },
+      { q: 'Which verb is used for origins ("I am from the Philippines")?', choices: ['Estar', 'Ser', 'Ir', 'Tener'], correct: 'Ser', explanation: 'Origin is a permanent characteristic → use SER.' },
+      { q: 'Translate: "It is three o\'clock".', choices: ['Están las tres', 'Son las tres', 'Es las tres', 'Está las tres'], correct: 'Son las tres', explanation: 'Time and dates always use SER.' }
+    ]
   },
   {
     id: 'l3',
@@ -2187,7 +2210,18 @@ const LESSONS = [
         ]
       }
     ],
-    quiz: { q: 'How do you conjugate "hablar" (to speak) for "yo" (I)?', choices: ['yo hablas', 'yo hablo', 'yo hablar', 'yo habe'], correct: 'yo hablo', explanation: '-AR verbs: the ending for "yo" (I) is always -o → "yo hablo" (I speak).' }
+    quizzes: [
+      { q: 'How do you conjugate "hablar" (to speak) for "yo" (I)?', choices: ['yo hablas', 'yo hablo', 'yo hablar', 'yo habe'], correct: 'yo hablo', explanation: '-AR verbs: the ending for "yo" (I) is always -o → "yo hablo".' },
+      { q: 'What is the "tú" ending for -ER verbs?', choices: ['-as', '-es', '-a', '-e'], correct: '-es', explanation: '-ER verbs take the -es ending for "tú" (e.g., comes).' },
+      { q: 'Conjugate "comer" (to eat) for "ella" (she):', choices: ['ella come', 'ella coma', 'ella comes', 'ella como'], correct: 'ella come', explanation: '-ER verbs: the ending for "él/ella" is -e → "come".' },
+      { q: 'Conjugate "vivir" (to live) for "nosotros" (we):', choices: ['vivamos', 'vivemos', 'vivimos', 'viven'], correct: 'vivimos', explanation: '-IR verbs: the ending for "nosotros" is -imos → "vivimos".' },
+      { q: 'Conjugate "trabajar" (to work) for "ellos" (they):', choices: ['trabajen', 'trabajamos', 'trabaja', 'trabajan'], correct: 'trabajan', explanation: '-AR verbs: the ending for "ellos" is -an → "trabajan".' },
+      { q: 'Which of the following means "I have"?', choices: ['tengo', 'tiene', 'tienes', 'tenemos'], correct: 'tengo', explanation: '"Tener" is irregular. "I have" is "tengo".' },
+      { q: 'Translate: "Where are you going?"', choices: ['¿Adónde vas?', '¿Adónde voy?', '¿Adónde va?', '¿Adónde van?'], correct: '¿Adónde vas?', explanation: '"Ir" (to go) conjugated for "tú" is "vas".' },
+      { q: 'What does "hago" mean?', choices: ['I do / I make', 'You do', 'He does', 'We do'], correct: 'I do / I make', explanation: '"Hago" is the "yo" form of "hacer" (to do/make).' },
+      { q: 'Conjugate "escribir" (to write) for "tú":', choices: ['escribes', 'escribas', 'escribe', 'escribís'], correct: 'escribes', explanation: '-IR verbs take the -es ending for "tú".' },
+      { q: 'Which conjugation is correct for "nosotros" (we) with "tener" (to have)?', choices: ['tienemos', 'tenemos', 'tienen', 'tengamos'], correct: 'tenemos', explanation: '"Tener" for "nosotros" is "tenemos" (no stem change).' }
+    ]
   },
   {
     id: 'l4',
@@ -2228,7 +2262,18 @@ const LESSONS = [
         ]
       }
     ],
-    quiz: { q: '"Ayer _____ al trabajo." Fill in the blank. (Yesterday I ___ to work.)', choices: ['iba', 'fui', 'voy', 'fue'], correct: 'fui', explanation: '"Ayer" (yesterday) signals a completed past action → use Pretérito Indefinido → "fui" (I went).' }
+    quizzes: [
+      { q: '"Ayer _____ al trabajo." Fill in the blank. (Yesterday I ___ to work.)', choices: ['iba', 'fui', 'voy', 'fue'], correct: 'fui', explanation: '"Ayer" signals a completed past action → use Indefinido → "fui" (I went).' },
+      { q: 'Which tense is used for habits in the past (like "when I was a child...")?', choices: ['Pretérito Indefinido', 'Pretérito Imperfecto', 'Presente', 'Futuro'], correct: 'Pretérito Imperfecto', explanation: 'Habits or ongoing past actions use the Imperfecto.' },
+      { q: 'Conjugate "hablar" for "yo" in the Pretérito Indefinido (completed past):', choices: ['hablé', 'hablaste', 'hablaba', 'habló'], correct: 'hablé', explanation: '-AR verbs take -é for "yo" in the Indefinido.' },
+      { q: 'How do you say "we spoke" (Indefinido)?', choices: ['hablamos', 'hablaron', 'hablé', 'hablábamos'], correct: 'hablamos', explanation: 'The "nosotros" form for -AR verbs in Indefinido is "-amos" (same as present!).' },
+      { q: 'Translate: "Siempre estudiaba por la noche." (Imperfecto)', choices: ['I studied last night.', 'I always used to study at night.', 'I will study at night.', 'I never study at night.'], correct: 'I always used to study at night.', explanation: '"Estudiaba" is Imperfecto, showing a habitual past action.' },
+      { q: 'Which keyword usually triggers the Pretérito Indefinido?', choices: ['Siempre', 'Todos los días', 'Ayer', 'A menudo'], correct: 'Ayer', explanation: '"Ayer" (yesterday) points to a specific, completed event.' },
+      { q: 'Which keyword usually triggers the Pretérito Imperfecto?', choices: ['Ayer', 'De niño', 'El año pasado', 'Anoche'], correct: 'De niño', explanation: '"De niño" (as a child) describes a period of time where habits occurred.' },
+      { q: 'Conjugate "comer" for "él/ella" in the Pretérito Indefinido (he/she ate):', choices: ['comió', 'comía', 'comió', 'comiste'], correct: 'comió', explanation: '-ER and -IR verbs take -ió for "él/ella" in the Indefinido.' },
+      { q: 'How do you say "they lived" in the Imperfecto (used to live)?', choices: ['vivían', 'vivieron', 'viven', 'vivirán'], correct: 'vivían', explanation: 'Imperfecto for -ER/-IR verbs uses the -ía endings → "vivían".' },
+      { q: 'Choose the right tense: "Llovía cuando llegué." (It was raining when I arrived.)', choices: ['Both are Indefinido', 'Both are Imperfecto', 'Llovía (Imperfecto) + llegué (Indefinido)', 'Llovía (Indefinido) + llegué (Imperfecto)'], correct: 'Llovía (Imperfecto) + llegué (Indefinido)', explanation: '"Llovía" sets the background scene (ongoing), and "llegué" is the interrupting completed action.' }
+    ]
   },
   {
     id: 'l5',
@@ -2256,7 +2301,18 @@ const LESSONS = [
         ]
       }
     ],
-    quiz: { q: 'How do you say "I\'m going to eat" in Spanish?', choices: ['Voy a comer', 'Comeré', 'Como', 'Comí'], correct: 'Voy a comer', explanation: 'Near future = IR A + infinitive → "voy a comer" (I\'m going to eat).' }
+    quizzes: [
+      { q: 'How do you say "I\'m going to eat" in Spanish?', choices: ['Voy a comer', 'Comeré', 'Como', 'Comí'], correct: 'Voy a comer', explanation: 'Near future = IR A + infinitive → "voy a comer".' },
+      { q: 'What is the formula for the near future?', choices: ['Ir a + Infinitive', 'Estar + Infinitive', 'Tener que + Infinitive', 'Haber + Infinitive'], correct: 'Ir a + Infinitive', explanation: 'The near future is formed with the conjugated verb "ir" followed by "a" and the infinitive verb.' },
+      { q: 'Conjugate the Simple Future for "yo" (hablar):', choices: ['hablaré', 'hablarás', 'hablará', 'hablaremos'], correct: 'hablaré', explanation: 'Add "-é" to the infinitive for "yo" → "hablaré".' },
+      { q: 'How do you say "She will eat"?', choices: ['Ella comerá', 'Ella comeré', 'Ella va comer', 'Ella come'], correct: 'Ella comerá', explanation: 'Add "-á" to the infinitive for "él/ella" → "comerá".' },
+      { q: 'Translate: "¿Qué vas a hacer hoy?"', choices: ['What did you do today?', 'What do you do today?', 'What are you going to do today?', 'What will you do tomorrow?'], correct: 'What are you going to do today?', explanation: '"vas a hacer" means "you are going to do".' },
+      { q: 'Which is the "nosotros" ending for the Simple Future?', choices: ['-emos', '-amos', '-imos', '-án'], correct: '-emos', explanation: 'The "nosotros" ending for ALL verbs in the Simple Future is "-emos".' },
+      { q: 'How do you say "We will talk later"?', choices: ['Hablaremos más tarde', 'Hablamos más tarde', 'Vamos hablar más tarde', 'Hablamos tarde'], correct: 'Hablaremos más tarde', explanation: '"Hablar" + "emos" = "Hablaremos" (We will talk).' },
+      { q: 'How do you say "They are going to study"?', choices: ['Van a estudiar', 'Vamos a estudiar', 'Va a estudiar', 'Voy a estudiar'], correct: 'Van a estudiar', explanation: '"Ir" for "ellos" is "van", followed by "a estudiar".' },
+      { q: 'Which expresses a firmer plan or closer intention?', choices: ['Simple Future (estudiaré)', 'Near Future (voy a estudiar)', 'Both are identical', 'Neither'], correct: 'Near Future (voy a estudiar)', explanation: '"Ir a" is mostly used in spoken Spanish for near-future intentions and solid plans.' },
+      { q: 'What is wrong with "Yo va a comer"?', choices: ['It should be "Yo voy a comer"', '"a" is unnecessary', '"comer" should be conjugated', 'Nothing is wrong'], correct: 'It should be "Yo voy a comer"', explanation: '"Yo" requires "voy", not "va" (which is for él/ella).' }
+    ]
   },
   {
     id: 'l6',
@@ -2285,8 +2341,59 @@ const LESSONS = [
         ]
       }
     ],
-    quiz: { q: 'How do you say "I like coffee" in Spanish?', choices: ['Yo gusto el café', 'Me gusta el café', 'Le gusta el café', 'Lo gusta el café'], correct: 'Me gusta el café', explanation: '"Gustar" works in reverse: the subject is "café", and "me" = to me. → "Me gusta el café" (Coffee pleases me = I like coffee).' }
+    quizzes: [
+      { q: 'How do you say "I like coffee" in Spanish?', choices: ['Yo gusto el café', 'Me gusta el café', 'Le gusta el café', 'Lo gusta el café'], correct: 'Me gusta el café', explanation: '"Gustar" works in reverse: the subject is "café", and "me" = to me.' },
+      { q: 'Which is a Direct Object Pronoun meaning "it" (masculine)?', choices: ['le', 'lo', 'la', 'me'], correct: 'lo', explanation: '"lo" replaces a singular masculine object.' },
+      { q: 'Translate: "I love you" (informal)', choices: ['Te quiero', 'Lo quiero', 'Me quiero', 'Le quiero'], correct: 'Te quiero', explanation: '"te" = you, "quiero" = I love. The pronoun goes before the verb.' },
+      { q: 'Which is an Indirect Object Pronoun meaning "to him" or "to her"?', choices: ['lo', 'la', 'le', 'se'], correct: 'le', explanation: '"le" means to him, to her, or to it.' },
+      { q: 'Translate: "I see it" (referring to "la casa" - feminine)', choices: ['Lo veo', 'La veo', 'Le veo', 'Me veo'], correct: 'La veo', explanation: '"casa" is feminine, so we use the pronoun "la".' },
+      { q: 'Where do object pronouns normally go in a sentence?', choices: ['Before the conjugated verb', 'After the conjugated verb', 'At the end of the sentence', 'Before the subject'], correct: 'Before the conjugated verb', explanation: 'Pronouns generally go directly before the conjugated verb.' },
+      { q: 'Translate: "I give him the money."', choices: ['Le doy el dinero', 'Lo doy el dinero', 'Me doy el dinero', 'Te doy el dinero'], correct: 'Le doy el dinero', explanation: '"Le" (to him) + "doy" (I give) + "el dinero".' },
+      { q: 'How do you say "I don\'t understand it" (masculine it)?', choices: ['No lo entiendo', 'Lo no entiendo', 'No le entiendo', 'No entiendo lo'], correct: 'No lo entiendo', explanation: '"No" always goes before the pronoun, and the pronoun goes before the verb.' },
+      { q: 'Which pronouns mean "to us" and "them" (Direct)?', choices: ['nos / los, las', 'me / te', 'le / les', 'se / nos'], correct: 'nos / los, las', explanation: '"nos" = us/to us. "los/las" = them.' },
+      { q: 'Translate "They like the book" (The book pleases them)', choices: ['Les gusta el libro', 'Le gusta el libro', 'Los gusta el libro', 'Nos gusta el libro'], correct: 'Les gusta el libro', explanation: '"Les" = to them. The book pleases them.' }
+    ]
   },
+  {
+    id: 'l7',
+    num: '07',
+    title: 'Estructura de la Oración',
+    subtitle: 'Cómo formar oraciones, negativas y preguntas',
+    theme: { bg: '#ECFEFF', text: '#155E75', pill: '#CFFAFE', border: '#06B6D4', headBg: '#0891B2', headText: '#fff' },
+    sections: [
+      {
+        type: 'rules',
+        title: 'Basic Sentence Structure',
+        items: [
+          { title: 'Affirmative Sentences (SVO)', body: '<span class="formula-tag" style="background:#CFFAFE;color:#155E75;">Subject + Verb + Object</span><br>"<strong>Yo</strong> (S) <strong>como</strong> (V) <strong>pan</strong> (O)." → I eat bread.<br><em>Note: Subject pronouns (yo, tú) are often dropped! "Como pan" is also correct.</em>', bg: '#ECFEFF', border: '#06B6D4', text: '#155E75' },
+          { title: 'Negative Sentences', body: 'Just put <span class="formula-tag" style="background:#CFFAFE;color:#155E75;">no</span> right BEFORE the verb.<br>"Yo <strong>no</strong> como pan." → I don\'t eat bread.<br>"Ella <strong>no</strong> habla inglés." → She doesn\'t speak English.', bg: '#E0F2FE', border: '#38BDF8', text: '#155E75' },
+          { title: 'Questions (Interrogativas)', body: 'Two ways to ask:<br>1. <strong>Invert order (VSO):</strong> "¿Hablas tú español?" (Do you speak Spanish?)<br>2. <strong>Same order, just add question marks and rising intonation:</strong> "¿Tú hablas español?"<br><em>Spanish uses inverted question marks (¿) at the beginning!</em>', bg: '#ECFEFF', border: '#06B6D4', text: '#155E75' },
+        ]
+      },
+      {
+        type: 'examples',
+        title: 'Examples',
+        items: [
+          { es: 'Juan lee un libro', en: 'Juan reads a book', audio: 'Juan lee un libro' },
+          { es: 'Nosotros no bebemos café', en: 'We don\'t drink coffee', audio: 'Nosotros no bebemos café' },
+          { es: '¿Vives en Madrid?', en: 'Do you live in Madrid?', audio: '¿Vives en Madrid?' },
+          { es: 'Ella no entiende la lección', en: 'She doesn\'t understand the lesson', audio: 'Ella no entiende la lección' },
+        ]
+      }
+    ],
+    quizzes: [
+      { q: 'How do you say "I do not speak English"?', choices: ['Yo hablo no inglés', 'Yo no hablo inglés', 'No yo hablo inglés', 'Yo hablo inglés no'], correct: 'Yo no hablo inglés', explanation: 'Put "no" right before the verb to make it negative.' },
+      { q: 'What is the most common sentence structure in Spanish?', choices: ['Verb + Subject + Object', 'Subject + Object + Verb', 'Subject + Verb + Object', 'Object + Verb + Subject'], correct: 'Subject + Verb + Object', explanation: 'SVO is the standard structure, just like in English.' },
+      { q: 'Can you drop the subject pronoun (like "yo" or "tú") in Spanish?', choices: ['Yes, very often', 'No, never', 'Only in questions', 'Only in negative sentences'], correct: 'Yes, very often', explanation: 'Because the verb ending tells you who the subject is, pronouns are usually dropped.' },
+      { q: 'Translate: "The cat eats fish"', choices: ['El gato come pescado', 'Come pescado el gato', 'El pescado come gato', 'El gato pescado come'], correct: 'El gato come pescado', explanation: 'Subject (El gato) + Verb (come) + Object (pescado).' },
+      { q: 'Which is a correct way to ask "Do you live in Madrid?"', choices: ['¿Vives tú en Madrid?', '¿Tú vives en Madrid?', 'Both are correct', 'Neither is correct'], correct: 'Both are correct', explanation: 'You can invert the order (VSO) or keep the same order (SVO) with a rising tone.' },
+      { q: 'How do you say "We don\'t drink coffee"?', choices: ['Nosotros no bebemos café', 'No nosotros bebemos café', 'Nosotros bebemos no café', 'Nosotros bebemos café no'], correct: 'Nosotros no bebemos café', explanation: '"No" must go immediately before the verb.' },
+      { q: 'What punctuation is unique to Spanish questions?', choices: ['Inverted comma', 'Inverted question mark (¿) at the beginning', 'No question mark at the end', 'Double exclamation marks'], correct: 'Inverted question mark (¿) at the beginning', explanation: 'Spanish uses "¿" at the start of a question.' },
+      { q: 'Translate: "She doesn\'t understand the lesson"', choices: ['Ella no entiende la lección', 'Ella entiende no la lección', 'No ella entiende la lección', 'Ella la lección no entiende'], correct: 'Ella no entiende la lección', explanation: 'Subject + No + Verb + Object.' },
+      { q: 'How do you say "Does Juan read a book?"', choices: ['¿Juan lee un libro?', '¿Lee Juan un libro?', 'Both are correct', 'None of the above'], correct: 'Both are correct', explanation: 'Both SVO (with intonation) and VSO are valid question structures.' },
+      { q: 'Where does the word "no" go when there is an object pronoun (e.g. "lo")?', choices: ['After the pronoun', 'Before the pronoun', 'At the end of the sentence', 'Before the subject'], correct: 'Before the pronoun', explanation: '"No" goes before the pronoun: "No lo sé" (I don\'t know it).' }
+    ]
+  }
 ];
 
 function buildLeccionHtml(lesson) {
@@ -2324,35 +2431,53 @@ function buildLeccionHtml(lesson) {
   }
 
   // Mini-quiz
-  const q = lesson.quiz;
+  const qIndex = state.leccionesQuizProgress[lesson.id] || 0;
   let quizHtml = '';
-  if (quizState) {
-    const choicesHtml = q.choices.map(c => {
-      let cls = 'leccion-choice-btn disabled';
-      if (c === q.correct) cls += ' correct';
-      else if (c === quizState.selected && c !== q.correct) cls += ' incorrect';
-      return `<button class="${cls}">${escapeHtml(c)}</button>`;
-    }).join('');
-    const resultMsg = quizState.correct
-      ? `✅ Correct! ${escapeHtml(q.explanation)}`
-      : `❌ The correct answer is: <strong>${escapeHtml(q.correct)}</strong>. ${escapeHtml(q.explanation)}`;
-    const resultStyle = quizState.correct
-      ? `background:#D1FAE5;color:#065F46;border:1.5px solid #34D399;`
-      : `background:#FEE2E2;color:#DC2626;border:1.5px solid #FCA5A5;`;
-    quizHtml = `
-      <div class="leccion-quiz-title" style="color:${t.text};">🎯 Practice Exercise</div>
-      <div class="leccion-question" style="background:${t.bg};border-color:${t.border};color:${t.text};">${escapeHtml(q.q)}</div>
-      <div class="leccion-choices">${choicesHtml}</div>
-      <div class="leccion-quiz-result show" style="${resultStyle}">${resultMsg}</div>`;
+
+  if (qIndex < lesson.quizzes.length) {
+    const q = lesson.quizzes[qIndex];
+    if (quizState) {
+      const choicesHtml = q.choices.map(c => {
+        if (quizState.correct) {
+          let cls = 'leccion-choice-btn disabled';
+          if (c === q.correct) cls += ' correct';
+          return `<button class="${cls}">${escapeHtml(c)}</button>`;
+        } else {
+          let cls = 'leccion-choice-btn';
+          if (c === quizState.selected) cls += ' incorrect disabled';
+          return `<button class="${cls}" data-action="leccion-choice" data-lesson="${lesson.id}" data-val="${escapeHtml(c)}">${escapeHtml(c)}</button>`;
+        }
+      }).join('');
+      
+      let resultMsg, resultStyle;
+      if (quizState.correct) {
+        resultMsg = `✅ Correct! ${escapeHtml(q.explanation)} <button class="leccion-choice-btn" style="display:block;margin-top:10px;background:#10B981;color:#fff;border:none;" data-action="leccion-next-quiz" data-lesson="${lesson.id}">Next Question ➔</button>`;
+        resultStyle = `background:#D1FAE5;color:#065F46;border:1.5px solid #34D399;`;
+      } else {
+        resultMsg = `❌ Incorrect. Try again!`;
+        resultStyle = `background:#FEE2E2;color:#DC2626;border:1.5px solid #FCA5A5;`;
+      }
+
+      quizHtml = `
+        <div class="leccion-quiz-title" style="color:${t.text};">🎯 Practice Exercise (${qIndex + 1}/${lesson.quizzes.length})</div>
+        <div class="leccion-question" style="background:${t.bg};border-color:${t.border};color:${t.text};">${escapeHtml(q.q)}</div>
+        <div class="leccion-choices">${choicesHtml}</div>
+        <div class="leccion-quiz-result show" style="${resultStyle}">${resultMsg}</div>`;
+    } else {
+      const choicesHtml = q.choices.map(c =>
+        `<button class="leccion-choice-btn" data-action="leccion-choice" data-lesson="${lesson.id}" data-val="${escapeHtml(c)}">${escapeHtml(c)}</button>`
+      ).join('');
+      quizHtml = `
+        <div class="leccion-quiz-title" style="color:${t.text};">🎯 Practice Exercise (${qIndex + 1}/${lesson.quizzes.length})</div>
+        <div class="leccion-question" style="background:${t.bg};border-color:${t.border};color:${t.text};">${escapeHtml(q.q)}</div>
+        <div class="leccion-choices">${choicesHtml}</div>
+        <div class="leccion-quiz-result" id="lq-result-${lesson.id}"></div>`;
+    }
   } else {
-    const choicesHtml = q.choices.map(c =>
-      `<button class="leccion-choice-btn" data-action="leccion-choice" data-lesson="${lesson.id}" data-val="${escapeHtml(c)}">${escapeHtml(c)}</button>`
-    ).join('');
     quizHtml = `
-      <div class="leccion-quiz-title" style="color:${t.text};">🎯 Practice Exercise</div>
-      <div class="leccion-question" style="background:${t.bg};border-color:${t.border};color:${t.text};">${escapeHtml(q.q)}</div>
-      <div class="leccion-choices">${choicesHtml}</div>
-      <div class="leccion-quiz-result" id="lq-result-${lesson.id}"></div>`;
+      <div class="leccion-quiz-result show" style="background:#D1FAE5;color:#065F46;border:1.5px solid #34D399;text-align:center;">
+        <strong>🎉 ¡Excelente! You completed all practice questions for this lesson!</strong>
+      </div>`;
   }
 
   return `
@@ -2828,20 +2953,41 @@ function attachHandlers() {
     btn.addEventListener('click', () => {
       const id = btn.dataset.lesson;
       const val = btn.dataset.val;
-      if (state.leccionesQuiz[id]) return; // already answered
+      if (state.leccionesQuiz[id] && state.leccionesQuiz[id].correct) return; // already answered correctly!
       const lesson = LESSONS.find(l => l.id === id);
       if (!lesson) return;
-      const isCorrect = val === lesson.quiz.correct;
+      const qIndex = state.leccionesQuizProgress[id] || 0;
+      if (qIndex >= lesson.quizzes.length) return; // already finished
+      
+      const isCorrect = val === lesson.quizzes[qIndex].correct;
       state.leccionesQuiz[id] = { selected: val, correct: isCorrect };
       if (isCorrect) {
         playSound('correct');
+      } else {
+        playSound('wrong');
+      }
+      saveProgress();
+      render();
+    });
+  });
+
+  document.querySelectorAll('[data-action="leccion-next-quiz"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.lesson;
+      const lesson = LESSONS.find(l => l.id === id);
+      if (!lesson) return;
+      
+      let qIndex = state.leccionesQuizProgress[id] || 0;
+      qIndex++;
+      state.leccionesQuizProgress[id] = qIndex;
+      state.leccionesQuiz[id] = null; // reset for next question
+      
+      if (qIndex >= lesson.quizzes.length) {
         if (!state.leccionesCompleted[id]) {
           state.leccionesCompleted[id] = true;
           addPoints(15, '¡Lección completada! +15 XP');
           spawnConfetti(20);
         }
-      } else {
-        playSound('wrong');
       }
       saveProgress();
       render();
