@@ -2718,27 +2718,1990 @@ const LESSONS = [
 
 const CONVERSATIONS = [
   {
-    id: 'c1',
-    title: 'En el Café',
-    subtitle: 'Pedir una bebida y la cuenta (Order a drink and the bill)',
-    icon: '☕',
-    theme: { bg: '#FFF7ED', text: '#9A3412', border: '#FB923C' },
-    steps: [
-      { bot: '¡Hola! ¿Qué quieres tomar?', hint: 'Dí: I want a coffee please.', expected: [['quiero', 'café'], ['un', 'café'], ['una', 'cerveza'], ['agua', 'favor'], ['té', 'favor']], minMatch: 1 },
-      { bot: 'Muy bien. ¿Algo más?', hint: 'Dí: No, just the bill please.', expected: [['no', 'cuenta'], ['nada', 'más'], ['solo', 'cuenta']], minMatch: 1 },
-      { bot: 'Aquí tienes la cuenta. Son tres euros.', hint: 'Dí: Thank you.', expected: [['gracias'], ['vale', 'gracias'], ['toma']], minMatch: 1 }
+    "id": "c1",
+    "title": "En el Café",
+    "subtitle": "Pedir una bebida y la cuenta (Order a drink & bill)",
+    "icon": "☕",
+    "theme": {
+      "bg": "#FFF7ED",
+      "text": "#9A3412",
+      "border": "#FB923C"
+    },
+    "steps": [
+      {
+        "bot": "¡Hola! ¿Qué quieres tomar?",
+        "hint": "Dí: I want a coffee please.",
+        "expected": [
+          [
+            "quiero",
+            "café"
+          ],
+          [
+            "un",
+            "café"
+          ],
+          [
+            "una",
+            "cerveza"
+          ],
+          [
+            "agua",
+            "favor"
+          ],
+          [
+            "té",
+            "favor"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Muy bien. ¿Algo más?",
+        "hint": "Dí: No, just the bill please.",
+        "expected": [
+          [
+            "no",
+            "cuenta"
+          ],
+          [
+            "nada",
+            "más"
+          ],
+          [
+            "solo",
+            "cuenta"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Aquí tienes la cuenta. Son tres euros.",
+        "hint": "Dí: Thank you.",
+        "expected": [
+          [
+            "gracias"
+          ],
+          [
+            "vale",
+            "gracias"
+          ],
+          [
+            "toma"
+          ]
+        ],
+        "minMatch": 1
+      }
     ]
   },
   {
-    id: 'c2',
-    title: 'Conociendo a Alguien',
-    subtitle: 'Presentaciones básicas (Basic introductions)',
-    icon: '👋',
-    theme: { bg: '#F0FDF4', text: '#166534', border: '#4ADE80' },
-    steps: [
-      { bot: '¡Hola! Me llamo Carlos. ¿Y tú, cómo te llamas?', hint: 'Dí: My name is [Your Name].', expected: [['me', 'llamo'], ['mi', 'nombre', 'es'], ['soy']], minMatch: 1 },
-      { bot: 'Encantado. ¿De dónde eres?', hint: 'Dí: I am from...', expected: [['soy', 'de'], ['vengo', 'de']], minMatch: 1 },
-      { bot: '¡Qué interesante! Nos vemos luego.', hint: 'Dí: See you later / Bye.', expected: [['nos', 'vemos'], ['adiós'], ['hasta', 'luego'], ['chao']], minMatch: 1 }
+    "id": "c2",
+    "title": "Conociendo a Alguien",
+    "subtitle": "Presentaciones básicas (Basic introductions)",
+    "icon": "👋",
+    "theme": {
+      "bg": "#F0FDF4",
+      "text": "#166534",
+      "border": "#4ADE80"
+    },
+    "steps": [
+      {
+        "bot": "¡Hola! Me llamo Carlos. ¿Y tú, cómo te llamas?",
+        "hint": "Dí: My name is [Your Name].",
+        "expected": [
+          [
+            "me",
+            "llamo"
+          ],
+          [
+            "mi",
+            "nombre",
+            "es"
+          ],
+          [
+            "soy"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Encantado. ¿De dónde eres?",
+        "hint": "Dí: I am from...",
+        "expected": [
+          [
+            "soy",
+            "de"
+          ],
+          [
+            "vengo",
+            "de"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "¡Qué interesante! Nos vemos luego.",
+        "hint": "Dí: See you later / Bye.",
+        "expected": [
+          [
+            "nos",
+            "vemos"
+          ],
+          [
+            "adiós"
+          ],
+          [
+            "hasta",
+            "luego"
+          ],
+          [
+            "chao"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c3",
+    "title": "En el Restaurante",
+    "subtitle": "Pedir comida (Ordering food)",
+    "icon": "🍽️",
+    "theme": {
+      "bg": "#FEF2F2",
+      "text": "#991B1B",
+      "border": "#F87171"
+    },
+    "steps": [
+      {
+        "bot": "Buenas noches. ¿Tienen reserva?",
+        "hint": "Dí: Yes, a table for two.",
+        "expected": [
+          [
+            "sí",
+            "mesa",
+            "dos"
+          ],
+          [
+            "mesa",
+            "para",
+            "dos"
+          ],
+          [
+            "reserva",
+            "dos"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Perfecto. ¿Qué van a comer?",
+        "hint": "Dí: The chicken with salad.",
+        "expected": [
+          [
+            "pollo",
+            "ensalada"
+          ],
+          [
+            "el",
+            "pollo",
+            "con"
+          ],
+          [
+            "quiero",
+            "pollo"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Excelente elección. ¿Y para beber?",
+        "hint": "Dí: Water, please.",
+        "expected": [
+          [
+            "agua",
+            "favor"
+          ],
+          [
+            "un",
+            "agua"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c4",
+    "title": "En el Supermercado",
+    "subtitle": "Pagar y pedir bolsa (Paying and asking for a bag)",
+    "icon": "🛒",
+    "theme": {
+      "bg": "#F5F3FF",
+      "text": "#5B21B6",
+      "border": "#A78BFA"
+    },
+    "steps": [
+      {
+        "bot": "Hola. ¿Quiere bolsa?",
+        "hint": "Dí: Yes, please. How much is it?",
+        "expected": [
+          [
+            "sí",
+            "favor",
+            "cuánto"
+          ],
+          [
+            "sí",
+            "cuánto",
+            "es"
+          ],
+          [
+            "cuánto",
+            "cuesta"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Son doce con cincuenta, por favor. ¿Paga con tarjeta o en efectivo?",
+        "hint": "Dí: With card.",
+        "expected": [
+          [
+            "con",
+            "tarjeta"
+          ],
+          [
+            "tarjeta"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Aquí tiene su recibo. ¡Gracias!",
+        "hint": "Dí: Thank you, have a good day.",
+        "expected": [
+          [
+            "gracias",
+            "buen",
+            "día"
+          ],
+          [
+            "gracias",
+            "igualmente"
+          ],
+          [
+            "adiós"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c5",
+    "title": "En la Estación",
+    "subtitle": "Comprar billetes de tren (Buying train tickets)",
+    "icon": "🚆",
+    "theme": {
+      "bg": "#EFF6FF",
+      "text": "#1E40AF",
+      "border": "#60A5FA"
+    },
+    "steps": [
+      {
+        "bot": "Buenos días, ¿adónde viaja?",
+        "hint": "Dí: I want a ticket to Barcelona.",
+        "expected": [
+          [
+            "billete",
+            "barcelona"
+          ],
+          [
+            "quiero",
+            "ir",
+            "barcelona"
+          ],
+          [
+            "un",
+            "billete",
+            "para"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "¿De ida o de ida y vuelta?",
+        "hint": "Dí: Round trip (Ida y vuelta).",
+        "expected": [
+          [
+            "ida",
+            "vuelta"
+          ],
+          [
+            "ida",
+            "y",
+            "vuelta"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Son cuarenta euros. El tren sale en diez minutos.",
+        "hint": "Dí: From which platform (andén)?",
+        "expected": [
+          [
+            "qué",
+            "andén"
+          ],
+          [
+            "de",
+            "qué",
+            "andén"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c6",
+    "title": "En el Hotel",
+    "subtitle": "Hacer el check-in (Checking in)",
+    "icon": "🏨",
+    "theme": {
+      "bg": "#FDF4FF",
+      "text": "#86198F",
+      "border": "#E879F9"
+    },
+    "steps": [
+      {
+        "bot": "Bienvenido al hotel. ¿En qué le puedo ayudar?",
+        "hint": "Dí: I have a reservation.",
+        "expected": [
+          [
+            "tengo",
+            "reserva"
+          ],
+          [
+            "una",
+            "reserva"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Muy bien, ¿me permite su pasaporte?",
+        "hint": "Dí: Yes, here it is.",
+        "expected": [
+          [
+            "sí",
+            "aquí",
+            "tienes"
+          ],
+          [
+            "aquí",
+            "está"
+          ],
+          [
+            "toma"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Todo perfecto. Su habitación es la número cuatrocientos.",
+        "hint": "Dí: What time is breakfast?",
+        "expected": [
+          [
+            "qué",
+            "hora",
+            "desayuno"
+          ],
+          [
+            "cuándo",
+            "desayuno"
+          ],
+          [
+            "hora",
+            "es"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c7",
+    "title": "En el Aeropuerto",
+    "subtitle": "Facturar equipaje (Checking bags)",
+    "icon": "✈️",
+    "theme": {
+      "bg": "#ECFEFF",
+      "text": "#155E75",
+      "border": "#22D3EE"
+    },
+    "steps": [
+      {
+        "bot": "Su pasaporte y billete, por favor.",
+        "hint": "Dí: Here you go.",
+        "expected": [
+          [
+            "aquí",
+            "tiene"
+          ],
+          [
+            "aquí",
+            "están"
+          ],
+          [
+            "tome"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Gracias. ¿Va a facturar alguna maleta?",
+        "hint": "Dí: Yes, one suitcase.",
+        "expected": [
+          [
+            "sí",
+            "una",
+            "maleta"
+          ],
+          [
+            "solo",
+            "una"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Perfecto. Su puerta de embarque es la B12.",
+        "hint": "Dí: Where is the gate?",
+        "expected": [
+          [
+            "dónde",
+            "está",
+            "puerta"
+          ],
+          [
+            "dónde",
+            "puerta"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c8",
+    "title": "En la Calle",
+    "subtitle": "Pedir direcciones (Asking for directions)",
+    "icon": "🗺️",
+    "theme": {
+      "bg": "#FEFCE8",
+      "text": "#854D0E",
+      "border": "#FACC15"
+    },
+    "steps": [
+      {
+        "bot": "Perdona, ¿te puedo ayudar?",
+        "hint": "Dí: Yes, where is the museum?",
+        "expected": [
+          [
+            "dónde",
+            "está",
+            "museo"
+          ],
+          [
+            "sí",
+            "dónde",
+            "museo"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Está al final de esta calle, a la derecha.",
+        "hint": "Dí: Is it far?",
+        "expected": [
+          [
+            "está",
+            "lejos"
+          ],
+          [
+            "muy",
+            "lejos"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "No, está a unos cinco minutos andando.",
+        "hint": "Dí: Thank you very much.",
+        "expected": [
+          [
+            "muchas",
+            "gracias"
+          ],
+          [
+            "gracias",
+            "muy",
+            "amable"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c9",
+    "title": "En la Farmacia",
+    "subtitle": "Comprar medicinas (Buying medicine)",
+    "icon": "💊",
+    "theme": {
+      "bg": "#F0FDF4",
+      "text": "#166534",
+      "border": "#4ADE80"
+    },
+    "steps": [
+      {
+        "bot": "Hola, buenas. ¿Qué necesita?",
+        "hint": "Dí: Do you have something for a headache?",
+        "expected": [
+          [
+            "algo",
+            "para",
+            "dolor",
+            "cabeza"
+          ],
+          [
+            "pastillas",
+            "dolor",
+            "cabeza"
+          ],
+          [
+            "tengo",
+            "dolor",
+            "cabeza"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Sí, tengo ibuprofeno. ¿Se lo lleva?",
+        "hint": "Dí: Yes, how much is it?",
+        "expected": [
+          [
+            "sí",
+            "cuánto",
+            "es"
+          ],
+          [
+            "cuánto",
+            "cuesta"
+          ],
+          [
+            "sí",
+            "por",
+            "favor"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Son cuatro euros con veinte.",
+        "hint": "Dí: Here you go, thanks.",
+        "expected": [
+          [
+            "aquí",
+            "tiene",
+            "gracias"
+          ],
+          [
+            "tome",
+            "gracias"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c10",
+    "title": "Comprando Ropa",
+    "subtitle": "Tallas y probadores (Sizes & fitting rooms)",
+    "icon": "👕",
+    "theme": {
+      "bg": "#F8FAFC",
+      "text": "#334155",
+      "border": "#94A3B8"
+    },
+    "steps": [
+      {
+        "bot": "¿Le puedo ayudar a encontrar algo?",
+        "hint": "Dí: I am looking for a shirt.",
+        "expected": [
+          [
+            "busco",
+            "camisa"
+          ],
+          [
+            "quiero",
+            "una",
+            "camisa"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Tenemos esta en varios colores. ¿Qué talla usa?",
+        "hint": "Dí: Size Medium.",
+        "expected": [
+          [
+            "talla",
+            "mediana"
+          ],
+          [
+            "la",
+            "eme"
+          ],
+          [
+            "mediana"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Aquí tiene. Los probadores están al fondo.",
+        "hint": "Dí: Can I try it on?",
+        "expected": [
+          [
+            "puedo",
+            "probarme"
+          ],
+          [
+            "me",
+            "lo",
+            "puedo",
+            "probar"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c11",
+    "title": "En el Banco",
+    "subtitle": "Cambiar dinero (Changing money)",
+    "icon": "🏦",
+    "theme": {
+      "bg": "#ECFEFF",
+      "text": "#164E63",
+      "border": "#06B6D4"
+    },
+    "steps": [
+      {
+        "bot": "Buenos días, pase. ¿Qué trámite desea hacer?",
+        "hint": "Dí: I want to change dollars to euros.",
+        "expected": [
+          [
+            "cambiar",
+            "dólares",
+            "euros"
+          ],
+          [
+            "quiero",
+            "cambiar",
+            "dinero"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Claro. ¿Cuánto dinero quiere cambiar?",
+        "hint": "Dí: One hundred dollars.",
+        "expected": [
+          [
+            "cien",
+            "dólares"
+          ],
+          [
+            "unos",
+            "cien"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "El tipo de cambio es cero noventa. Necesito su pasaporte.",
+        "hint": "Dí: Here is my passport.",
+        "expected": [
+          [
+            "aquí",
+            "está",
+            "pasaporte"
+          ],
+          [
+            "mi",
+            "pasaporte"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c12",
+    "title": "Tomando un Taxi",
+    "subtitle": "Dar un destino (Giving destination)",
+    "icon": "🚕",
+    "theme": {
+      "bg": "#FEF9C3",
+      "text": "#854D0E",
+      "border": "#EAB308"
+    },
+    "steps": [
+      {
+        "bot": "Hola. ¿Adónde le llevo?",
+        "hint": "Dí: To the airport, please.",
+        "expected": [
+          [
+            "al",
+            "aeropuerto",
+            "favor"
+          ],
+          [
+            "aeropuerto"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "De acuerdo. ¿Tiene prisa?",
+        "hint": "Dí: Yes, my flight leaves in an hour.",
+        "expected": [
+          [
+            "sí",
+            "vuelo",
+            "hora"
+          ],
+          [
+            "vuelo",
+            "sale",
+            "pronto"
+          ],
+          [
+            "tengo",
+            "prisa"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Ya hemos llegado. Son veinte euros.",
+        "hint": "Dí: Keep the change.",
+        "expected": [
+          [
+            "quédese",
+            "con",
+            "cambio"
+          ],
+          [
+            "quédese",
+            "cambio"
+          ],
+          [
+            "gracias",
+            "tome"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c13",
+    "title": "El Tiempo",
+    "subtitle": "Hablar del clima (Weather small talk)",
+    "icon": "☀️",
+    "theme": {
+      "bg": "#F0F9FF",
+      "text": "#0369A1",
+      "border": "#38BDF8"
+    },
+    "steps": [
+      {
+        "bot": "¡Vaya día que hace hoy! Hace muchísimo calor.",
+        "hint": "Dí: Yes, it is very sunny.",
+        "expected": [
+          [
+            "sí",
+            "mucho",
+            "sol"
+          ],
+          [
+            "hace",
+            "mucho",
+            "sol"
+          ],
+          [
+            "sí",
+            "demasiado"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Dicen que mañana va a llover.",
+        "hint": "Dí: Really? I don't have an umbrella.",
+        "expected": [
+          [
+            "verdad",
+            "no",
+            "tengo",
+            "paraguas"
+          ],
+          [
+            "en",
+            "serio",
+            "paraguas"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Pues sí, mejor quedarse en casa.",
+        "hint": "Dí: I agree.",
+        "expected": [
+          [
+            "estoy",
+            "de",
+            "acuerdo"
+          ],
+          [
+            "tienes",
+            "razón"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c14",
+    "title": "En una Fiesta",
+    "subtitle": "Presentar a un amigo (Introducing a friend)",
+    "icon": "🎉",
+    "theme": {
+      "bg": "#FDF4FF",
+      "text": "#86198F",
+      "border": "#D946EF"
+    },
+    "steps": [
+      {
+        "bot": "¡Hola! Cuánto tiempo sin verte.",
+        "hint": "Dí: Hello! This is my friend Maria.",
+        "expected": [
+          [
+            "hola",
+            "esta",
+            "es",
+            "amiga"
+          ],
+          [
+            "te",
+            "presento",
+            "amiga"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Encantado, María. ¿De dónde se conocen?",
+        "hint": "Dí: We work together.",
+        "expected": [
+          [
+            "trabajamos",
+            "juntos"
+          ],
+          [
+            "del",
+            "trabajo"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Ah, entiendo. ¿Quieren tomar algo?",
+        "hint": "Dí: Yes, two beers please.",
+        "expected": [
+          [
+            "sí",
+            "dos",
+            "cervezas"
+          ],
+          [
+            "claro",
+            "dos",
+            "cervezas"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c15",
+    "title": "La Familia",
+    "subtitle": "Hablar de parientes (Family small talk)",
+    "icon": "👨‍👩‍👧",
+    "theme": {
+      "bg": "#FFF1F2",
+      "text": "#9F1239",
+      "border": "#FB7185"
+    },
+    "steps": [
+      {
+        "bot": "¿Tienes una familia grande?",
+        "hint": "Dí: I have two brothers and one sister.",
+        "expected": [
+          [
+            "tengo",
+            "dos",
+            "hermanos",
+            "hermana"
+          ],
+          [
+            "dos",
+            "hermanos"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "¡Qué bien! ¿Tus padres viven aquí?",
+        "hint": "Dí: No, they live in Mexico.",
+        "expected": [
+          [
+            "no",
+            "viven",
+            "en",
+            "méxico"
+          ],
+          [
+            "viven",
+            "en"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Me imagino que los echas de menos.",
+        "hint": "Dí: Yes, a lot.",
+        "expected": [
+          [
+            "sí",
+            "mucho"
+          ],
+          [
+            "muchísimo"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c16",
+    "title": "El Trabajo",
+    "subtitle": "De qué trabajas (What do you do)",
+    "icon": "💼",
+    "theme": {
+      "bg": "#F1F5F9",
+      "text": "#334155",
+      "border": "#64748B"
+    },
+    "steps": [
+      {
+        "bot": "¿Y a qué te dedicas?",
+        "hint": "Dí: I am a teacher.",
+        "expected": [
+          [
+            "soy",
+            "profesor"
+          ],
+          [
+            "soy",
+            "profesora"
+          ],
+          [
+            "trabajo",
+            "como",
+            "profesor"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Qué interesante. ¿Te gusta tu trabajo?",
+        "hint": "Dí: Yes, but it is difficult.",
+        "expected": [
+          [
+            "sí",
+            "pero",
+            "es",
+            "difícil"
+          ],
+          [
+            "sí",
+            "pero",
+            "difícil"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Me lo imagino. Yo soy abogado.",
+        "hint": "Dí: Nice to meet you.",
+        "expected": [
+          [
+            "mucho",
+            "gusto"
+          ],
+          [
+            "encantado"
+          ],
+          [
+            "qué",
+            "bien"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c17",
+    "title": "Invitación a Salir",
+    "subtitle": "Invitar a alguien (Inviting someone)",
+    "icon": "🍿",
+    "theme": {
+      "bg": "#FEF2F2",
+      "text": "#991B1B",
+      "border": "#F87171"
+    },
+    "steps": [
+      {
+        "bot": "Oye, ¿tienes planes para este sábado?",
+        "hint": "Dí: No, why?",
+        "expected": [
+          [
+            "no",
+            "por",
+            "qué"
+          ],
+          [
+            "no",
+            "tengo",
+            "planes"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Voy al cine a ver la nueva película. ¿Te apetece venir?",
+        "hint": "Dí: Yes, what time?",
+        "expected": [
+          [
+            "sí",
+            "a",
+            "qué",
+            "hora"
+          ],
+          [
+            "claro",
+            "qué",
+            "hora"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "A las ocho. Te recojo en tu casa.",
+        "hint": "Dí: Perfect, see you then.",
+        "expected": [
+          [
+            "perfecto",
+            "nos",
+            "vemos"
+          ],
+          [
+            "genial",
+            "hasta",
+            "entonces"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c18",
+    "title": "Rechazar Invitación",
+    "subtitle": "Decir que no amablemente (Saying no)",
+    "icon": "📅",
+    "theme": {
+      "bg": "#F8FAFC",
+      "text": "#475569",
+      "border": "#94A3B8"
+    },
+    "steps": [
+      {
+        "bot": "¿Quieres cenar conmigo esta noche?",
+        "hint": "Dí: I am sorry, I can't.",
+        "expected": [
+          [
+            "lo",
+            "siento",
+            "no",
+            "puedo"
+          ],
+          [
+            "no",
+            "puedo",
+            "hoy"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "¡Qué pena! ¿Tienes que trabajar?",
+        "hint": "Dí: Yes, I am very busy.",
+        "expected": [
+          [
+            "sí",
+            "estoy",
+            "muy",
+            "ocupado"
+          ],
+          [
+            "estoy",
+            "muy",
+            "ocupada"
+          ],
+          [
+            "tengo",
+            "mucho",
+            "trabajo"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Bueno, no te preocupes. Otro día será.",
+        "hint": "Dí: Yes, maybe next week.",
+        "expected": [
+          [
+            "sí",
+            "quizás",
+            "la",
+            "próxima",
+            "semana"
+          ],
+          [
+            "tal",
+            "vez",
+            "próxima",
+            "semana"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c19",
+    "title": "En el Médico",
+    "subtitle": "Describir síntomas (Describing symptoms)",
+    "icon": "🩺",
+    "theme": {
+      "bg": "#F0FDF4",
+      "text": "#166534",
+      "border": "#4ADE80"
+    },
+    "steps": [
+      {
+        "bot": "Buenos días. Dígame, ¿qué le pasa?",
+        "hint": "Dí: I feel bad, my stomach hurts.",
+        "expected": [
+          [
+            "siento",
+            "mal",
+            "duele",
+            "estómago"
+          ],
+          [
+            "me",
+            "encuentro",
+            "mal",
+            "estómago"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "¿Desde cuándo le duele?",
+        "hint": "Dí: Since yesterday.",
+        "expected": [
+          [
+            "desde",
+            "ayer"
+          ],
+          [
+            "ayer"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Tendrá que tomar esta medicina y descansar.",
+        "hint": "Dí: Thank you doctor.",
+        "expected": [
+          [
+            "gracias",
+            "doctor"
+          ],
+          [
+            "gracias",
+            "doctora"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c20",
+    "title": "En la Peluquería",
+    "subtitle": "Cortarse el pelo (Getting a haircut)",
+    "icon": "✂️",
+    "theme": {
+      "bg": "#FDF4FF",
+      "text": "#86198F",
+      "border": "#E879F9"
+    },
+    "steps": [
+      {
+        "bot": "Hola, siéntese. ¿Cómo lo quiere hoy?",
+        "hint": "Dí: Just a haircut, please.",
+        "expected": [
+          [
+            "solo",
+            "cortar",
+            "favor"
+          ],
+          [
+            "un",
+            "corte",
+            "pelo"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "¿Se lo corto muy corto por los lados?",
+        "hint": "Dí: No, just a little bit.",
+        "expected": [
+          [
+            "no",
+            "solo",
+            "un",
+            "poco"
+          ],
+          [
+            "solo",
+            "las",
+            "puntas"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Muy bien. ¿Le lavo el pelo después?",
+        "hint": "Dí: No, it's fine like this.",
+        "expected": [
+          [
+            "no",
+            "está",
+            "bien",
+            "así"
+          ],
+          [
+            "así",
+            "está",
+            "bien"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c21",
+    "title": "Una Queja",
+    "subtitle": "Quejarse en un restaurante (Complaining)",
+    "icon": "😠",
+    "theme": {
+      "bg": "#FEF2F2",
+      "text": "#991B1B",
+      "border": "#F87171"
+    },
+    "steps": [
+      {
+        "bot": "¿Qué tal la comida? ¿Todo bien?",
+        "hint": "Dí: Excuse me, the soup is cold.",
+        "expected": [
+          [
+            "perdona",
+            "sopa",
+            "está",
+            "fría"
+          ],
+          [
+            "disculpa",
+            "sopa",
+            "fría"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Mil disculpas. Se la caliento inmediatamente.",
+        "hint": "Dí: Thank you, I also need water.",
+        "expected": [
+          [
+            "gracias",
+            "también",
+            "necesito",
+            "agua"
+          ],
+          [
+            "gracias",
+            "y",
+            "agua"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Enseguida se lo traigo todo. Lo siento mucho.",
+        "hint": "Dí: No problem.",
+        "expected": [
+          [
+            "no",
+            "hay",
+            "problema"
+          ],
+          [
+            "no",
+            "pasa",
+            "nada"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c22",
+    "title": "Emergencia",
+    "subtitle": "Pedir ayuda urgente (Emergency)",
+    "icon": "🚨",
+    "theme": {
+      "bg": "#FEF2F2",
+      "text": "#B91C1C",
+      "border": "#EF4444"
+    },
+    "steps": [
+      {
+        "bot": "Emergencias, ¿cuál es su problema?",
+        "hint": "Dí: Help, there has been an accident.",
+        "expected": [
+          [
+            "ayuda",
+            "accidente"
+          ],
+          [
+            "socorro",
+            "accidente"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Tranquilo. ¿Dónde están exactamente?",
+        "hint": "Dí: We are in the main square.",
+        "expected": [
+          [
+            "estamos",
+            "en",
+            "la",
+            "plaza",
+            "mayor"
+          ],
+          [
+            "plaza",
+            "principal"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Enviamos una ambulancia ya mismo.",
+        "hint": "Dí: Please hurry.",
+        "expected": [
+          [
+            "favor",
+            "rápido"
+          ],
+          [
+            "dese",
+            "prisa"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c23",
+    "title": "Alquilar Coche",
+    "subtitle": "Agencia de alquiler (Car rental)",
+    "icon": "🚗",
+    "theme": {
+      "bg": "#F0F9FF",
+      "text": "#0369A1",
+      "border": "#38BDF8"
+    },
+    "steps": [
+      {
+        "bot": "Buenos días. ¿Desea alquilar un coche?",
+        "hint": "Dí: Yes, for three days.",
+        "expected": [
+          [
+            "sí",
+            "para",
+            "tres",
+            "días"
+          ],
+          [
+            "por",
+            "tres",
+            "días"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Tengo este automático disponible. Necesito su carné.",
+        "hint": "Dí: Here is my driver's license.",
+        "expected": [
+          [
+            "aquí",
+            "está",
+            "carné",
+            "conducir"
+          ],
+          [
+            "aquí",
+            "tiene",
+            "licencia"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Perfecto. Tiene que devolverlo con el depósito lleno.",
+        "hint": "Dí: Understood.",
+        "expected": [
+          [
+            "entendido"
+          ],
+          [
+            "de",
+            "acuerdo"
+          ],
+          [
+            "vale"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c24",
+    "title": "Correos",
+    "subtitle": "Enviar un paquete (Post office)",
+    "icon": "📦",
+    "theme": {
+      "bg": "#FDF4FF",
+      "text": "#86198F",
+      "border": "#E879F9"
+    },
+    "steps": [
+      {
+        "bot": "Hola. ¿Qué desea enviar?",
+        "hint": "Dí: I want to send this package to Mexico.",
+        "expected": [
+          [
+            "quiero",
+            "enviar",
+            "paquete",
+            "méxico"
+          ],
+          [
+            "mandar",
+            "este",
+            "paquete"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Póngalo en la báscula, por favor. Pesa dos kilos.",
+        "hint": "Dí: How much does it cost?",
+        "expected": [
+          [
+            "cuánto",
+            "cuesta"
+          ],
+          [
+            "cuánto",
+            "es"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Son veinticinco euros por correo normal.",
+        "hint": "Dí: I will pay with cash.",
+        "expected": [
+          [
+            "voy",
+            "a",
+            "pagar",
+            "efectivo"
+          ],
+          [
+            "pago",
+            "en",
+            "efectivo"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c25",
+    "title": "Hobbies",
+    "subtitle": "Tiempo libre (Free time)",
+    "icon": "🎸",
+    "theme": {
+      "bg": "#FEFCE8",
+      "text": "#854D0E",
+      "border": "#FACC15"
+    },
+    "steps": [
+      {
+        "bot": "¿Qué te gusta hacer en tu tiempo libre?",
+        "hint": "Dí: I love listening to music and reading.",
+        "expected": [
+          [
+            "me",
+            "encanta",
+            "escuchar",
+            "música",
+            "leer"
+          ],
+          [
+            "escuchar",
+            "música",
+            "y",
+            "leer"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "¡Qué bien! Yo prefiero hacer deporte. ¿Haces ejercicio?",
+        "hint": "Dí: Sometimes I play football.",
+        "expected": [
+          [
+            "a",
+            "veces",
+            "juego",
+            "fútbol"
+          ],
+          [
+            "juego",
+            "al",
+            "fútbol"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Deberíamos jugar un partido un día.",
+        "hint": "Dí: Sure, great idea.",
+        "expected": [
+          [
+            "claro",
+            "buena",
+            "idea"
+          ],
+          [
+            "sí",
+            "genial"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c26",
+    "title": "Reservar Mesa",
+    "subtitle": "Llamar al restaurante (Booking a table)",
+    "icon": "📞",
+    "theme": {
+      "bg": "#F8FAFC",
+      "text": "#334155",
+      "border": "#94A3B8"
+    },
+    "steps": [
+      {
+        "bot": "Restaurante El Sol, dígame.",
+        "hint": "Dí: I want to book a table for tomorrow.",
+        "expected": [
+          [
+            "quiero",
+            "reservar",
+            "mesa",
+            "para",
+            "mañana"
+          ],
+          [
+            "reserva",
+            "para",
+            "mañana"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "¿Para cuántas personas y a qué hora?",
+        "hint": "Dí: Four people at nine.",
+        "expected": [
+          [
+            "cuatro",
+            "personas",
+            "a",
+            "las",
+            "nueve"
+          ],
+          [
+            "para",
+            "cuatro",
+            "nueve"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "De acuerdo. ¿A nombre de quién?",
+        "hint": "Dí: In the name of David.",
+        "expected": [
+          [
+            "a",
+            "nombre",
+            "de",
+            "david"
+          ],
+          [
+            "david"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c27",
+    "title": "Pedir Ayuda",
+    "subtitle": "Ayuda general (Asking for help)",
+    "icon": "🙋",
+    "theme": {
+      "bg": "#ECFEFF",
+      "text": "#155E75",
+      "border": "#22D3EE"
+    },
+    "steps": [
+      {
+        "bot": "Pareces perdido. ¿Necesitas ayuda?",
+        "hint": "Dí: Yes, I can't find my keys.",
+        "expected": [
+          [
+            "sí",
+            "no",
+            "encuentro",
+            "llaves"
+          ],
+          [
+            "perdí",
+            "mis",
+            "llaves"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "¿Dónde las viste por última vez?",
+        "hint": "Dí: In the car, I think.",
+        "expected": [
+          [
+            "en",
+            "el",
+            "coche",
+            "creo"
+          ],
+          [
+            "creo",
+            "que",
+            "coche"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Vamos a mirar allí. Yo te acompaño.",
+        "hint": "Dí: Thank you, you are very kind.",
+        "expected": [
+          [
+            "gracias",
+            "eres",
+            "muy",
+            "amable"
+          ],
+          [
+            "muchas",
+            "gracias"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c28",
+    "title": "Disculparse",
+    "subtitle": "Llegar tarde (Apologizing for being late)",
+    "icon": "⌚",
+    "theme": {
+      "bg": "#F5F3FF",
+      "text": "#5B21B6",
+      "border": "#A78BFA"
+    },
+    "steps": [
+      {
+        "bot": "Llevo media hora esperándote. ¿Qué ha pasado?",
+        "hint": "Dí: I am so sorry, there was a lot of traffic.",
+        "expected": [
+          [
+            "lo",
+            "siento",
+            "mucho",
+            "había",
+            "tráfico"
+          ],
+          [
+            "perdón",
+            "mucho",
+            "tráfico"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Bueno, no pasa nada, pero avisa la próxima vez.",
+        "hint": "Dí: You are right, sorry again.",
+        "expected": [
+          [
+            "tienes",
+            "razón",
+            "perdón"
+          ],
+          [
+            "sí",
+            "lo",
+            "siento"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "¿Entramos ya a ver la película?",
+        "hint": "Dí: Yes, let's go.",
+        "expected": [
+          [
+            "sí",
+            "vamos"
+          ],
+          [
+            "vamos",
+            "ya"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c29",
+    "title": "Souvenirs",
+    "subtitle": "Comprar regalos (Buying gifts)",
+    "icon": "🎁",
+    "theme": {
+      "bg": "#FFF1F2",
+      "text": "#9F1239",
+      "border": "#FB7185"
+    },
+    "steps": [
+      {
+        "bot": "¡Mira qué camisetas tan bonitas!",
+        "hint": "Dí: Yes, I want to buy a gift for my mother.",
+        "expected": [
+          [
+            "sí",
+            "quiero",
+            "comprar",
+            "regalo",
+            "para",
+            "mi",
+            "madre"
+          ],
+          [
+            "regalo",
+            "para",
+            "madre"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Cuestan quince euros cada una. ¿Qué te parece?",
+        "hint": "Dí: It is a bit expensive.",
+        "expected": [
+          [
+            "es",
+            "un",
+            "poco",
+            "caro"
+          ],
+          [
+            "está",
+            "caro"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Te la dejo a doce si te llevas dos.",
+        "hint": "Dí: Okay, I will take two.",
+        "expected": [
+          [
+            "vale",
+            "me",
+            "llevo",
+            "dos"
+          ],
+          [
+            "llevo",
+            "dos"
+          ]
+        ],
+        "minMatch": 1
+      }
+    ]
+  },
+  {
+    "id": "c30",
+    "title": "Despedidas",
+    "subtitle": "Decir adiós correctamente (Saying goodbye)",
+    "icon": "👋",
+    "theme": {
+      "bg": "#FDF4FF",
+      "text": "#86198F",
+      "border": "#E879F9"
+    },
+    "steps": [
+      {
+        "bot": "Bueno, se hace tarde. Me tengo que ir.",
+        "hint": "Dí: Yes, me too. It was a pleasure.",
+        "expected": [
+          [
+            "sí",
+            "yo",
+            "también",
+            "fue",
+            "un",
+            "placer"
+          ],
+          [
+            "ha",
+            "sido",
+            "un",
+            "placer"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Igualmente. Tenemos que repetir esto pronto.",
+        "hint": "Dí: Of course, call me next week.",
+        "expected": [
+          [
+            "claro",
+            "llámame",
+            "la",
+            "próxima",
+            "semana"
+          ],
+          [
+            "sí",
+            "llámame"
+          ]
+        ],
+        "minMatch": 1
+      },
+      {
+        "bot": "Lo haré. Cuídate mucho. ¡Adiós!",
+        "hint": "Dí: Take care, bye!",
+        "expected": [
+          [
+            "cuídate",
+            "adiós"
+          ],
+          [
+            "chao",
+            "cuídate"
+          ]
+        ],
+        "minMatch": 1
+      }
     ]
   }
 ];
