@@ -2854,19 +2854,20 @@ function renderCustom() {
 }
 
 function renderProgress() {
-  const total = VOCAB.length;
-  const mastered = VOCAB.filter(v => getBox(v.es) === 3).length;
-  const learning = VOCAB.filter(v => { const b = getBox(v.es); return b === 1 || b === 2; }).length;
+  const allVocab = [...VOCAB, ...state.customWords];
+  const total = allVocab.length;
+  const mastered = allVocab.filter(v => getBox(v.es) === 3).length;
+  const learning = allVocab.filter(v => { const b = getBox(v.es); return b === 1 || b === 2; }).length;
   const untouched = total - mastered - learning;
 
-  const mosaicHtml = VOCAB.map(v => {
+  const mosaicHtml = allVocab.map(v => {
     const box = getBox(v.es);
     return `<div class="mosaic-tile mosaic-${box}" title="${escapeHtml(v.es)} — ${escapeHtml(v.en)}"></div>`;
   }).join('');
 
-  const categories = [...new Set(VOCAB.map(v => v.cat))];
+  const categories = [...new Set(allVocab.map(v => v.cat))];
   const categoryRows = categories.map(cat => {
-    const words = VOCAB.filter(v => v.cat === cat);
+    const words = allVocab.filter(v => v.cat === cat);
     const box1 = words.filter(v => getBox(v.es) === 1).length;
     const box2 = words.filter(v => getBox(v.es) === 2).length;
     const box3 = words.filter(v => getBox(v.es) === 3).length;
