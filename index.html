@@ -988,6 +988,34 @@ html, body { height: 100%; }
   text-shadow: 0 2px 8px rgba(14,124,134,0.3);
 }
 
+/* Error Toast */
+.error-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #FEE2E2;
+  color: #DC2626;
+  border: 1.5px solid #FCA5A5;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  pointer-events: none;
+  z-index: 1000;
+  animation: errorFadeInOut 2.5s ease-in-out forwards;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+  text-align: center;
+  white-space: nowrap;
+}
+@keyframes errorFadeInOut {
+  0% { opacity: 0; transform: translate(-50%, 10px); }
+  10% { opacity: 1; transform: translate(-50%, 0); }
+  90% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -10px); }
+}
+
 /* Confetti piece */
 .confetti {
   position: fixed;
@@ -1768,6 +1796,14 @@ function showXpToast(text) {
   setTimeout(() => el.remove(), 1100);
 }
 
+function showErrorToast(text) {
+  const el = document.createElement('div');
+  el.className = 'error-toast';
+  el.textContent = text;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2500);
+}
+
 function spawnConfetti(count) {
   const colors = ['#0E7C86','#E0663D','#63B3C7','#2F6F8F','#FFD700','#FF6B6B','#4ECDC4','#45B7D1'];
   for (let i = 0; i < count; i++) {
@@ -1967,6 +2003,7 @@ function addCustomWord(es, en, ex) {
   const exists = state.customWords.some(w => w.es.toLowerCase() === es.toLowerCase());
   if (exists) {
     state.formError = 'Esa palabra ya está en tu lista.';
+    showErrorToast('Word or phrase already exists!');
     render();
     return;
   }
