@@ -114,32 +114,60 @@ html, body { height: 100%; }
 
 .tabs {
   display: flex;
-  gap: 0;
+  gap: 4px;
   margin-top: 24px;
   position: relative;
   z-index: 1;
-  border-bottom: 2px solid #E2E8F0;
+  border-bottom: none;
+  padding-bottom: 12px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .tab-btn {
   flex: 1;
-  background: none;
+  min-width: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
   border: none;
-  color: #64748B;
+  color: #94A3B8;
   font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 14px;
-  padding: 12px 4px 14px;
+  font-weight: 500;
+  font-size: 10px;
+  padding: 8px 4px;
+  border-radius: 12px;
   cursor: pointer;
-  border-bottom: 3px solid transparent;
   transition: all 0.2s ease;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
+}
+
+.tab-btn svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2;
+  stroke: currentColor;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tab-btn:hover {
+  background: #F1F5F9;
+  color: #64748B;
 }
 
 .tab-btn.active {
-  color: #2563EB;
-  border-bottom: 3px solid #2563EB;
+  color: #1E293B;
   font-weight: 700;
+  background: #E2E8F0;
 }
 
 .tab-btn:focus-visible, button:focus-visible, .choice-btn:focus-visible {
@@ -1717,12 +1745,30 @@ html, body { height: 100%; }
       </div>
     </div>
     <div class="tabs">
-      <button class="tab-btn active" data-tab="cards">Tarjetas</button>
-      <button class="tab-btn" data-tab="quiz">Quiz</button>
-      <button class="tab-btn" data-tab="lecciones">Lecciones</button>
-      <button class="tab-btn" data-tab="convo">Conversación</button>
-      <button class="tab-btn" data-tab="custom">Mis palabras</button>
-      <button class="tab-btn" data-tab="progress">Progreso</button>
+      <button class="tab-btn active" data-tab="cards">
+        <svg viewBox="0 0 24 24"><path d="M4 8h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2z"></path><path d="M8 4h12a2 2 0 0 1 2 2v10"></path></svg>
+        <span>Tarjetas</span>
+      </button>
+      <button class="tab-btn" data-tab="quiz">
+        <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+        <span>Quiz</span>
+      </button>
+      <button class="tab-btn" data-tab="lecciones">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        <span>Lecciones</span>
+      </button>
+      <button class="tab-btn" data-tab="convo">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span>Hablar</span>
+      </button>
+      <button class="tab-btn" data-tab="custom">
+        <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+        <span>Guardadas</span>
+      </button>
+      <button class="tab-btn" data-tab="progress">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <span>Progreso</span>
+      </button>
     </div>
   </div>
   <div class="content-area">
@@ -2678,9 +2724,9 @@ const CONVERSATIONS = [
     icon: '☕',
     theme: { bg: '#FFF7ED', text: '#9A3412', border: '#FB923C' },
     steps: [
-      { bot: '¡Hola! ¿Qué quieres tomar?', hint: 'Dí: I want a coffee please.', expected: ['café', 'quiero', 'por favor', 'agua', 'cerveza', 'vino', 'té'], minMatch: 1 },
-      { bot: 'Muy bien. ¿Algo más?', hint: 'Dí: No, just the bill please.', expected: ['no', 'cuenta', 'nada', 'solo', 'gracias'], minMatch: 1 },
-      { bot: 'Aquí tienes la cuenta. Son tres euros.', hint: 'Dí: Thank you.', expected: ['gracias', 'vale', 'toma'], minMatch: 1 }
+      { bot: '¡Hola! ¿Qué quieres tomar?', hint: 'Dí: I want a coffee please.', expected: [['quiero', 'café'], ['un', 'café'], ['una', 'cerveza'], ['agua', 'favor'], ['té', 'favor']], minMatch: 1 },
+      { bot: 'Muy bien. ¿Algo más?', hint: 'Dí: No, just the bill please.', expected: [['no', 'cuenta'], ['nada', 'más'], ['solo', 'cuenta']], minMatch: 1 },
+      { bot: 'Aquí tienes la cuenta. Son tres euros.', hint: 'Dí: Thank you.', expected: [['gracias'], ['vale', 'gracias'], ['toma']], minMatch: 1 }
     ]
   },
   {
@@ -2690,9 +2736,9 @@ const CONVERSATIONS = [
     icon: '👋',
     theme: { bg: '#F0FDF4', text: '#166534', border: '#4ADE80' },
     steps: [
-      { bot: '¡Hola! Me llamo Carlos. ¿Y tú, cómo te llamas?', hint: 'Dí: My name is [Your Name].', expected: ['llamo', 'soy', 'mi nombre', 'me'], minMatch: 1 },
-      { bot: 'Encantado. ¿De dónde eres?', hint: 'Dí: I am from...', expected: ['soy', 'de', 'vengo', 'filipinas', 'estados unidos', 'inglaterra'], minMatch: 1 },
-      { bot: '¡Qué interesante! Nos vemos luego.', hint: 'Dí: See you later / Bye.', expected: ['adiós', 'chao', 'hasta', 'luego', 'vemos', 'pronto'], minMatch: 1 }
+      { bot: '¡Hola! Me llamo Carlos. ¿Y tú, cómo te llamas?', hint: 'Dí: My name is [Your Name].', expected: [['me', 'llamo'], ['mi', 'nombre', 'es'], ['soy']], minMatch: 1 },
+      { bot: 'Encantado. ¿De dónde eres?', hint: 'Dí: I am from...', expected: [['soy', 'de'], ['vengo', 'de']], minMatch: 1 },
+      { bot: '¡Qué interesante! Nos vemos luego.', hint: 'Dí: See you later / Bye.', expected: [['nos', 'vemos'], ['adiós'], ['hasta', 'luego'], ['chao']], minMatch: 1 }
     ]
   }
 ];
@@ -2720,12 +2766,12 @@ if ('webkitSpeechRecognition' in window) {
       if (!convo) return;
       const step = convo.steps[state.convoStep];
       
-      let matchCount = 0;
-      step.expected.forEach(k => {
-        if (text.includes(k.toLowerCase())) matchCount++;
+      const words = text.toLowerCase().match(/[a-záéíóúüñ]+/g) || [];
+      const isMatch = step.expected.some(phraseGroup => {
+        return phraseGroup.every(word => words.includes(word));
       });
       
-      if (matchCount >= step.minMatch) {
+      if (isMatch) {
         playSound('correct');
         state.convoStatus = 'success';
         addPoints(10, '¡Bien dicho! +10 XP');
