@@ -2040,10 +2040,28 @@ function speakWord(text) {
   if (!text || !('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
   const cleanText = text.replace(/__([^_]+)__/g, '$1');
-  const utterance = new SpeechSynthesisUtterance(cleanText);
-  utterance.lang = 'es-ES';
-  utterance.rate = 0.88;
-  window.speechSynthesis.speak(utterance);
+  
+  const match = cleanText.match(/^(.*?)\s+[—\-]\s+(.*)$/);
+  if (match) {
+    const esText = match[1];
+    const enText = match[2];
+    
+    const uttEs = new SpeechSynthesisUtterance(esText);
+    uttEs.lang = 'es-ES';
+    uttEs.rate = 0.88;
+    
+    const uttEn = new SpeechSynthesisUtterance(enText);
+    uttEn.lang = 'en-US';
+    uttEn.rate = 0.88;
+    
+    window.speechSynthesis.speak(uttEs);
+    window.speechSynthesis.speak(uttEn);
+  } else {
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = 'es-ES';
+    utterance.rate = 0.88;
+    window.speechSynthesis.speak(utterance);
+  }
 }
 
 const SPEAKER_ICON = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
