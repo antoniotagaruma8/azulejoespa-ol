@@ -1455,6 +1455,73 @@ html, body { height: 100%; }
   display: block;
 }
 
+/* ═══════════════════════════════ */
+/*   LESSON MODAL                  */
+/* ═══════════════════════════════ */
+
+.lesson-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.lesson-modal-content {
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  border-radius: 20px;
+  border: 2px solid transparent;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.25);
+}
+
+.lesson-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 24px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.lesson-modal-close {
+  background: none;
+  border: none;
+  font-size: 32px;
+  line-height: 1;
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+.lesson-modal-close:hover {
+  opacity: 1;
+}
+
+.lesson-modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+@keyframes slideUpModal {
+  0% { transform: translateY(40px) scale(0.98); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
 .leccion-completed-badge {
   display: inline-flex;
   align-items: center;
@@ -1548,7 +1615,7 @@ let state = {
   customQuizScore: {correct: 0, total: 0},
   customSessionCount: 0,
   formError: '',
-  leccionesOpen: {},       // lessonId -> boolean
+  activeLessonModal: null, // lessonId of the currently open modal
   leccionesCompleted: {},  // lessonId -> boolean
   leccionesQuizProgress: {}, // lessonId -> number (index of current question, 0-9)
   leccionesQuiz: {},       // lessonId -> { selected: val, correct: bool }
@@ -2435,8 +2502,26 @@ const LESSONS = [
 
 function buildLeccionHtml(lesson) {
   const t = lesson.theme;
-  const isOpen = !!state.leccionesOpen[lesson.id];
   const isDone = !!state.leccionesCompleted[lesson.id];
+  return `
+  <div class="leccion-card" style="background:${t.bg};border-color:${t.border};" id="lcard-${lesson.id}">
+    <div class="leccion-header" data-action="open-lesson-modal" data-lesson="${lesson.id}" style="background:${t.headBg};border-radius:16px;">
+      <div class="leccion-num" style="background:rgba(255,255,255,0.25);color:${t.headText};">${lesson.num}</div>
+      <div class="leccion-title-text">
+        <strong style="color:${t.headText};">${lesson.title}</strong>
+        <span style="color:${t.headText};opacity:0.85;">${lesson.subtitle}</span>
+      </div>
+      ${isDone ? `<span class="leccion-completed-badge" style="background:rgba(255,255,255,0.25);color:${t.headText};">✓ +15 XP</span>` : ''}
+      <div class="leccion-xp-badge" style="background:rgba(255,255,255,0.2);color:${t.headText};">+15 XP</div>
+    </div>
+  </div>`;
+}
+
+function renderLessonModal(lessonId) {
+  const lesson = LESSONS.find(l => l.id === lessonId);
+  if (!lesson) return '';
+
+  const t = lesson.theme;
   const quizState = state.leccionesQuiz[lesson.id];
 
   let sectionsHtml = '';
@@ -2467,7 +2552,6 @@ function buildLeccionHtml(lesson) {
     }
   }
 
-  // Mini-quiz
   const qIndex = state.leccionesQuizProgress[lesson.id] || 0;
   let quizHtml = '';
 
@@ -2518,21 +2602,21 @@ function buildLeccionHtml(lesson) {
   }
 
   return `
-  <div class="leccion-card ${isOpen ? 'open' : ''}" style="background:${t.bg};border-color:${t.border};" id="lcard-${lesson.id}">
-    <div class="leccion-header" data-action="leccion-toggle" data-lesson="${lesson.id}" style="background:${t.headBg};">
-      <div class="leccion-num" style="background:rgba(255,255,255,0.25);color:${t.headText};">${lesson.num}</div>
-      <div class="leccion-title-text">
-        <strong style="color:${t.headText};">${lesson.title}</strong>
-        <span style="color:${t.headText};opacity:0.85;">${lesson.subtitle}</span>
+  <div class="lesson-modal-overlay show" data-action="close-modal-overlay">
+    <div class="lesson-modal-content" style="background:${t.bg};border-color:${t.border};">
+      <div class="lesson-modal-header" style="background:${t.headBg};">
+        <div class="leccion-num" style="background:rgba(255,255,255,0.25);color:${t.headText};">${lesson.num}</div>
+        <div class="leccion-title-text">
+          <strong style="color:${t.headText};">${lesson.title}</strong>
+          <span style="color:${t.headText};opacity:0.85;">${lesson.subtitle}</span>
+        </div>
+        <button class="lesson-modal-close" data-action="close-lesson-modal" style="color:${t.headText};">&times;</button>
       </div>
-      ${isDone ? `<span class="leccion-completed-badge" style="background:rgba(255,255,255,0.25);color:${t.headText};">✓ +15 XP</span>` : ''}
-      <div class="leccion-xp-badge" style="background:rgba(255,255,255,0.2);color:${t.headText};">+15 XP</div>
-      <span class="leccion-chevron" style="color:${t.headText};">⌄</span>
-    </div>
-    <div class="leccion-body">
-      ${sectionsHtml}
-      <div style="margin-top:18px;border-top:1.5px solid ${t.border}44;padding-top:16px;">
-        ${quizHtml}
+      <div class="lesson-modal-body">
+        ${sectionsHtml}
+        <div style="margin-top:18px;border-top:1.5px solid ${t.border}44;padding-top:16px;">
+          ${quizHtml}
+        </div>
       </div>
     </div>
   </div>`;
@@ -2862,11 +2946,18 @@ function render() {
     btn.classList.toggle('active', btn.dataset.tab === state.currentTab);
   });
 
-  if (state.currentTab === 'cards') contentEl.innerHTML = renderCards();
-  else if (state.currentTab === 'quiz') contentEl.innerHTML = renderQuiz();
-  else if (state.currentTab === 'lecciones') contentEl.innerHTML = renderLecciones();
-  else if (state.currentTab === 'custom') contentEl.innerHTML = renderCustom();
-  else contentEl.innerHTML = renderProgress();
+  let html = '';
+  if (state.currentTab === 'cards') html = renderCards();
+  else if (state.currentTab === 'quiz') html = renderQuiz();
+  else if (state.currentTab === 'lecciones') html = renderLecciones();
+  else if (state.currentTab === 'custom') html = renderCustom();
+  else html = renderProgress();
+
+  if (state.activeLessonModal) {
+    html += renderLessonModal(state.activeLessonModal);
+  }
+
+  contentEl.innerHTML = html;
 
   attachHandlers();
 }
@@ -2975,13 +3066,31 @@ function attachHandlers() {
     btn.addEventListener('click', () => deleteCustomWord(parseInt(btn.dataset.index, 10)));
   });
 
-  // ── Lecciones: accordion toggle ──
-  document.querySelectorAll('[data-action="leccion-toggle"]').forEach(btn => {
+  // ── Lecciones: modal open/close ──
+  document.querySelectorAll('[data-action="open-lesson-modal"]').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.lesson;
-      state.leccionesOpen[id] = !state.leccionesOpen[id];
+      state.activeLessonModal = id;
       playSound('click');
       render();
+    });
+  });
+
+  document.querySelectorAll('[data-action="close-lesson-modal"]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      state.activeLessonModal = null;
+      playSound('click');
+      render();
+    });
+  });
+
+  document.querySelectorAll('[data-action="close-modal-overlay"]').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        state.activeLessonModal = null;
+        render();
+      }
     });
   });
 
