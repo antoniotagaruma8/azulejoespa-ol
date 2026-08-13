@@ -2964,10 +2964,18 @@ function render() {
 
   attachHandlers();
 
-  if (state.activeLessonModal && modalScrollTop > 0) {
+  if (state.activeLessonModal) {
     const newModalBody = document.querySelector('.lesson-modal-body');
     if (newModalBody) {
-      newModalBody.scrollTop = modalScrollTop;
+      if (modalScrollTop > 0) {
+        newModalBody.scrollTop = modalScrollTop;
+      }
+      const resultBox = document.querySelector('.lesson-modal-body .leccion-quiz-result.show');
+      if (resultBox) {
+        setTimeout(() => {
+          resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 50);
+      }
     }
   }
 }
