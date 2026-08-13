@@ -1535,6 +1535,170 @@ html, body { height: 100%; }
   right: 54px;
 }
 
+/* ═══════════════════════════════ */
+/*   CONVERSACIÓN (VOICE ROLEPLAY) */
+/* ═══════════════════════════════ */
+.convo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 0;
+}
+.convo-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 16px;
+  border: 2px solid;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  background: #fff;
+}
+.convo-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px -6px rgba(0,0,0,0.15);
+}
+.convo-icon {
+  font-size: 32px;
+}
+.convo-info strong {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+.convo-info span {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.active-convo-container {
+  display: flex;
+  flex-direction: column;
+  height: 65vh;
+  min-height: 400px;
+  background: #fff;
+  border-radius: 16px;
+  border: 2px solid #E2E8F0;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+  margin-top: 10px;
+}
+.active-convo-header {
+  padding: 16px 20px;
+  background: #F8FAFC;
+  border-bottom: 2px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.convo-back-btn {
+  background: #E2E8F0;
+  border: none;
+  color: #475569;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+.convo-back-btn:hover { background: #CBD5E1; }
+.active-convo-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1E293B;
+}
+
+.convo-chat-area {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #F8FAFC;
+}
+.chat-bubble {
+  max-width: 85%;
+  padding: 14px 18px;
+  border-radius: 18px;
+  font-size: 16px;
+  line-height: 1.4;
+  animation: slideUpModal 0.3s ease;
+  position: relative;
+}
+.chat-bot {
+  align-self: flex-start;
+  background: #E2E8F0;
+  color: #1E293B;
+  border-bottom-left-radius: 4px;
+}
+.chat-user {
+  align-self: flex-end;
+  background: #3B82F6;
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.convo-controls {
+  padding: 20px;
+  background: #fff;
+  border-top: 2px solid #E2E8F0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.mic-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
+  background: #3B82F6;
+  color: #fff;
+  font-size: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+.mic-btn:active {
+  transform: scale(0.95);
+}
+.mic-btn:disabled {
+  background: #94A3B8;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.mic-btn.listening {
+  background: #EF4444;
+  box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  animation: pulseMic 1.5s infinite;
+}
+@keyframes pulseMic {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+.convo-hint {
+  font-size: 14px;
+  color: #64748B;
+  text-align: center;
+  min-height: 20px;
+}
+.convo-status {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.status-listening { color: #EF4444; }
+.status-success { color: #10B981; }
+.status-fail { color: #F59E0B; }
+
+
 </style>
 </head>
 <body>
@@ -1556,6 +1720,7 @@ html, body { height: 100%; }
       <button class="tab-btn active" data-tab="cards">Tarjetas</button>
       <button class="tab-btn" data-tab="quiz">Quiz</button>
       <button class="tab-btn" data-tab="lecciones">Lecciones</button>
+      <button class="tab-btn" data-tab="convo">Conversación</button>
       <button class="tab-btn" data-tab="custom">Mis palabras</button>
       <button class="tab-btn" data-tab="progress">Progreso</button>
     </div>
@@ -1619,6 +1784,11 @@ let state = {
   leccionesCompleted: {},  // lessonId -> boolean
   leccionesQuizProgress: {}, // lessonId -> number (index of current question, 0-9)
   leccionesQuiz: {},       // lessonId -> { selected: val, correct: bool }
+  activeConvo: null,       // id of active conversation
+  convoStep: 0,            // current step index in the conversation
+  convoStatus: 'idle',     // idle, listening, processing, success, fail
+  convoUserText: '',
+  convoBotText: '',
 };
 
 function todayStr() {
@@ -2500,6 +2670,120 @@ const LESSONS = [
   }
 ];
 
+const CONVERSATIONS = [
+  {
+    id: 'c1',
+    title: 'En el Café',
+    subtitle: 'Pedir una bebida y la cuenta (Order a drink and the bill)',
+    icon: '☕',
+    theme: { bg: '#FFF7ED', text: '#9A3412', border: '#FB923C' },
+    steps: [
+      { bot: '¡Hola! ¿Qué quieres tomar?', hint: 'Dí: I want a coffee please.', expected: ['café', 'quiero', 'por favor', 'agua', 'cerveza', 'vino', 'té'], minMatch: 1 },
+      { bot: 'Muy bien. ¿Algo más?', hint: 'Dí: No, just the bill please.', expected: ['no', 'cuenta', 'nada', 'solo', 'gracias'], minMatch: 1 },
+      { bot: 'Aquí tienes la cuenta. Son tres euros.', hint: 'Dí: Thank you.', expected: ['gracias', 'vale', 'toma'], minMatch: 1 }
+    ]
+  },
+  {
+    id: 'c2',
+    title: 'Conociendo a Alguien',
+    subtitle: 'Presentaciones básicas (Basic introductions)',
+    icon: '👋',
+    theme: { bg: '#F0FDF4', text: '#166534', border: '#4ADE80' },
+    steps: [
+      { bot: '¡Hola! Me llamo Carlos. ¿Y tú, cómo te llamas?', hint: 'Dí: My name is [Your Name].', expected: ['llamo', 'soy', 'mi nombre', 'me'], minMatch: 1 },
+      { bot: 'Encantado. ¿De dónde eres?', hint: 'Dí: I am from...', expected: ['soy', 'de', 'vengo', 'filipinas', 'estados unidos', 'inglaterra'], minMatch: 1 },
+      { bot: '¡Qué interesante! Nos vemos luego.', hint: 'Dí: See you later / Bye.', expected: ['adiós', 'chao', 'hasta', 'luego', 'vemos', 'pronto'], minMatch: 1 }
+    ]
+  }
+];
+
+let recognition = null;
+if ('webkitSpeechRecognition' in window) {
+  recognition = new webkitSpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.lang = 'es-ES';
+
+  recognition.onstart = function() {
+    state.convoStatus = 'listening';
+    render();
+  };
+
+  recognition.onresult = function(event) {
+    const text = event.results[0][0].transcript.toLowerCase();
+    state.convoUserText = text;
+    state.convoStatus = 'processing';
+    render();
+    
+    setTimeout(() => {
+      const convo = CONVERSATIONS.find(c => c.id === state.activeConvo);
+      if (!convo) return;
+      const step = convo.steps[state.convoStep];
+      
+      let matchCount = 0;
+      step.expected.forEach(k => {
+        if (text.includes(k.toLowerCase())) matchCount++;
+      });
+      
+      if (matchCount >= step.minMatch) {
+        playSound('correct');
+        state.convoStatus = 'success';
+        addPoints(10, '¡Bien dicho! +10 XP');
+        render();
+        setTimeout(() => {
+          state.convoStep++;
+          state.convoUserText = '';
+          state.convoStatus = 'idle';
+          if (state.convoStep < convo.steps.length) {
+             const nextBot = convo.steps[state.convoStep].bot;
+             state.convoBotText = nextBot;
+             speakWord(nextBot);
+          } else {
+             addPoints(20, '¡Conversación completada! +20 XP');
+             spawnConfetti(30);
+          }
+          render();
+        }, 2000);
+      } else {
+        playSound('wrong');
+        state.convoStatus = 'fail';
+        render();
+        setTimeout(() => {
+          state.convoStatus = 'idle';
+          state.convoUserText = '';
+          render();
+        }, 2500);
+      }
+    }, 500);
+  };
+
+  recognition.onerror = function(event) {
+    console.error('Speech error:', event.error);
+    state.convoStatus = 'idle';
+    showErrorToast('Error de micrófono: ' + event.error);
+    render();
+  };
+
+  recognition.onend = function() {
+    if (state.convoStatus === 'listening') {
+      state.convoStatus = 'idle';
+      render();
+    }
+  };
+}
+
+function startListening() {
+  if (recognition) {
+    try {
+      recognition.start();
+    } catch (e) {
+      console.error(e);
+    }
+  } else {
+    showErrorToast('Tu navegador no soporta reconocimiento de voz. Usa Chrome.');
+  }
+}
+
 function buildLeccionHtml(lesson) {
   const t = lesson.theme;
   const isDone = !!state.leccionesCompleted[lesson.id];
@@ -2853,6 +3137,80 @@ function renderCustom() {
   return subnav + body;
 }
 
+function renderConvoList() {
+  const html = CONVERSATIONS.map(c => {
+    return `
+      <div class="convo-card" data-action="open-convo" data-id="${c.id}" style="border-color: ${c.theme.border};">
+        <div class="convo-icon">${c.icon}</div>
+        <div class="convo-info">
+          <strong style="color: ${c.theme.text};">${c.title}</strong>
+          <span style="color: ${c.theme.text};">${c.subtitle}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+  return `
+    <div class="convo-list">
+      <div style="font-size:20px;font-weight:800;color:#1E293B;margin-bottom:8px;">Práctica de Conversación</div>
+      <div style="color:#64748B;font-size:14px;margin-bottom:16px;">Habla con la aplicación para practicar frases clave en tiempo real. ¡Toca el micrófono para hablar!</div>
+      ${html}
+    </div>
+  `;
+}
+
+function renderActiveConvo() {
+  const c = CONVERSATIONS.find(x => x.id === state.activeConvo);
+  if (!c) return '';
+  const currentStep = c.steps[Math.min(state.convoStep, c.steps.length - 1)];
+  const isComplete = state.convoStep >= c.steps.length;
+
+  let bubbles = '';
+  // Show all previous steps and the current bot prompt
+  for (let i = 0; i <= state.convoStep; i++) {
+    if (i === c.steps.length) break;
+    const s = c.steps[i];
+    bubbles += `<div class="chat-bubble chat-bot" style="border:1px solid ${c.theme.border}">${s.bot}</div>`;
+    if (i < state.convoStep) {
+      bubbles += `<div class="chat-bubble chat-user">... ✓</div>`;
+    }
+  }
+  
+  if (state.convoUserText) {
+    bubbles += `<div class="chat-bubble chat-user">${state.convoUserText}</div>`;
+  }
+
+  let statusHtml = `<div class="convo-hint">${!isComplete ? currentStep.hint : 'Conversación terminada. ¡Buen trabajo!'}</div>`;
+  if (state.convoStatus === 'listening') statusHtml = `<div class="convo-status status-listening">Escuchando...</div>`;
+  else if (state.convoStatus === 'processing') statusHtml = `<div class="convo-status status-listening">Procesando...</div>`;
+  else if (state.convoStatus === 'success') statusHtml = `<div class="convo-status status-success">¡Excelente! ✓</div>`;
+  else if (state.convoStatus === 'fail') statusHtml = `<div class="convo-status status-fail">Intenta otra vez ❌</div>`;
+
+  return `
+    <div class="active-convo-container">
+      <div class="active-convo-header">
+        <button class="convo-back-btn" data-action="close-convo">← Volver</button>
+        <div class="active-convo-title" style="color:${c.theme.text}">${c.title}</div>
+      </div>
+      <div class="convo-chat-area" id="convo-chat-area">
+        ${bubbles}
+      </div>
+      <div class="convo-controls">
+        ${statusHtml}
+        <button class="mic-btn ${state.convoStatus === 'listening' ? 'listening' : ''}" data-action="mic" ${isComplete || state.convoStatus === 'processing' ? 'disabled' : ''}>
+          🎙️
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function renderConvo() {
+  if (state.activeConvo) {
+    return renderActiveConvo();
+  }
+  return renderConvoList();
+}
+
 function renderProgress() {
   const allVocab = [...VOCAB, ...state.customWords];
   const total = allVocab.length;
@@ -2954,6 +3312,7 @@ function render() {
   if (state.currentTab === 'cards') html = renderCards();
   else if (state.currentTab === 'quiz') html = renderQuiz();
   else if (state.currentTab === 'lecciones') html = renderLecciones();
+  else if (state.currentTab === 'convo') html = renderConvo();
   else if (state.currentTab === 'custom') html = renderCustom();
   else html = renderProgress();
 
@@ -2978,6 +3337,11 @@ function render() {
         }, 50);
       }
     }
+  }
+
+  const chatArea = document.getElementById('convo-chat-area');
+  if (chatArea) {
+    chatArea.scrollTop = chatArea.scrollHeight;
   }
 }
 
@@ -3157,6 +3521,46 @@ function attachHandlers() {
       saveProgress();
       render();
     });
+  });
+
+  document.querySelectorAll('[data-action="open-convo"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      playSound('click');
+      state.activeConvo = btn.dataset.id;
+      state.convoStep = 0;
+      state.convoStatus = 'idle';
+      state.convoUserText = '';
+      state.convoBotText = '';
+      render();
+      setTimeout(() => {
+        const c = CONVERSATIONS.find(x => x.id === state.activeConvo);
+        if (c && c.steps.length > 0) {
+          state.convoBotText = c.steps[0].bot;
+          speakWord(c.steps[0].bot);
+        }
+      }, 300);
+    });
+  });
+
+  document.querySelectorAll('[data-action="close-convo"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      playSound('click');
+      state.activeConvo = null;
+      render();
+    });
+  });
+
+  document.querySelectorAll('[data-action="mic"]').forEach(btn => {
+    btn.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      playSound('click');
+      startListening();
+    });
+    btn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      playSound('click');
+      startListening();
+    }, {passive: false});
   });
 }
 
