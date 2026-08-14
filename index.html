@@ -621,7 +621,7 @@ html, body { height: 100%; }
 
 .category-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 10px;
 }
 
@@ -641,6 +641,9 @@ html, body { height: 100%; }
   font-size: 13px;
   font-weight: 600;
   color: var(--tinta);
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
 }
 
 .category-bar-wrap {
@@ -1192,7 +1195,6 @@ html, body { height: 100%; }
   .rate-btn { padding: 18px 12px; font-size: 15px; min-height: 64px; }
   .choice-btn { padding: 18px 22px; font-size: 16px; }
   .next-btn { padding: 16px; font-size: 15px; }
-  .category-bar-wrap { width: 160px; }
   .category-name { font-size: 14px; }
 }
 
