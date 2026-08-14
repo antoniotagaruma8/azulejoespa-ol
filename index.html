@@ -620,9 +620,9 @@ html, body { height: 100%; }
 }
 
 .category-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
 }
 
 .category-row {
