@@ -1187,7 +1187,8 @@ html, body { height: 100%; }
   .subtitle { display: block; font-size: 12px; }
   .streak-badge { align-self: flex-start; }
   .tabs { width: 100%; }
-  .tab-btn { justify-content: center; padding: 12px; }
+  .tab-btn { flex-direction: row; justify-content: flex-start; align-items: center; padding: 14px 20px; }
+  .tab-label { display: block; }
   .content { max-width: 640px; padding: 40px 48px 80px; }
   .flashcard { min-height: 320px; }
   .card-word-es { font-size: 40px; }
@@ -1751,21 +1752,27 @@ html, body { height: 100%; }
     <div class="tabs">
       <button class="tab-btn active" data-tab="cards">
         <svg viewBox="0 0 24 24"><path d="M4 8h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2z"></path><path d="M8 4h12a2 2 0 0 1 2 2v10"></path></svg>
+        <span class="tab-label">Tarjetas</span>
       </button>
       <button class="tab-btn" data-tab="quiz">
         <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+        <span class="tab-label">Quiz</span>
       </button>
       <button class="tab-btn" data-tab="lecciones">
         <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        <span class="tab-label">Lecciones</span>
       </button>
       <button class="tab-btn" data-tab="convo">
         <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span class="tab-label">Conversación</span>
       </button>
       <button class="tab-btn" data-tab="custom">
         <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+        <span class="tab-label">Listas</span>
       </button>
       <button class="tab-btn" data-tab="progress">
         <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <span class="tab-label">Progreso</span>
       </button>
     </div>
   </div>
