@@ -2734,6 +2734,150 @@ const LESSONS = [
       { q: 'How do you say "Does Juan read a book?"', choices: ['¿Juan lee un libro?', '¿Lee Juan un libro?', 'Both are correct', 'None of the above'], correct: 'Both are correct', explanation: 'Both SVO (with intonation) and VSO are valid question structures.' },
       { q: 'Where does the word "no" go when there is an object pronoun (e.g. "lo")?', choices: ['After the pronoun', 'Before the pronoun', 'At the end of the sentence', 'Before the subject'], correct: 'Before the pronoun', explanation: '"No" goes before the pronoun: "No lo sé" (I don\'t know it).' }
     ]
+  },
+  {
+    id: 'l8',
+    num: '08',
+    title: 'Conectores y Transiciones',
+    subtitle: 'Pero, porque, y, o — Words that link ideas together',
+    theme: { bg: '#FFF1F2', text: '#9F1239', pill: '#FECDD3', border: '#FB7185', headBg: '#E11D48', headText: '#fff' },
+    sections: [
+      {
+        type: 'rules',
+        title: 'Basic Connectors',
+        items: [
+          { title: 'And & Or', body: '<span class="formula-tag" style="background:#FECDD3;color:#9F1239;">y (and)</span> / <span class="formula-tag" style="background:#FECDD3;color:#9F1239;">o (or)</span><br>"Pan <strong>y</strong> agua" (Bread and water). "Té <strong>o</strong> café" (Tea or coffee).', bg: '#FFF1F2', border: '#FB7185', text: '#9F1239' },
+          { title: 'Contrasts & Reasons', body: '<span class="formula-tag" style="background:#FECDD3;color:#9F1239;">pero (but)</span> / <span class="formula-tag" style="background:#FECDD3;color:#9F1239;">porque (because)</span><br>"Quiero ir, <strong>pero</strong> no tengo tiempo." (I want to go, but I don\'t have time.)<br>"No como carne <strong>porque</strong> soy vegetariano." (I don\'t eat meat because I am vegetarian.)', bg: '#FFE4E6', border: '#F43F5E', text: '#9F1239' },
+          { title: 'Although & Also', body: '<span class="formula-tag" style="background:#FECDD3;color:#9F1239;">aunque (although/even though)</span> / <span class="formula-tag" style="background:#FECDD3;color:#9F1239;">también (also/too)</span><br>"<strong>Aunque</strong> llueve, salgo." (Even though it rains, I go out.)<br>"Yo <strong>también</strong> quiero agua." (I also want water.)', bg: '#FFF1F2', border: '#FB7185', text: '#9F1239' }
+        ]
+      },
+      {
+        type: 'examples',
+        title: 'Examples',
+        items: [
+          { es: 'Pan y queso', en: 'Bread and cheese', audio: 'Pan y queso' },
+          { es: 'Té o café', en: 'Tea or coffee', audio: 'Té o café' },
+          { es: 'Quiero pero no puedo', en: 'I want to but I can\'t', audio: 'Quiero pero no puedo' },
+          { es: 'Yo también', en: 'Me too / I also', audio: 'Yo también' },
+          { es: 'No porque llueve', en: 'No because it rains', audio: 'No porque llueve' }
+        ]
+      }
+    ],
+    quizzes: [
+      { q: 'How do you say "and" in Spanish?', choices: ['o', 'pero', 'y', 'con'], correct: 'y', explanation: '"Y" means "and", while "o" means "or".' },
+      { q: 'What does "pero" mean?', choices: ['because', 'however', 'but', 'also'], correct: 'but', explanation: '"Pero" is the direct translation of "but".' },
+      { q: 'Translate: "I study Spanish because I live in Spain."', choices: ['Estudio español pero vivo en España', 'Estudio español porque vivo en España', 'Estudio español y vivo en España', 'Estudio español aunque vivo en España'], correct: 'Estudio español porque vivo en España', explanation: '"Porque" means "because".' },
+      { q: 'What does "también" mean?', choices: ['also / too', 'always', 'although', 'then'], correct: 'also / too', explanation: '"También" is used to agree or say "me too / also".' },
+      { q: 'Choose the correct connector: "Me gusta el perro ___ el gato no."', choices: ['y', 'o', 'porque', 'pero'], correct: 'pero', explanation: '"I like the dog BUT not the cat" -> "pero".' }
+    ]
+  },
+  {
+    id: 'l9',
+    num: '09',
+    title: 'Palabras Interrogativas',
+    subtitle: 'Qué, Dónde, Cómo — Essential Question Words',
+    theme: { bg: '#F0F9FF', text: '#075985', pill: '#BAE6FD', border: '#38BDF8', headBg: '#0284C7', headText: '#fff' },
+    sections: [
+      {
+        type: 'rules',
+        title: 'Basic Question Words',
+        items: [
+          { title: 'What & Who', body: '<span class="formula-tag" style="background:#BAE6FD;color:#075985;">¿Qué? (What)</span> / <span class="formula-tag" style="background:#BAE6FD;color:#075985;">¿Quién? (Who)</span><br>"¿<strong>Qué</strong> es esto?" (What is this?)<br>"¿<strong>Quién</strong> eres?" (Who are you?)<br><em>Note: All question words in Spanish carry an accent mark!</em>', bg: '#F0F9FF', border: '#38BDF8', text: '#075985' },
+          { title: 'Where, When, Why', body: '<span class="formula-tag" style="background:#BAE6FD;color:#075985;">¿Dónde? (Where)</span> / <span class="formula-tag" style="background:#BAE6FD;color:#075985;">¿Cuándo? (When)</span> / <span class="formula-tag" style="background:#BAE6FD;color:#075985;">¿Por qué? (Why)</span><br>"¿<strong>Dónde</strong> está el baño?" (Where is the bathroom?)<br>"¿<strong>Por qué</strong> lloras?" (Why do you cry?)', bg: '#E0F2FE', border: '#0EA5E9', text: '#075985' },
+          { title: 'How & How much', body: '<span class="formula-tag" style="background:#BAE6FD;color:#075985;">¿Cómo? (How)</span> / <span class="formula-tag" style="background:#BAE6FD;color:#075985;">¿Cuánto/a? (How much/many)</span><br>"¿<strong>Cómo</strong> estás?" (How are you?)<br>"¿<strong>Cuánto</strong> cuesta?" (How much does it cost?)', bg: '#F0F9FF', border: '#38BDF8', text: '#075985' }
+        ]
+      },
+      {
+        type: 'examples',
+        title: 'Examples',
+        items: [
+          { es: '¿Qué hora es?', en: 'What time is it?', audio: '¿Qué hora es?' },
+          { es: '¿Dónde vives?', en: 'Where do you live?', audio: '¿Dónde vives?' },
+          { es: '¿Cómo te llamas?', en: 'What is your name? (How do you call yourself?)', audio: '¿Cómo te llamas?' },
+          { es: '¿Cuánto es?', en: 'How much is it?', audio: '¿Cuánto es?' },
+          { es: '¿Por qué?', en: 'Why?', audio: '¿Por qué?' }
+        ]
+      }
+    ],
+    quizzes: [
+      { q: 'How do you ask "Where is the bathroom?"', choices: ['¿Cuándo está el baño?', '¿Qué está el baño?', '¿Dónde está el baño?', '¿Cómo está el baño?'], correct: '¿Dónde está el baño?', explanation: '"¿Dónde?" means "where".' },
+      { q: 'What does "¿Cuándo?" mean?', choices: ['Who', 'When', 'Why', 'How'], correct: 'When', explanation: '"¿Cuándo?" is the direct translation of "when".' },
+      { q: 'What is the Spanish word for "Why"?', choices: ['Porque', 'Por qué', 'Para qué', 'Qué por'], correct: 'Por qué', explanation: 'Written as two words with an accent: "¿Por qué?" means "why", while "porque" means "because".' },
+      { q: 'Translate: "Who is he?"', choices: ['¿Qué es él?', '¿Cómo es él?', '¿Quién es él?', '¿Cuándo es él?'], correct: '¿Quién es él?', explanation: '"¿Quién?" means "who".' },
+      { q: 'What do all Spanish question words have in common?', choices: ['They start with Q', 'They are feminine', 'They carry an accent mark', 'They go at the end of the sentence'], correct: 'They carry an accent mark', explanation: 'Words like qué, cómo, dónde, y quién all carry accents to distinguish them from their non-question forms.' }
+    ]
+  },
+  {
+    id: 'l10',
+    num: '10',
+    title: 'Preposiciones Básicas',
+    subtitle: 'En, con, sin, de, a — Location and Relationships',
+    theme: { bg: '#F0FDF4', text: '#166534', pill: '#BBF7D0', border: '#4ADE80', headBg: '#16A34A', headText: '#fff' },
+    sections: [
+      {
+        type: 'rules',
+        title: 'Core Prepositions',
+        items: [
+          { title: 'In, On, At', body: '<span class="formula-tag" style="background:#BBF7D0;color:#166534;">en</span><br>Unlike English, Spanish uses "en" for almost everything related to stationary location.<br>"<strong>En</strong> la mesa" (on the table). "<strong>En</strong> Madrid" (in Madrid).', bg: '#F0FDF4', border: '#4ADE80', text: '#166534' },
+          { title: 'With & Without', body: '<span class="formula-tag" style="background:#BBF7D0;color:#166534;">con (with)</span> / <span class="formula-tag" style="background:#BBF7D0;color:#166534;">sin (without)</span><br>"Café <strong>con</strong> leche" (coffee with milk).<br>"Agua <strong>sin</strong> gas" (water without gas / still water).', bg: '#DCFCE7', border: '#22C55E', text: '#166534' },
+          { title: 'Of, From, To', body: '<span class="formula-tag" style="background:#BBF7D0;color:#166534;">de (of/from)</span> / <span class="formula-tag" style="background:#BBF7D0;color:#166534;">a (to/at)</span><br>"Soy <strong>de</strong> España" (I am from Spain).<br>"Vamos <strong>a</strong> la playa" (We go to the beach).', bg: '#F0FDF4', border: '#4ADE80', text: '#166534' }
+        ]
+      },
+      {
+        type: 'examples',
+        title: 'Examples',
+        items: [
+          { es: 'En casa', en: 'At home', audio: 'En casa' },
+          { es: 'Un vaso de agua', en: 'A glass of water', audio: 'Un vaso de agua' },
+          { es: 'Viajo a México', en: 'I travel to Mexico', audio: 'Viajo a México' },
+          { es: 'Conmigo', en: 'With me (Special word)', audio: 'Conmigo' },
+          { es: 'Sin azúcar', en: 'Without sugar', audio: 'Sin azúcar' }
+        ]
+      }
+    ],
+    quizzes: [
+      { q: 'How do you say "with milk"?', correct: 'con leche', choices: ['de leche', 'con leche', 'sin leche', 'en leche'], explanation: '"Con" means "with".' },
+      { q: 'Which preposition is used for "in", "on", and "at" in terms of location?', correct: 'en', choices: ['a', 'de', 'con', 'en'], explanation: 'Spanish heavily relies on "en" for most location descriptions.' },
+      { q: 'Translate: "I am from Madrid."', correct: 'Soy de Madrid.', choices: ['Soy en Madrid.', 'Soy a Madrid.', 'Soy de Madrid.', 'Soy con Madrid.'], explanation: '"De" is used for origin ("from").' },
+      { q: 'What does "sin" mean?', correct: 'without', choices: ['with', 'without', 'under', 'over'], explanation: '"Sin" translates directly to "without".' },
+      { q: 'What is the special Spanish word for "with me"?', correct: 'conmigo', choices: ['con me', 'con yo', 'conmigo', 'conmí'], explanation: 'Instead of "con yo" or "con mí", Spanish uses the special word "conmigo".' }
+    ]
+  },
+  {
+    id: 'l11',
+    num: '11',
+    title: 'Expresiones de Tiempo',
+    subtitle: 'Hoy, mañana, siempre — Talking about Time',
+    theme: { bg: '#FFFBEB', text: '#92400E', pill: '#FDE68A', border: '#FBBF24', headBg: '#D97706', headText: '#fff' },
+    sections: [
+      {
+        type: 'rules',
+        title: 'Basic Time Expressions',
+        items: [
+          { title: 'The Present & Future', body: '<span class="formula-tag" style="background:#FDE68A;color:#92400E;">hoy (today)</span> / <span class="formula-tag" style="background:#FDE68A;color:#92400E;">mañana (tomorrow)</span><br>"<strong>Hoy</strong> es lunes" (Today is Monday).<br>"Hasta <strong>mañana</strong>" (See you tomorrow).', bg: '#FFFBEB', border: '#FBBF24', text: '#92400E' },
+          { title: 'The Past', body: '<span class="formula-tag" style="background:#FDE68A;color:#92400E;">ayer (yesterday)</span> / <span class="formula-tag" style="background:#FDE68A;color:#92400E;">anoche (last night)</span><br>"<strong>Ayer</strong> fui al cine" (Yesterday I went to the cinema).', bg: '#FEF3C7', border: '#F59E0B', text: '#92400E' },
+          { title: 'Frequency', body: '<span class="formula-tag" style="background:#FDE68A;color:#92400E;">siempre (always)</span> / <span class="formula-tag" style="background:#FDE68A;color:#92400E;">nunca (never)</span> / <span class="formula-tag" style="background:#FDE68A;color:#92400E;">a veces (sometimes)</span><br>"Él <strong>nunca</strong> come carne" (He never eats meat).', bg: '#FFFBEB', border: '#FBBF24', text: '#92400E' }
+        ]
+      },
+      {
+        type: 'examples',
+        title: 'Examples',
+        items: [
+          { es: 'Nos vemos luego', en: 'See you later ("luego" = later)', audio: 'Nos vemos luego' },
+          { es: 'Siempre tarde', en: 'Always late', audio: 'Siempre tarde' },
+          { es: 'Nunca digo nunca', en: 'I never say never', audio: 'Nunca digo nunca' },
+          { es: 'Ayer por la mañana', en: 'Yesterday morning', audio: 'Ayer por la mañana' },
+          { es: 'Hoy por la noche', en: 'Tonight', audio: 'Hoy por la noche' }
+        ]
+      }
+    ],
+    quizzes: [
+      { q: 'What does "mañana" mean in addition to "tomorrow"?', correct: 'Morning', choices: ['Night', 'Morning', 'Afternoon', 'Yesterday'], explanation: '"La mañana" means the morning, and "mañana" means tomorrow.' },
+      { q: 'How do you say "always"?', correct: 'siempre', choices: ['nunca', 'a veces', 'luego', 'siempre'], explanation: '"Siempre" means "always".' },
+      { q: 'Translate: "He never studies."', correct: 'Él nunca estudia.', choices: ['Él siempre estudia.', 'Él nunca estudia.', 'Él ayer estudia.', 'Él a veces estudia.'], explanation: '"Nunca" means "never".' },
+      { q: 'What does "ayer" mean?', correct: 'yesterday', choices: ['today', 'tomorrow', 'yesterday', 'later'], explanation: '"Ayer" translates directly to "yesterday".' },
+      { q: 'How would you say "sometimes"?', correct: 'a veces', choices: ['siempre', 'a veces', 'luego', 'hoy'], explanation: '"A veces" literally translates to "at times", meaning "sometimes".' }
+    ]
   }
 ];
 
