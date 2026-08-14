@@ -5742,6 +5742,34 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => switchTab(btn.dataset.tab));
 });
 
+const tabsList = ['cards', 'quiz', 'lecciones', 'convo', 'custom', 'progress'];
+let swipeStartX = 0, swipeStartY = 0, swipeStartTime = 0;
+
+document.getElementById('app-root').addEventListener('touchstart', (e) => {
+  swipeStartX = e.touches[0].clientX;
+  swipeStartY = e.touches[0].clientY;
+  swipeStartTime = Date.now();
+}, {passive: true});
+
+document.getElementById('app-root').addEventListener('touchend', (e) => {
+  if (Date.now() - swipeStartTime > 500) return;
+  if (e.target.closest('.flashcard-inner') || e.target.closest('button')) return;
+
+  const dx = e.changedTouches[0].clientX - swipeStartX;
+  const dy = e.changedTouches[0].clientY - swipeStartY;
+
+  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+    const currentIndex = tabsList.indexOf(state.currentTab || 'cards');
+    if (currentIndex === -1) return;
+
+    if (dx < 0 && currentIndex < tabsList.length - 1) {
+      switchTab(tabsList[currentIndex + 1]);
+    } else if (dx > 0 && currentIndex > 0) {
+      switchTab(tabsList[currentIndex - 1]);
+    }
+  }
+});
+
 loadProgress();
 
 })();
