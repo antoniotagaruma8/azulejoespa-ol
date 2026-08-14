@@ -644,6 +644,8 @@ html, body { height: 100%; }
   display: flex;
   align-items: center;
   white-space: nowrap;
+  min-width: 0;
+  flex: 1;
 }
 
 .category-bar-wrap {
@@ -5413,8 +5415,8 @@ function renderProgress() {
     const theme = getCategoryTheme(cat);
     return `
       <div class="category-row" style="border-left: 5px solid ${theme.border};">
-        <span class="category-name"><span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:${theme.border}; margin-right:8px;"></span>${escapeHtml(cat)}</span>
-        <div style="display:flex; align-items:center; gap:10px;">
+        <span class="category-name" style="margin-right: 12px;"><span style="flex-shrink:0; width:9px; height:9px; border-radius:50%; background:${theme.border}; margin-right:8px;"></span><span style="overflow:hidden; text-overflow:ellipsis;">${escapeHtml(cat)}</span></span>
+        <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
           <div class="category-bar-wrap" title="${box1} Aprendiendo · ${box2} Repasando · ${box3} Dominada">
             <div style="display:flex; height:100%; border-radius:3px; overflow:hidden;">
               <div style="width:${pct3}%; background:#10B981; transition: width 0.6s ease;"></div>
